@@ -9,7 +9,7 @@ function App() {
         {/* Navigation placeholder */}
         <header className="bg-white shadow-sm p-4">
           <div className="max-w-6xl mx-auto flex justify-between items-center">
-            <h1 className="text-xl font-bold text-sky-600">Healthcare Website</h1>
+            <h1 className="text-xl font-bold text-sky-600">MediMind.AI</h1>
             <nav className="space-x-4">
               <span className="text-gray-600 cursor-pointer">Home</span>
             </nav>
@@ -25,7 +25,7 @@ function App() {
 
         {/* Footer placeholder */}
         <footer className="bg-slate-800 text-white p-6 text-center">
-          <p>&copy; {new Date().getFullYear()} Healthcare Web. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} MediMind.AI. All rights reserved.</p>
         </footer>
       </div>
     </Router>

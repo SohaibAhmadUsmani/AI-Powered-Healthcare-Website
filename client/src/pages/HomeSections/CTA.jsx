@@ -2,12 +2,18 @@ import React from 'react';
 
 const CTA = () => {
   return (
-    <section className="bg-sky-600 text-white py-12 px-6 text-center rounded-2xl max-w-6xl mx-auto my-12">
-      <h3 className="text-2xl font-bold mb-4">Call To Action Placeholder</h3>
-      <p className="mb-6">Ready to improve your health tracking or schedule an appointment?</p>
-      <button className="bg-white text-sky-600 px-6 py-2 rounded-full font-semibold shadow hover:bg-sky-50 transition">
-        Action Button
-      </button>
+    <section className="py-12 px-6 max-w-7xl mx-auto relative my-12">
+      <div className="glass-panel rounded-3xl p-10 flex flex-col md:flex-row justify-between items-center gap-8 border-l-4 border-l-darkPrimary">
+        <div>
+          <h3 className="font-sora text-2xl sm:text-3xl font-bold text-white mb-2">Ready to Prioritize Your Health?</h3>
+          <p className="text-gray-400 max-w-lg">
+            Create an account today to schedule doctor appointments, manage prescriptions, and track your daily biometrics.
+          </p>
+        </div>
+        <button className="px-6 py-3 rounded-xl bg-darkPrimary text-darkBg font-semibold shadow-glowPrimary hover:bg-darkPrimary/90 transition-all duration-300 hover:scale-[1.03] shrink-0">
+          Get Started Now
+        </button>
+      </div>
     </section>
   );
 };

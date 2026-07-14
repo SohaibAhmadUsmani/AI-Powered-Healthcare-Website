@@ -2,25 +2,17 @@ import React from 'react';
 
 const HealthStats = () => {
   return (
-    <section className="py-12 px-6 max-w-6xl mx-auto text-center">
-      <h3 className="text-2xl font-bold mb-8">Health Statistics Placeholder</h3>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-        <div className="p-6 bg-white rounded-lg shadow-sm">
-          <div className="text-3xl font-extrabold text-sky-600">0</div>
-          <div className="text-gray-500">Stat 1</div>
+    <section className="py-12 px-6 max-w-7xl mx-auto relative">
+      <div className="glass-panel rounded-3xl p-10 flex flex-col md:flex-row justify-between items-center gap-8">
+        <div>
+          <h3 className="font-sora text-2xl sm:text-3xl font-bold text-white mb-2">Live Health Statistics</h3>
+          <p className="text-gray-400 max-w-lg">
+            Track real-time data insights, clinical outcomes, patient recovery records, and medical consultations.
+          </p>
         </div>
-        <div className="p-6 bg-white rounded-lg shadow-sm">
-          <div className="text-3xl font-extrabold text-sky-600">0</div>
-          <div className="text-gray-500">Stat 2</div>
-        </div>
-        <div className="p-6 bg-white rounded-lg shadow-sm">
-          <div className="text-3xl font-extrabold text-sky-600">0</div>
-          <div className="text-gray-500">Stat 3</div>
-        </div>
-        <div className="p-6 bg-white rounded-lg shadow-sm">
-          <div className="text-3xl font-extrabold text-sky-600">0</div>
-          <div className="text-gray-500">Stat 4</div>
-        </div>
+        <button className="px-6 py-3 rounded-xl bg-darkPrimary text-darkBg font-semibold shadow-glowPrimary hover:bg-darkPrimary/90 transition-all duration-300 hover:scale-[1.03] shrink-0">
+          Sync Live Counters
+        </button>
       </div>
     </section>
   );
