@@ -1,6 +1,8 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Home from './pages/Home';
+import LabTests from './pages/LabTests';
+import EmergencyContacts from './pages/EmergencyContacts';
 
 function App() {
   return (
@@ -11,7 +13,9 @@ function App() {
           <div className="max-w-6xl mx-auto flex justify-between items-center">
             <h1 className="text-xl font-bold text-sky-600">MediMind.AI</h1>
             <nav className="space-x-4">
-              <span className="text-gray-600 cursor-pointer">Home</span>
+              <Link to="/" className="text-gray-600 hover:text-sky-600">Home</Link>
+              <Link to="/lab-tests" className="text-gray-600 hover:text-sky-600">Lab Tests</Link>
+              <Link to="/emergency" className="text-gray-600 hover:text-sky-600">Emergency</Link>
             </nav>
           </div>
         </header>
@@ -20,6 +24,8 @@ function App() {
         <main className="flex-grow">
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/lab-tests" element={<LabTests />} />
+            <Route path="/emergency" element={<EmergencyContacts />} />
           </Routes>
         </main>
 
