@@ -1,11 +1,16 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 
 const PageTransition = ({ children }) => {
-  // TODO: Use framer-motion AnimatePresence to create page entrance & exit transitions
   return (
-    <div className="page-transition-placeholder">
+    <motion.div
+      initial={{ opacity: 0, y: 15 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -15 }}
+      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+    >
       {children}
-    </div>
+    </motion.div>
   );
 };
 
