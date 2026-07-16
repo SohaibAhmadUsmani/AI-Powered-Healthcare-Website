@@ -105,8 +105,8 @@ function App() {
               ))}
             </nav>
 
-            {/* CTA Portal & Theme Toggle */}
-            <div className="hidden md:flex items-center gap-4">
+            {/* CTA Portal & Theme Toggle (desktop only) */}
+            <div className="hidden xl:flex items-center gap-4">
               {/* Theme Toggle Button */}
               <button 
                 onClick={toggleTheme}
@@ -123,7 +123,7 @@ function App() {
               </Link>
             </div>
 
-            {/* Mobile Menu & Theme Toggle */}
+            {/* Mobile Menu (menu + theme toggle) */}
             <div className="flex items-center gap-3 xl:hidden">
               <button 
                 onClick={toggleTheme}
@@ -136,6 +136,7 @@ function App() {
               <button 
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 className="p-2.5 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer"
+                aria-label="Open Menu"
               >
                 <Menu className="w-4 h-4" />
               </button>
@@ -203,16 +204,8 @@ function App() {
                   </nav>
                 </div>
 
-                {/* Drawer Footer Actions */}
+                {/* Drawer Footer Actions (no theme toggle here to avoid duplicates) */}
                 <div className="pt-6 border-t border-slate-200/50 dark:border-white/5 flex flex-col gap-3">
-                  <button 
-                    onClick={toggleTheme}
-                    className="w-full py-3 px-4 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200/30 dark:border-white/10 text-slate-700 dark:text-gray-300 hover:bg-slate-200 dark:hover:bg-white/10 hover:text-slate-900 dark:hover:text-white flex items-center justify-center gap-2 transition-all font-bold text-xs cursor-pointer"
-                  >
-                    {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-500" /> : <Moon className="w-4 h-4" />}
-                    <span>{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
-                  </button>
-                  
                   <Link to="/book-appointment" onClick={() => setMobileMenuOpen(false)} className="w-full">
                     <RippleButton className="w-full py-3.5 rounded-xl bg-lightPrimary dark:bg-darkPrimary text-white dark:text-darkBg font-bold text-xs shadow-glowLightPrimary dark:shadow-glowPrimary hover:bg-lightPrimary/95 dark:hover:bg-darkPrimary/95 transition-all">
                       Book Appointment
