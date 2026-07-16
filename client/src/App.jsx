@@ -115,7 +115,7 @@ const MainLayout = () => {
               <Link 
                 key={link.name} 
                 to={link.href} 
-                className="text-xs font-semibold text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white transition-colors duration-200"
+                className="text-sm font-semibold tracking-wide text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white transition-colors duration-200"
               >
                 {link.name}
               </Link>

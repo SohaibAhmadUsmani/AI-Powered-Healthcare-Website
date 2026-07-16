@@ -30,7 +30,7 @@ const CTA = () => {
               </div>
 
               <h2 className="font-sora text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 dark:text-white leading-tight">
-                Ready to Experience <span className="text-lightPrimary dark:bg-gradient-to-r dark:from-darkPrimary dark:to-darkSecondary dark:bg-clip-text dark:text-transparent">Next-Gen Care</span>?
+                Experience the Future of <span className="text-lightPrimary dark:bg-gradient-to-r dark:from-darkPrimary dark:to-darkSecondary dark:bg-clip-text dark:text-transparent">Next-Gen Care</span>
               </h2>
 
               <p className="text-slate-600 dark:text-gray-400 mt-4 text-sm sm:text-base md:text-lg leading-relaxed max-w-xl">
