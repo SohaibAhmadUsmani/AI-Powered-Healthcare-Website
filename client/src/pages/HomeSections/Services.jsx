@@ -57,58 +57,58 @@ const Services = () => {
   return (
     <section className="py-20 px-6 max-w-7xl mx-auto relative" id="services">
       {/* Background soft glow */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-indigo-500/5 blur-[120px] pointer-events-none"></div>
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] sm:w-[500px] sm:h-[500px] rounded-full bg-lightPrimary/5 dark:bg-indigo-500/5 blur-[100px] sm:blur-[120px] pointer-events-none transition-colors"></div>
 
       <ScrollReveal direction="up">
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-darkAccent border border-darkPrimary/30 text-xs font-mono font-semibold text-darkPrimary mb-4 uppercase tracking-wider">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 dark:bg-darkAccent border border-lightPrimary/20 dark:border-darkPrimary/30 text-xs font-mono font-semibold text-lightPrimary dark:text-darkPrimary mb-4 uppercase tracking-wider">
             🔬 Our Clinical Innovations
           </div>
-          <h2 className="font-sora text-3xl sm:text-4xl md:text-5xl font-bold text-white leading-tight">
-            AI-Driven Medical <span className="bg-gradient-to-r from-darkPrimary to-darkSecondary bg-clip-text text-transparent">Services</span>
+          <h2 className="font-sora text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 dark:text-white leading-tight">
+            AI-Driven Medical <span className="text-lightPrimary dark:bg-gradient-to-r dark:from-darkPrimary dark:to-darkSecondary dark:bg-clip-text dark:text-transparent">Services</span>
           </h2>
-          <p className="text-gray-400 mt-4 text-base sm:text-lg">
+          <p className="text-slate-600 dark:text-gray-400 mt-4 text-base sm:text-lg">
             Empowering patients and physicians with automated diagnostics, virtual care, and precision medicine.
           </p>
         </div>
       </ScrollReveal>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
         {servicesList.map((service, index) => {
           const Icon = service.icon;
           return (
             <ScrollReveal key={index} direction="up" delay={index * 0.08}>
               <Link to={service.route} className="block h-full">
-                <div className="group relative glass-panel rounded-3xl p-8 h-full transition-all duration-300 hover:border-darkPrimary/30 hover:shadow-glowPrimary/10 flex flex-col justify-between overflow-hidden cursor-pointer">
+                <div className="group relative glass-panel rounded-2xl p-6 sm:p-8 h-full transition-all duration-300 border border-slate-200/60 dark:border-white/5 hover:border-lightPrimary/30 dark:hover:border-darkPrimary/30 shadow-premiumLight hover:shadow-premiumLightHover dark:shadow-none dark:hover:shadow-glowPrimary/10 flex flex-col justify-between overflow-hidden cursor-pointer">
                   {/* Accent background blur */}
                   <div className={`absolute -right-10 -top-10 w-32 h-32 rounded-full bg-gradient-to-br ${service.color} blur-[30px] group-hover:scale-150 transition-all duration-500 pointer-events-none`}></div>
 
                   <div>
                     <div className="flex items-center justify-between mb-6">
-                      <div className="p-3.5 rounded-2xl bg-darkAccent border border-white/5 text-darkPrimary group-hover:border-darkPrimary/40 transition-colors duration-300">
+                      <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-darkAccent border border-slate-200/50 dark:border-white/5 text-lightPrimary dark:text-darkPrimary group-hover:border-lightPrimary/40 dark:group-hover:border-darkPrimary/40 transition-colors duration-300">
                         <Icon className="w-6 h-6 group-hover:scale-110 transition-transform duration-300" />
                       </div>
                       {service.badge && (
-                        <span className="text-[10px] uppercase font-mono font-bold tracking-wider px-2.5 py-1 rounded-full bg-darkPrimary/10 border border-darkPrimary/20 text-darkPrimary">
+                        <span className="text-[10px] uppercase font-mono font-bold tracking-wider px-2.5 py-1 rounded-full bg-lightPrimary/10 dark:bg-darkPrimary/10 border border-lightPrimary/20 dark:border-darkPrimary/20 text-lightPrimary dark:text-darkPrimary">
                           {service.badge}
                         </span>
                       )}
                     </div>
 
-                    <h3 className="font-sora text-xl font-bold text-white mb-3 group-hover:text-darkPrimary transition-colors duration-300">
+                    <h3 className="font-sora text-xl font-bold text-slate-800 dark:text-white mb-3 group-hover:text-lightPrimary dark:group-hover:text-darkPrimary transition-colors duration-300">
                       {service.title}
                     </h3>
                     
-                    <p className="text-gray-400 text-sm leading-relaxed mb-6">
+                    <p className="text-slate-600 dark:text-gray-400 text-sm leading-relaxed mb-6">
                       {service.desc}
                     </p>
                   </div>
 
-                  <div className="pt-4 border-t border-white/5 flex justify-between items-center">
-                    <span className="text-xs font-semibold text-gray-500 group-hover:text-gray-400 transition-colors">
+                  <div className="pt-4 border-t border-slate-200/50 dark:border-white/5 flex justify-between items-center">
+                    <span className="text-xs font-semibold text-slate-400 dark:text-gray-500 group-hover:text-slate-600 dark:group-hover:text-gray-400 transition-colors">
                       Learn more
                     </span>
-                    <div className="p-2 rounded-xl bg-white/5 text-white/60 group-hover:bg-darkPrimary group-hover:text-darkBg group-hover:-translate-x-1 transition-all duration-300">
+                    <div className="p-2 rounded-xl bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-white/60 group-hover:bg-lightPrimary dark:group-hover:bg-darkPrimary group-hover:text-white dark:group-hover:text-darkBg group-hover:-translate-x-1 transition-all duration-300">
                       <ArrowRight className="w-4 h-4" />
                     </div>
                   </div>
@@ -122,7 +122,7 @@ const Services = () => {
       <ScrollReveal direction="up" delay={0.4}>
         <div className="mt-12 text-center">
           <Link to="/doctors">
-            <RippleButton className="px-8 py-3.5 rounded-2xl bg-transparent border border-darkPrimary/40 text-darkPrimary font-bold hover:bg-darkPrimary/10 hover:shadow-glowPrimary transition-all duration-300">
+            <RippleButton className="px-8 py-3.5 rounded-xl bg-transparent border border-lightPrimary/40 dark:border-darkPrimary/40 text-lightPrimary dark:text-darkPrimary font-bold hover:bg-lightPrimary/5 dark:hover:bg-darkPrimary/10 hover:shadow-glowLightPrimary dark:hover:shadow-glowPrimary transition-all duration-300">
               Explore Medical Capabilities
             </RippleButton>
           </Link>

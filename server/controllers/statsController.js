@@ -1,13 +1,15 @@
-const getStats = async (_req, res) => {
+const { Stats } = require('../models/Stats');
+
+// Get statistics for the dashboard
+const getStats = async (req, res) => {
   try {
-    res.json({
-      consultations: 24790,
-      recoveryRate: 98.4,
-      activePatients: 1250,
-      aiDiagnoses: 84930
-    });
+    let stats = await Stats.findOne();
+    if (!stats) {
+      stats = await Stats.create({});
+    }
+    res.status(200).json(stats);
   } catch (error) {
-    res.status(500).json({ success: false, message: "Failed to fetch stats" });
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
