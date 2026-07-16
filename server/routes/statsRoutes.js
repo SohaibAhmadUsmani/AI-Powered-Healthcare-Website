@@ -1,6 +1,8 @@
 import express from 'express';
+import { getStats } from '../controllers/statsController.js';
+
 const router = express.Router();
 
-// TODO: Define API routes for statistics counter (GET stats, POST/PUT update counter)
+router.get('/', getStats);
 
 export default router;
