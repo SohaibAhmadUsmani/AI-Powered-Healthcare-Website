@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
+import DoctorsList from "./pages/doctors/DoctorsList";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
         <main className="flex-grow">
           <Routes>
             <Route path="/" element={<Home />} />
+           
           </Routes>
         </main>
 
