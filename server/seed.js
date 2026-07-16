@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import LabTest from './models/LabTest.js';
+import EmergencyContact from './models/EmergencyContact.js';
 
 dotenv.config();
 
@@ -13,6 +14,13 @@ const testsData = [
   { name: 'Thyroid Profile (T3, T4, TSH)', price: 1800, category: 'Hormone Test' },
 ];
 
+const contactsData = [
+  { title: 'Ambulance', number: '1122', category: 'Ambulance' },
+  { title: 'Blood Bank', number: '051-1234567', category: 'Blood Bank' },
+  { title: 'Nearby Hospitals', number: '051-9876543', category: 'Hospital' },
+  { title: 'Police', number: '15', category: 'Police' },
+];
+
 const seed = async () => {
   try {
     await mongoose.connect(process.env.MONGODB_URI);
@@ -20,8 +28,12 @@ const seed = async () => {
 
     await LabTest.deleteMany();
     await LabTest.insertMany(testsData);
-
     console.log('Lab tests seeded successfully');
+
+    await EmergencyContact.deleteMany();
+    await EmergencyContact.insertMany(contactsData);
+    console.log('Emergency contacts seeded successfully');
+
     process.exit();
   } catch (error) {
     console.error('Seeding failed:', error.message);

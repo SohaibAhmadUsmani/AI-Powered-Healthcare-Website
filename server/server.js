@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { connectDB } from './config/db.js';
 import labRoutes from './routes/labRoutes.js';
+import emergencyRoutes from './routes/emergencyRoutes.js';
 
 dotenv.config();
 
@@ -19,6 +20,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/lab', labRoutes);
+app.use('/api/emergency', emergencyRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
