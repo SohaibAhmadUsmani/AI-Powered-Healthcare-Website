@@ -1,4 +1,5 @@
 import React from 'react';
+import Navbar from '../components/home/Navbar';
 import Hero from './HomeSections/Hero';
 import Services from './HomeSections/Services';
 import FeaturedDoctors from './HomeSections/FeaturedDoctors';
@@ -8,13 +9,16 @@ import CTA from './HomeSections/CTA';
 
 const Home = () => {
   return (
-    <div className="space-y-12">
-      <Hero />
-      <Services />
-      <FeaturedDoctors />
-      <HealthStats />
-      <Testimonials />
-      <CTA />
+    <div>
+      <Navbar />
+      <div className="space-y-12">
+        <Hero />
+        <Services />
+        <FeaturedDoctors />
+        <HealthStats />
+        <Testimonials />
+        <CTA />
+      </div>
     </div>
   );
 };
