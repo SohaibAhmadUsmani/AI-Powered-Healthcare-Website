@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { connectDB } from './config/db.js';
+import labRoutes from './routes/labRoutes.js';
 
 dotenv.config();
 
@@ -16,6 +17,8 @@ connectDB();
 app.get('/', (req, res) => {
   res.send('Healthcare API is running...');
 });
+
+app.use('/api/lab', labRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
