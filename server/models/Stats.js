@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
 const statsSchema = new mongoose.Schema({
   consultations: {
@@ -25,4 +25,5 @@ const statsSchema = new mongoose.Schema({
   timestamps: true
 });
 
-export const Stats = mongoose.model('Stats', statsSchema);
+const Stats = mongoose.model('Stats', statsSchema);
+module.exports = { Stats };

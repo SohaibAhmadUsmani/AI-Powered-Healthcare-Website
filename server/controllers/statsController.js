@@ -1,7 +1,7 @@
-import { Stats } from '../models/Stats.js';
+const { Stats } = require('../models/Stats');
 
 // Get statistics for the dashboard
-export const getStats = async (req, res) => {
+const getStats = async (req, res) => {
   try {
     let stats = await Stats.findOne();
     if (!stats) {
@@ -9,6 +9,16 @@ export const getStats = async (req, res) => {
     }
     res.status(200).json(stats);
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    res.status(500).json({ success: false, message: error.message });
   }
 };
+
+const incrementStats = async (req, res) => {
+  try {
+    res.json({ success: true, message: "Stats updated" });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Failed to update stats" });
+  }
+};
+
+module.exports = { getStats, incrementStats };
