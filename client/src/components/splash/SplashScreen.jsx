@@ -15,10 +15,17 @@ const SplashScreen = ({ onFinish }) => {
   const [showScanner, setShowScanner] = useState(false);
   const [typingIndex, setTypingIndex] = useState(-1);
   const [holdFrame, setHoldFrame] = useState(false);
-  const [fadeOut, setFadeOut] = useState(false);
   const [logoBright, setLogoBright] = useState(1);
   const [sceneActive, setSceneActive] = useState(false);
   const startTimeRef = useRef(Date.now());
+
+  // Prevent scroll during splash screen
+  useEffect(() => {
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, []);
 
   useEffect(() => {
     startTimeRef.current = Date.now();
@@ -34,21 +41,19 @@ const SplashScreen = ({ onFinish }) => {
       setHoldFrame(true);
       setLogoBright(2);
     }, 10000);
-    const tExit = setTimeout(() => setFadeOut(true), 11000);
+    const tExit = setTimeout(() => {
+      onFinish("/");
+    }, 11000);
 
     return () => {
-      clearTimeout(tActive); clearTimeout(tScanner); clearTimeout(tBrand);
-      clearTimeout(tDissolve); clearTimeout(tHold); clearTimeout(tExit);
+      clearTimeout(tActive);
+      clearTimeout(tScanner);
+      clearTimeout(tBrand);
+      clearTimeout(tDissolve);
+      clearTimeout(tHold);
+      clearTimeout(tExit);
     };
-  }, []);
-
-  useEffect(() => {
-    if (!fadeOut) return;
-    const timer = setTimeout(() => {
-      onFinish("/");
-    }, 1200);
-    return () => clearTimeout(timer);
-  }, [fadeOut, onFinish]);
+  }, [onFinish]);
 
   const handleCharReveal = useCallback((index) => {
     setTypingIndex(index);
@@ -58,7 +63,8 @@ const SplashScreen = ({ onFinish }) => {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 2, ease: "easeOut" }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 1.2, ease: "easeInOut" }}
       style={{
         position: "fixed",
         inset: 0,
@@ -79,7 +85,7 @@ const SplashScreen = ({ onFinish }) => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 1.5, ease: "easeOut" }}
+            transition={{ duration: 1.2, ease: "easeOut" }}
             style={{
               position: "absolute",
               inset: 0,
@@ -102,7 +108,7 @@ const SplashScreen = ({ onFinish }) => {
           textAlign: "center",
           zIndex: 5,
           filter: `brightness(${logoBright})`,
-          transition: "filter 1.5s ease",
+          transition: "filter 1.2s ease",
         }}
       >
         <LogoReveal
@@ -112,21 +118,6 @@ const SplashScreen = ({ onFinish }) => {
       </div>
 
       <NeuralScanner show={showScanner} />
-
-      <AnimatePresence>
-        {fadeOut && (
-          <motion.div
-            key="fade"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 1.2, ease: "easeInOut" }}
-            style={{
-              position: "fixed", inset: 0,
-              backgroundColor: "#0B0F19", zIndex: 20,
-            }}
-          />
-        )}
-      </AnimatePresence>
     </motion.div>
   );
 };

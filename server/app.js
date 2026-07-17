@@ -3,8 +3,8 @@ const cors = require("cors");
 const helmet = require("helmet");
 const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
-const passport = require("./config/passport");
 const { CLIENT_URL } = require("./config/env");
+const passport = require("./config/passport");
 
 const app = express();
 

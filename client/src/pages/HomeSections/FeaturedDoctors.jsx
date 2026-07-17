@@ -260,21 +260,11 @@ const FeaturedDoctors = () => {
                       <span className="text-xs font-semibold">Consulting Hours: {selectedDoctor.availability}</span>
                     </div>
 
-                    <form onSubmit={(e) => {
-                      e.preventDefault();
-                      alert(`Appointment request sent to ${selectedDoctor.name}! We will contact you shortly.`);
-                      setSelectedDoctor(null);
-                    }} className="space-y-3">
-                      <input 
-                        type="text" 
-                        placeholder="Your Name" 
-                        className="w-full bg-slate-50 dark:bg-darkBg/60 border border-slate-200 dark:border-white/10 focus:border-lightSecondary/50 dark:focus:border-darkSecondary/50 rounded-xl px-4 py-2.5 text-xs text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-gray-500 outline-none transition-all"
-                        required
-                      />
-                      <RippleButton type="submit" className="w-full py-2.5 rounded-xl bg-lightSecondary dark:bg-darkSecondary text-white font-semibold text-xs shadow-glowLightSecondary dark:shadow-glowSecondary hover:bg-lightSecondary/95 dark:hover:bg-darkSecondary/95 transition-all">
-                        Request Consultation Slot
+                    <Link to="/book-appointment" onClick={() => setSelectedDoctor(null)} className="block w-full">
+                      <RippleButton className="w-full py-2.5 rounded-xl bg-lightSecondary dark:bg-darkSecondary text-white font-semibold text-xs shadow-glowLightSecondary dark:shadow-glowSecondary hover:bg-lightSecondary/95 dark:hover:bg-darkSecondary/95 transition-all">
+                        Request Consultation
                       </RippleButton>
-                    </form>
+                    </Link>
                   </div>
                 </div>
               </div>
