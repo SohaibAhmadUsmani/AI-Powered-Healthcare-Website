@@ -272,6 +272,8 @@ const MainLayout = () => {
         <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-lightPrimary/30 via-indigo-500/30 to-lightSecondary/30 dark:from-darkPrimary/30 dark:via-indigo-500/30 dark:to-darkSecondary/30"></div>
         
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 lg:grid-cols-12 gap-12 pb-12 border-b border-slate-200 dark:border-white/5 relative z-10">
+
+          {/* Branding column */}
           <div className="md:col-span-12 lg:col-span-4 space-y-6">
             <Link to="/" className="flex items-center gap-2 group">
               <div className="p-2 rounded-xl bg-lightPrimary/10 dark:bg-darkPrimary/10 border border-lightPrimary/30 dark:border-darkPrimary/30 group-hover:border-lightPrimary/60 dark:group-hover:border-darkPrimary/60 transition-colors">
@@ -286,6 +288,8 @@ const MainLayout = () => {
             </p>
           </div>
 
+
+          {/* Quick Links */}
           <div className="md:col-span-4 lg:col-span-2 space-y-4">
             <span className="font-mono text-xs font-bold text-slate-400 dark:text-slate-500 tracking-widest uppercase mb-4 block">Features</span>
             <ul className="space-y-3">
@@ -312,6 +316,8 @@ const MainLayout = () => {
             </ul>
           </div>
 
+
+          {/* Company Links */}
           <div className="md:col-span-4 lg:col-span-2 space-y-4">
             <span className="font-mono text-xs font-bold text-slate-400 dark:text-slate-500 tracking-widest uppercase mb-4 block">Company</span>
             <ul className="space-y-3">
@@ -338,6 +344,7 @@ const MainLayout = () => {
             </ul>
           </div>
 
+          {/* Security Compliance */}
           <div className="md:col-span-4 lg:col-span-4 space-y-4">
             <span className="font-mono text-xs font-bold text-slate-400 dark:text-slate-500 tracking-widest uppercase mb-4 block">Security & Trust</span>
             <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed max-w-sm">
