@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { BrowserRouter, Routes, Route, Link, Navigate, Outlet } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Link, Navigate, Outlet, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Toaster } from "react-hot-toast";
 import { 
@@ -18,6 +18,9 @@ import Dashboard from './pages/Dashboard';
 import SplashScreen from './components/splash/SplashScreen';
 import PageTransition from './components/PageTransition';
 import RippleButton from './components/RippleButton';
+import DoctorsList from "./pages/doctors/DoctorsList";
+import DoctorDetails from "./pages/doctors/DoctorDetails";
+import ScrollToTop from "./components/common/ScrollToTop";
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated } = useAuth();
@@ -50,6 +53,7 @@ const MainLayout = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'dark');
   const { isAuthenticated } = useAuth();
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -269,72 +273,106 @@ const MainLayout = () => {
 
       {/* Main Content Layout with Transition Wrapper */}
       <main className="flex-grow">
-        <PageTransition>
-          <Outlet />
-        </PageTransition>
+        <AnimatePresence mode="wait">
+          <PageTransition key={location.pathname}>
+            <Outlet />
+          </PageTransition>
+        </AnimatePresence>
       </main>
 
       {/* Premium footer */}
       <footer className="glass-panel dark:border-t dark:border-white/5 pt-16 pb-8 px-6 relative overflow-hidden mt-12">
         <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-lightPrimary/30 via-indigo-500/30 to-lightSecondary/30 dark:from-darkPrimary/30 dark:via-indigo-500/30 dark:to-darkSecondary/30"></div>
         
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 pb-12 border-b border-slate-200 dark:border-white/5 relative z-10">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 lg:grid-cols-12 gap-12 pb-12 border-b border-slate-200 dark:border-white/5 relative z-10">
           {/* Branding column */}
-          <div className="lg:col-span-4 space-y-6">
+          <div className="md:col-span-12 lg:col-span-4 space-y-6">
             <Link to="/" className="flex items-center gap-2 group">
-              <div className="p-2 rounded-xl bg-lightPrimary/10 dark:bg-darkPrimary/10 border border-lightPrimary/30 dark:border-darkPrimary/30">
+              <div className="p-2 rounded-xl bg-lightPrimary/10 dark:bg-darkPrimary/10 border border-lightPrimary/30 dark:border-darkPrimary/30 group-hover:border-lightPrimary/60 dark:group-hover:border-darkPrimary/60 transition-colors">
                 <Activity className="w-5 h-5 text-lightPrimary dark:text-darkPrimary animate-pulse" />
               </div>
-              <span className="font-sora text-xl font-bold tracking-tight text-slate-900 dark:text-white">
+              <span className="font-sora text-xl font-bold tracking-tight text-slate-900 dark:text-white group-hover:text-lightPrimary dark:group-hover:text-darkPrimary transition-colors">
                 NeuroCare<span className="text-lightSecondary dark:text-darkSecondary">.AI</span>
               </span>
             </Link>
-            <p className="text-slate-500 dark:text-gray-400 text-sm leading-relaxed max-w-sm">
+            <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed max-w-sm">
               Revolutionizing clinical workflows, diagnostic speed, and personal wellness monitoring through custom AI engines and secure biometrics streaming.
             </p>
           </div>
 
           {/* Quick Links */}
-          <div className="lg:col-span-2.5 space-y-4">
-            <h4 className="font-sora text-sm font-bold text-slate-800 dark:text-white uppercase tracking-wider">Features</h4>
-            <ul className="space-y-2.5 text-xs">
-              <li><Link to="/doctors" className="text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white transition-colors">AI Diagnostics</Link></li>
-              <li><Link to="/doctors" className="text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white transition-colors">Telehealth Portal</Link></li>
-              <li><Link to="/store" className="text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white transition-colors">Pharmacy Store</Link></li>
-              <li><Link to="/laboratory" className="text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white transition-colors">Laboratory Tests</Link></li>
+          <div className="md:col-span-4 lg:col-span-2 space-y-4">
+            <span className="font-mono text-xs font-bold text-slate-400 dark:text-slate-500 tracking-widest uppercase mb-4 block">Features</span>
+            <ul className="space-y-3">
+              <li>
+                <Link to="/doctors" className="text-slate-500 dark:text-slate-400 hover:text-lightPrimary dark:hover:text-darkPrimary transition-all duration-300 hover:translate-x-1 block text-sm">
+                  AI Diagnostics
+                </Link>
+              </li>
+              <li>
+                <Link to="/doctors" className="text-slate-500 dark:text-slate-400 hover:text-lightPrimary dark:hover:text-darkPrimary transition-all duration-300 hover:translate-x-1 block text-sm">
+                  Telehealth Portal
+                </Link>
+              </li>
+              <li>
+                <Link to="/store" className="text-slate-500 dark:text-slate-400 hover:text-lightPrimary dark:hover:text-darkPrimary transition-all duration-300 hover:translate-x-1 block text-sm">
+                  Pharmacy Store
+                </Link>
+              </li>
+              <li>
+                <Link to="/laboratory" className="text-slate-500 dark:text-slate-400 hover:text-lightPrimary dark:hover:text-darkPrimary transition-all duration-300 hover:translate-x-1 block text-sm">
+                  Laboratory Tests
+                </Link>
+              </li>
             </ul>
           </div>
 
           {/* Company Links */}
-          <div className="lg:col-span-2.5 space-y-4">
-            <h4 className="font-sora text-sm font-bold text-slate-800 dark:text-white uppercase tracking-wider">Company</h4>
-            <ul className="space-y-2.5 text-xs">
-              <li><a href="#" className="text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white transition-colors">About Us</a></li>
-              <li><a href="#" className="text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white transition-colors">Research Papers</a></li>
-              <li><a href="#" className="text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white transition-colors">Careers</a></li>
-              <li><a href="#" className="text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white transition-colors">Press Kit</a></li>
+          <div className="md:col-span-4 lg:col-span-2 space-y-4">
+            <span className="font-mono text-xs font-bold text-slate-400 dark:text-slate-500 tracking-widest uppercase mb-4 block">Company</span>
+            <ul className="space-y-3">
+              <li>
+                <a href="#" className="text-slate-500 dark:text-slate-400 hover:text-lightPrimary dark:hover:text-darkPrimary transition-all duration-300 hover:translate-x-1 block text-sm">
+                  About Us
+                </a>
+              </li>
+              <li>
+                <a href="#" className="text-slate-500 dark:text-slate-400 hover:text-lightPrimary dark:hover:text-darkPrimary transition-all duration-300 hover:translate-x-1 block text-sm">
+                  Research Papers
+                </a>
+              </li>
+              <li>
+                <a href="#" className="text-slate-500 dark:text-slate-400 hover:text-lightPrimary dark:hover:text-darkPrimary transition-all duration-300 hover:translate-x-1 block text-sm">
+                  Careers
+                </a>
+              </li>
+              <li>
+                <a href="#" className="text-slate-500 dark:text-slate-400 hover:text-lightPrimary dark:hover:text-darkPrimary transition-all duration-300 hover:translate-x-1 block text-sm">
+                  Press Kit
+                </a>
+              </li>
             </ul>
           </div>
 
           {/* Security Compliance */}
-          <div className="lg:col-span-3 space-y-4">
-            <h4 className="font-sora text-sm font-bold text-slate-800 dark:text-white uppercase tracking-wider">Security & Trust</h4>
-            <p className="text-slate-500 dark:text-gray-400 text-xs leading-relaxed">
+          <div className="md:col-span-4 lg:col-span-4 space-y-4">
+            <span className="font-mono text-xs font-bold text-slate-400 dark:text-slate-500 tracking-widest uppercase mb-4 block">Security & Trust</span>
+            <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed max-w-sm">
               All metrics are encrypted end-to-end. We adhere strictly to HIPAA compliance protocols and GDPR regulatory guidelines.
             </p>
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-mono font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-mono font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 mt-2">
               <Shield className="w-3.5 h-3.5" />
               <span>Fully HIPAA Compliant</span>
             </div>
           </div>
         </div>
 
-        <div className="max-w-7xl mx-auto pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-slate-400 dark:text-gray-500 relative z-10">
+        <div className="max-w-7xl mx-auto pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-slate-450 dark:text-slate-500 relative z-10">
           <p>&copy; {new Date().getFullYear()} NeuroCare AI. All rights reserved.</p>
           <div className="flex gap-6">
-            <a href="#" className="hover:text-slate-800 dark:hover:text-gray-300 transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-slate-800 dark:hover:text-gray-300 transition-colors">Terms of Service</a>
-            <a href="#" className="hover:text-slate-800 dark:hover:text-gray-300 transition-colors">Cookie Settings</a>
+            <a href="#" className="hover:text-lightPrimary dark:hover:text-darkPrimary transition-colors duration-200">Privacy Policy</a>
+            <a href="#" className="hover:text-lightPrimary dark:hover:text-darkPrimary transition-colors duration-200">Terms of Service</a>
+            <a href="#" className="hover:text-lightPrimary dark:hover:text-darkPrimary transition-colors duration-200">Cookie Settings</a>
           </div>
         </div>
       </footer>
@@ -351,13 +389,15 @@ function App() {
     setAppReady(true);
   }, []);
 
-  if (!appReady) {
-    return <SplashScreen onFinish={handleSplashFinish} />;
-  }
-
   return (
     <BrowserRouter>
+    <ScrollToTop />
       <AuthProvider>
+        <AnimatePresence>
+          {!appReady && (
+            <SplashScreen onFinish={handleSplashFinish} />
+          )}
+        </AnimatePresence>
         <Toaster
           position="top-right"
           toastOptions={{
@@ -383,7 +423,8 @@ function App() {
           {/* Main Website Pages layout */}
           <Route element={<MainLayout />}>
             <Route path="/" element={<Home />} />
-            <Route path="/doctors" element={<TeammatePlaceholder name="Doctor Registry" />} />
+            <Route path="/doctors" element={<DoctorsList />} />
+            <Route path="/doctors/:id" element={<DoctorDetails />} />
             <Route path="/book-appointment" element={<TeammatePlaceholder name="Appointment Booking" />} />
             <Route path="/store" element={<TeammatePlaceholder name="Medicine Store" />} />
             <Route path="/laboratory" element={<TeammatePlaceholder name="Laboratory Portal" />} />
