@@ -43,7 +43,7 @@ const RippleButton = ({ children, onClick, className = '', ...props }) => {
       {ripples.map((ripple) => (
         <span
           key={ripple.id}
-          className="absolute rounded-full bg-white/20 pointer-events-none animate-ripple"
+          className="absolute rounded-full bg-slate-950/10 dark:bg-white/20 pointer-events-none animate-ripple"
           style={{
             left: ripple.x,
             top: ripple.y,

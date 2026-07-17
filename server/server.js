@@ -1,27 +1,13 @@
-import express from 'express';
-import cors from 'cors';
-import dotenv from 'dotenv';
-import { connectDB } from './config/db.js';
-import labRoutes from './routes/labRoutes.js';
-import emergencyRoutes from './routes/emergencyRoutes.js';
+const { PORT } = require("./config/env");
+const app = require("./app");
+const { connectDB } = require("./config/db");
 
-dotenv.config();
+const start = async () => {
+  await connectDB();
 
-const app = express();
-const PORT = process.env.PORT || 5000;
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+};
 
-app.use(cors());
-app.use(express.json());
-
-connectDB();
-
-app.get('/', (req, res) => {
-  res.send('Healthcare API is running...');
-});
-
-app.use('/api/lab', labRoutes);
-app.use('/api/emergency', emergencyRoutes);
-
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+start();

@@ -53,46 +53,46 @@ const FeaturedDoctors = () => {
   return (
     <section className="py-20 px-6 max-w-7xl mx-auto relative" id="doctors">
       {/* Glow Effects */}
-      <div className="absolute bottom-0 right-10 w-96 h-96 rounded-full bg-darkSecondary/5 blur-[120px] pointer-events-none"></div>
+      <div className="absolute bottom-0 right-10 w-96 h-96 rounded-full bg-lightSecondary/5 dark:bg-darkSecondary/5 blur-[120px] pointer-events-none transition-colors"></div>
 
       <ScrollReveal direction="up">
         <div className="text-center max-w-3xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-darkAccent border border-darkSecondary/30 text-xs font-mono font-semibold text-darkSecondary mb-4 uppercase tracking-wider">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 dark:bg-darkAccent border border-lightSecondary/20 dark:border-darkSecondary/30 text-xs font-mono font-semibold text-lightSecondary dark:text-darkSecondary mb-4 uppercase tracking-wider">
             🤝 Board Certified Specialists
           </div>
-          <h2 className="font-sora text-3xl sm:text-4xl md:text-5xl font-bold text-white leading-tight">
-            Consult Medical <span className="bg-gradient-to-r from-darkSecondary to-indigo-400 bg-clip-text text-transparent">Experts</span>
+          <h2 className="font-sora text-3xl sm:text-4xl md:text-5xl font-bold text-slate-900 dark:text-white leading-tight">
+            Consult Medical <span className="text-lightSecondary dark:bg-gradient-to-r dark:from-darkSecondary dark:to-indigo-400 dark:bg-clip-text dark:text-transparent">Experts</span>
           </h2>
-          <p className="text-gray-400 mt-4 text-base sm:text-lg">
+          <p className="text-slate-600 dark:text-gray-400 mt-4 text-base sm:text-lg">
             Connect with leading board-certified specialists for personalized clinical consultation and care.
           </p>
         </div>
       </ScrollReveal>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
         {doctorsList.map((doctor, index) => (
           <ScrollReveal key={index} direction="up" delay={index * 0.1}>
-            <div className="group relative glass-panel rounded-3xl p-6 transition-all duration-300 hover:border-darkSecondary/30 hover:shadow-glowSecondary/10 flex flex-col justify-between overflow-hidden h-full">
+            <div className="group relative glass-panel rounded-2xl p-6 border border-slate-200/60 dark:border-white/5 hover:border-lightSecondary/30 dark:hover:border-darkSecondary/30 shadow-premiumLight hover:shadow-premiumLightHover dark:shadow-none dark:hover:shadow-glowSecondary/10 flex flex-col justify-between overflow-hidden h-full">
               
               {/* Doctor Graphic Frame */}
-              <div className="relative w-full h-64 rounded-2xl overflow-hidden mb-6 bg-darkAccent/50 border border-white/5">
+              <div className="relative w-full h-64 rounded-2xl overflow-hidden mb-6 bg-slate-50 dark:bg-darkAccent/50 border border-slate-200/50 dark:border-white/5">
                 <img 
                   src={doctor.image} 
                   alt={doctor.name} 
                   className="w-full h-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
                   loading="lazy"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-darkBg via-transparent to-transparent opacity-80"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-white dark:from-darkBg via-transparent to-transparent opacity-80"></div>
                 
                 {/* Rating Badge */}
-                <div className="absolute top-4 right-4 inline-flex items-center gap-1 px-2.5 py-1 rounded-xl bg-darkBg/80 backdrop-blur-md border border-white/10 text-xs font-bold text-amber-400">
-                  <Star className="w-3.5 h-3.5 fill-amber-400" />
+                <div className="absolute top-4 right-4 inline-flex items-center gap-1 px-2.5 py-1 rounded-xl bg-white/90 dark:bg-darkBg/80 backdrop-blur-md border border-slate-200/60 dark:border-white/10 text-xs font-bold text-slate-800 dark:text-amber-400">
+                  <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
                   <span>{doctor.rating}</span>
-                  <span className="text-gray-400 font-normal">({doctor.reviews})</span>
+                  <span className="text-slate-400 dark:text-gray-400 font-normal">({doctor.reviews})</span>
                 </div>
 
                 {/* Verification Badge */}
-                <div className="absolute bottom-4 left-4 inline-flex items-center gap-1 px-2.5 py-1 rounded-xl bg-darkPrimary/25 backdrop-blur-md border border-darkPrimary/35 text-[10px] font-mono font-bold uppercase tracking-wider text-darkPrimary">
+                <div className="absolute bottom-4 left-4 inline-flex items-center gap-1 px-2.5 py-1 rounded-xl bg-lightPrimary/10 dark:bg-darkPrimary/25 backdrop-blur-md border border-lightPrimary/20 dark:border-darkPrimary/35 text-[10px] font-mono font-bold uppercase tracking-wider text-lightPrimary dark:text-darkPrimary">
                   <ShieldCheck className="w-3.5 h-3.5" />
                   <span>Verified Partner</span>
                 </div>
@@ -100,15 +100,15 @@ const FeaturedDoctors = () => {
 
               {/* Bio Details */}
               <div className="flex-grow">
-                <h3 className="font-sora text-xl font-bold text-white mb-1 group-hover:text-darkSecondary transition-colors duration-300">
+                <h3 className="font-sora text-xl font-bold text-slate-800 dark:text-white mb-1 group-hover:text-lightSecondary dark:group-hover:text-darkSecondary transition-colors duration-300">
                   {doctor.name}
                 </h3>
-                <p className="text-darkSecondary text-xs font-semibold uppercase tracking-wider mb-3">
+                <p className="text-lightSecondary dark:text-darkSecondary text-xs font-semibold uppercase tracking-wider mb-3">
                   {doctor.role}
                 </p>
 
-                <div className="flex items-center gap-1.5 text-gray-400 text-xs mb-4">
-                  <MapPin className="w-3.5 h-3.5 text-gray-500" />
+                <div className="flex items-center gap-1.5 text-slate-600 dark:text-gray-400 text-xs mb-4">
+                  <MapPin className="w-3.5 h-3.5 text-slate-400 dark:text-gray-500" />
                   <span>{doctor.location}</span>
                 </div>
 
@@ -117,7 +117,7 @@ const FeaturedDoctors = () => {
                   {doctor.tags.map((tag, tIdx) => (
                     <span 
                       key={tIdx} 
-                      className="text-[10px] font-mono px-2.5 py-1 rounded-lg bg-white/5 border border-white/5 text-gray-300"
+                      className="text-[10px] font-mono px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-white/5 border border-slate-200/50 dark:border-white/5 text-slate-600 dark:text-gray-300"
                     >
                       #{tag}
                     </span>
@@ -126,16 +126,16 @@ const FeaturedDoctors = () => {
               </div>
 
               {/* Consultation trigger button */}
-              <div className="pt-4 border-t border-white/5 flex gap-3 w-full">
+              <div className="pt-4 border-t border-slate-200/50 dark:border-white/5 flex gap-3 w-full">
                 <Link to="/book-appointment" className="flex-grow">
-                  <RippleButton className="w-full py-3 px-4 rounded-xl bg-darkSecondary text-white font-semibold text-sm hover:bg-darkSecondary/90 transition-all duration-300">
+                  <RippleButton className="w-full py-3 px-4 rounded-xl bg-lightSecondary dark:bg-darkSecondary text-white font-semibold text-sm hover:bg-lightSecondary/90 dark:hover:bg-darkSecondary/90 transition-all duration-300 shadow-glowLightSecondary dark:shadow-none">
                     <Calendar className="w-4 h-4 mr-2 inline" />
                     Book Appointment
                   </RippleButton>
                 </Link>
                 <button 
                   onClick={() => setSelectedDoctor(doctor)}
-                  className="px-4 py-3 rounded-xl bg-white/5 text-gray-300 font-semibold text-sm hover:bg-white/10 border border-white/5 hover:text-white transition-all cursor-pointer"
+                  className="px-4 py-3 rounded-xl bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-gray-300 font-semibold text-sm hover:bg-slate-200 dark:hover:bg-white/10 border border-slate-200 dark:border-white/5 hover:text-slate-900 dark:hover:text-white transition-all cursor-pointer"
                 >
                   Profile
                 </button>
@@ -149,7 +149,7 @@ const FeaturedDoctors = () => {
       <ScrollReveal direction="up" delay={0.3}>
         <div className="mt-12 text-center">
           <Link to="/doctors">
-            <RippleButton className="px-8 py-3.5 rounded-2xl bg-transparent border border-darkPrimary/40 text-darkPrimary font-bold hover:bg-darkPrimary/10 hover:shadow-glowPrimary transition-all duration-300">
+            <RippleButton className="px-8 py-3.5 rounded-xl bg-transparent border border-lightPrimary/40 dark:border-darkPrimary/40 text-lightPrimary dark:text-darkPrimary font-bold hover:bg-lightPrimary/5 dark:hover:bg-darkPrimary/10 hover:shadow-glowLightPrimary dark:hover:shadow-glowPrimary transition-all duration-300">
               View All Specialists
             </RippleButton>
           </Link>
@@ -166,7 +166,7 @@ const FeaturedDoctors = () => {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setSelectedDoctor(null)}
-              className="absolute inset-0 bg-darkBg/80 backdrop-blur-md cursor-pointer"
+              className="absolute inset-0 bg-slate-950/60 dark:bg-darkBg/80 backdrop-blur-md cursor-pointer"
             />
             
             {/* Modal Box */}
@@ -175,12 +175,12 @@ const FeaturedDoctors = () => {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
               transition={{ type: 'spring', damping: 25, stiffness: 250 }}
-              className="relative glass-panel w-full max-w-2xl rounded-3xl p-6 md:p-8 shadow-2xl z-10 max-h-[90vh] overflow-y-auto border border-white/10"
+              className="relative glass-panel w-full max-w-2xl rounded-2xl p-6 md:p-8 shadow-premiumLight dark:shadow-2xl z-10 max-h-[90vh] overflow-y-auto border border-slate-200/60 dark:border-white/10"
             >
               {/* Close Button */}
               <button
                 onClick={() => setSelectedDoctor(null)}
-                className="absolute top-4 right-4 p-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-gray-400 hover:text-white transition-all cursor-pointer"
+                className="absolute top-4 right-4 p-2 rounded-xl bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 border border-slate-200 dark:border-white/10 text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white transition-all cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -188,7 +188,7 @@ const FeaturedDoctors = () => {
               <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
                 {/* Doctor Avatar & Basics */}
                 <div className="md:col-span-5 text-center md:text-left">
-                  <div className="w-40 h-40 rounded-2xl overflow-hidden mx-auto md:mx-0 mb-4 border border-white/10 bg-darkAccent">
+                  <div className="w-40 h-40 rounded-2xl overflow-hidden mx-auto md:mx-0 mb-4 border border-slate-200/50 dark:border-white/10 bg-slate-50 dark:bg-darkAccent">
                     <img 
                       src={selectedDoctor.image} 
                       alt={selectedDoctor.name} 
@@ -196,25 +196,25 @@ const FeaturedDoctors = () => {
                     />
                   </div>
                   
-                  <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl bg-amber-400/10 border border-amber-400/20 text-xs font-bold text-amber-400 mb-3">
-                    <Star className="w-3.5 h-3.5 fill-amber-400" />
+                  <div className="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl bg-amber-400/10 border border-amber-400/20 text-xs font-bold text-amber-500 mb-3">
+                    <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-500" />
                     <span>{selectedDoctor.rating}</span>
-                    <span className="text-gray-400 font-normal">({selectedDoctor.reviews})</span>
+                    <span className="text-slate-400 dark:text-gray-400 font-normal">({selectedDoctor.reviews})</span>
                   </div>
 
-                  <h3 className="font-sora text-2xl font-bold text-white mb-1">
+                  <h3 className="font-sora text-2xl font-bold text-slate-800 dark:text-white mb-1">
                     {selectedDoctor.name}
                   </h3>
-                  <p className="text-darkSecondary text-xs font-semibold uppercase tracking-wider mb-4">
+                  <p className="text-lightSecondary dark:text-darkSecondary text-xs font-semibold uppercase tracking-wider mb-4">
                     {selectedDoctor.role}
                   </p>
 
-                  <div className="flex items-center justify-center md:justify-start gap-1.5 text-gray-400 text-xs mb-4">
-                    <MapPin className="w-3.5 h-3.5 text-gray-500" />
+                  <div className="flex items-center justify-center md:justify-start gap-1.5 text-slate-500 dark:text-gray-400 text-xs mb-4">
+                    <MapPin className="w-3.5 h-3.5 text-slate-400 dark:text-gray-500" />
                     <span>{selectedDoctor.location}</span>
                   </div>
 
-                  <div className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-mono font-bold uppercase tracking-wider text-emerald-400">
+                  <div className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-mono font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
                     <UserCheck className="w-3.5 h-3.5" />
                     <span>Accepting Patients</span>
                   </div>
@@ -224,57 +224,47 @@ const FeaturedDoctors = () => {
                 <div className="md:col-span-7 space-y-6">
                   {/* Bio */}
                   <div>
-                    <h4 className="font-sora text-sm font-bold text-white uppercase tracking-wider mb-2">Biography</h4>
-                    <p className="text-gray-400 text-sm leading-relaxed">
+                    <h4 className="font-sora text-sm font-bold text-slate-800 dark:text-white uppercase tracking-wider mb-2">Biography</h4>
+                    <p className="text-slate-600 dark:text-gray-400 text-sm leading-relaxed">
                       {selectedDoctor.bio}
                     </p>
                   </div>
 
                   {/* Credentials / Ed */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="p-4 rounded-xl bg-white/5 border border-white/5">
-                      <div className="flex items-center gap-2 text-darkPrimary mb-2">
+                    <div className="p-4 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200/50 dark:border-white/5">
+                      <div className="flex items-center gap-2 text-lightPrimary dark:text-darkPrimary mb-2">
                         <GraduationCap className="w-4 h-4" />
                         <span className="text-xs font-bold uppercase tracking-wider">Education</span>
                       </div>
-                      <p className="text-gray-300 text-xs leading-relaxed">
+                      <p className="text-slate-600 dark:text-gray-300 text-xs leading-relaxed">
                         {selectedDoctor.education}
                       </p>
                     </div>
 
-                    <div className="p-4 rounded-xl bg-white/5 border border-white/5">
-                      <div className="flex items-center gap-2 text-darkSecondary mb-2">
+                    <div className="p-4 rounded-xl bg-slate-50 dark:bg-white/5 border border-slate-200/50 dark:border-white/5">
+                      <div className="flex items-center gap-2 text-lightSecondary dark:text-darkSecondary mb-2">
                         <Microscope className="w-4 h-4" />
                         <span className="text-xs font-bold uppercase tracking-wider">Research Focus</span>
                       </div>
-                      <p className="text-gray-300 text-xs leading-relaxed">
+                      <p className="text-slate-600 dark:text-gray-300 text-xs leading-relaxed">
                         {selectedDoctor.research}
                       </p>
                     </div>
                   </div>
 
                   {/* Scheduling Mock Form */}
-                  <div className="pt-4 border-t border-white/5">
-                    <div className="flex items-center gap-2 text-gray-400 mb-4">
+                  <div className="pt-4 border-t border-slate-200/50 dark:border-white/5">
+                    <div className="flex items-center gap-2 text-slate-400 dark:text-gray-400 mb-4">
                       <Clock className="w-4 h-4" />
                       <span className="text-xs font-semibold">Consulting Hours: {selectedDoctor.availability}</span>
                     </div>
 
-                    <form onSubmit={(e) => {
-                      e.preventDefault();
-                      alert(`Appointment request sent to ${selectedDoctor.name}! We will contact you shortly.`);
-                      setSelectedDoctor(null);
-                    }} className="space-y-3">
-                      <input 
-                        type="text" 
-                        placeholder="Your Name" 
-                        className="w-full bg-darkBg/60 border border-white/10 focus:border-darkSecondary/50 rounded-xl px-4 py-2.5 text-xs text-white placeholder-gray-500 outline-none transition-all"
-                        required
-                      />
-                      <RippleButton type="submit" className="w-full py-2.5 rounded-xl bg-darkSecondary text-white font-semibold text-xs shadow-glowSecondary hover:bg-darkSecondary/95 transition-all">
-                        Request Consultation Slot
+                    <Link to="/book-appointment" onClick={() => setSelectedDoctor(null)} className="block w-full">
+                      <RippleButton className="w-full py-2.5 rounded-xl bg-lightSecondary dark:bg-darkSecondary text-white font-semibold text-xs shadow-glowLightSecondary dark:shadow-glowSecondary hover:bg-lightSecondary/95 dark:hover:bg-darkSecondary/95 transition-all">
+                        Request Consultation
                       </RippleButton>
-                    </form>
+                    </Link>
                   </div>
                 </div>
               </div>

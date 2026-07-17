@@ -1,9 +1,9 @@
-import express from 'express';
-import { getAllContacts, getContactById } from '../controllers/emergencyController.js';
+const express = require("express");
+const { getAllContacts, getContactById } = require("../controllers/emergencyController");
 
 const router = express.Router();
 
-router.get('/', getAllContacts);
-router.get('/:id', getContactById);
+router.get("/", getAllContacts);
+router.get("/:id", getContactById);
 
-export default router;
+module.exports = router;
