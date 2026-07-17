@@ -27,8 +27,11 @@ const oauthRoutes = require("./routes/oauth.routes");
 app.use("/auth", authRoutes);
 app.use("/auth", oauthRoutes);
 
-const statsRoutes = require("./routes/statsRoutes");
-app.use("/api/stats", statsRoutes);
+const labRoutes = require("./routes/labRoutes");
+const emergencyRoutes = require("./routes/emergencyRoutes");
+
+app.use("/api/lab", labRoutes);
+app.use("/api/emergency", emergencyRoutes);
 
 app.use((err, _req, res, _next) => {
   console.error("Unhandled Error:", err);
