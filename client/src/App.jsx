@@ -19,7 +19,8 @@ import SplashScreen from './components/splash/SplashScreen';
 import PageTransition from './components/PageTransition';
 import RippleButton from './components/RippleButton';
 import DoctorsList from "./pages/doctors/DoctorsList";
-import DoctorDetails from "./pages/doctors/DoctorDetails"
+import DoctorDetails from "./pages/doctors/DoctorDetails";
+import ScrollToTop from "./components/common/ScrollToTop";
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated } = useAuth();
@@ -359,6 +360,7 @@ function App() {
 
   return (
     <BrowserRouter>
+    <ScrollToTop />
       <AuthProvider>
         <Toaster
           position="top-right"
