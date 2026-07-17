@@ -18,6 +18,8 @@ import Dashboard from './pages/Dashboard';
 import SplashScreen from './components/splash/SplashScreen';
 import PageTransition from './components/PageTransition';
 import RippleButton from './components/RippleButton';
+import LabTests from './pages/LabTests';
+import EmergencyContacts from './pages/EmergencyContacts';
 import DoctorsList from "./pages/doctors/DoctorsList";
 import DoctorDetails from "./pages/doctors/DoctorDetails";
 import ScrollToTop from "./components/common/ScrollToTop";
@@ -63,7 +65,6 @@ const MainLayout = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Lock body scroll when mobile menu is open
   useEffect(() => {
     if (mobileMenuOpen) {
       document.body.style.overflow = 'hidden';
@@ -100,10 +101,8 @@ const MainLayout = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-lightBg dark:bg-darkBg bg-grid-pattern text-slate-850 dark:text-slate-100 font-sans selection:bg-lightPrimary/20 dark:selection:bg-darkPrimary/30 selection:text-lightPrimary dark:selection:text-white transition-colors duration-300">
-      {/* Navigation Header */}
       <header className={`fixed top-0 left-0 w-full z-40 transition-all duration-300 ${scrolled ? 'glass-panel py-4 shadow-premiumLight dark:shadow-lg dark:border-b dark:border-white/5' : 'bg-transparent py-6'}`}>
         <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
-          {/* Logo */}
           <Link to="/" className="flex items-center gap-2 group">
             <div className="p-2 rounded-xl bg-lightPrimary/10 dark:bg-darkPrimary/10 border border-lightPrimary/30 dark:border-darkPrimary/30 group-hover:border-lightPrimary/60 dark:group-hover:border-darkPrimary/60 transition-colors">
               <Activity className="w-5 h-5 text-lightPrimary dark:text-darkPrimary animate-pulse" />
@@ -113,7 +112,6 @@ const MainLayout = () => {
             </span>
           </Link>
 
-          {/* Desktop Navigation Links */}
           <nav className="hidden xl:flex items-center gap-6">
             {navLinks.map((link) => (
               <Link 
@@ -126,9 +124,7 @@ const MainLayout = () => {
             ))}
           </nav>
 
-          {/* CTA Portal & Theme Toggle (desktop only) */}
           <div className="hidden xl:flex items-center gap-4">
-            {/* Theme Toggle Button */}
             <button 
               onClick={toggleTheme}
               className="p-2.5 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white transition-all shadow-sm cursor-pointer"
@@ -159,7 +155,6 @@ const MainLayout = () => {
             )}
           </div>
 
-          {/* Mobile Menu (menu + theme toggle) */}
           <div className="flex items-center gap-3 xl:hidden">
             <button 
               onClick={toggleTheme}
@@ -180,11 +175,9 @@ const MainLayout = () => {
         </div>
       </header>
 
-      {/* Mobile Navigation Drawer Overlay */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <>
-            {/* Dark Blur Backdrop */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -193,7 +186,6 @@ const MainLayout = () => {
               onClick={() => setMobileMenuOpen(false)}
             />
             
-            {/* Slide out Drawer */}
             <motion.div
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
@@ -215,7 +207,6 @@ const MainLayout = () => {
                   </button>
                 </div>
 
-                {/* Navigation Links */}
                 <nav className="flex flex-col gap-1">
                   {navLinks.map((link, idx) => {
                     const LinkIcon = link.icon;
@@ -240,7 +231,6 @@ const MainLayout = () => {
                 </nav>
               </div>
 
-              {/* Drawer Footer Actions */}
               <div className="pt-6 border-t border-slate-200/50 dark:border-white/5 flex flex-col gap-3">
                 {isAuthenticated ? (
                   <Link to="/dashboard" onClick={() => setMobileMenuOpen(false)} className="w-full">
@@ -268,10 +258,8 @@ const MainLayout = () => {
         )}
       </AnimatePresence>
 
-      {/* Spacer for Fixed Header */}
       <div className="h-20"></div>
 
-      {/* Main Content Layout with Transition Wrapper */}
       <main className="flex-grow">
         <AnimatePresence mode="wait">
           <PageTransition key={location.pathname}>
@@ -280,11 +268,11 @@ const MainLayout = () => {
         </AnimatePresence>
       </main>
 
-      {/* Premium footer */}
       <footer className="glass-panel dark:border-t dark:border-white/5 pt-16 pb-8 px-6 relative overflow-hidden mt-12">
         <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-lightPrimary/30 via-indigo-500/30 to-lightSecondary/30 dark:from-darkPrimary/30 dark:via-indigo-500/30 dark:to-darkSecondary/30"></div>
         
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 lg:grid-cols-12 gap-12 pb-12 border-b border-slate-200 dark:border-white/5 relative z-10">
+
           {/* Branding column */}
           <div className="md:col-span-12 lg:col-span-4 space-y-6">
             <Link to="/" className="flex items-center gap-2 group">
@@ -299,6 +287,7 @@ const MainLayout = () => {
               Revolutionizing clinical workflows, diagnostic speed, and personal wellness monitoring through custom AI engines and secure biometrics streaming.
             </p>
           </div>
+
 
           {/* Quick Links */}
           <div className="md:col-span-4 lg:col-span-2 space-y-4">
@@ -326,6 +315,7 @@ const MainLayout = () => {
               </li>
             </ul>
           </div>
+
 
           {/* Company Links */}
           <div className="md:col-span-4 lg:col-span-2 space-y-4">
@@ -420,23 +410,20 @@ function App() {
           }}
         />
         <Routes>
-          {/* Main Website Pages layout */}
           <Route element={<MainLayout />}>
             <Route path="/" element={<Home />} />
             <Route path="/doctors" element={<DoctorsList />} />
             <Route path="/doctors/:id" element={<DoctorDetails />} />
             <Route path="/book-appointment" element={<TeammatePlaceholder name="Appointment Booking" />} />
             <Route path="/store" element={<TeammatePlaceholder name="Medicine Store" />} />
-            <Route path="/laboratory" element={<TeammatePlaceholder name="Laboratory Portal" />} />
-            <Route path="/emergency" element={<TeammatePlaceholder name="Emergency Contacts" />} />
+            <Route path="/laboratory" element={<LabTests />} />
+            <Route path="/emergency" element={<EmergencyContacts />} />
             <Route path="/blog" element={<TeammatePlaceholder name="Health Blog" />} />
             <Route path="/contact" element={<TeammatePlaceholder name="Contact Operations" />} />
           </Route>
 
-          {/* Dashboard (protected) */}
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
 
-          {/* Auth Pages */}
           <Route element={<AuthLayout />}>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />
