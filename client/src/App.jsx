@@ -18,6 +18,9 @@ import Dashboard from './pages/Dashboard';
 import SplashScreen from './components/splash/SplashScreen';
 import PageTransition from './components/PageTransition';
 import RippleButton from './components/RippleButton';
+import DoctorsList from "./pages/doctors/DoctorsList";
+import DoctorDetails from "./pages/doctors/DoctorDetails";
+import ScrollToTop from "./components/common/ScrollToTop";
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated } = useAuth();
@@ -357,6 +360,7 @@ function App() {
 
   return (
     <BrowserRouter>
+    <ScrollToTop />
       <AuthProvider>
         <Toaster
           position="top-right"
@@ -383,7 +387,8 @@ function App() {
           {/* Main Website Pages layout */}
           <Route element={<MainLayout />}>
             <Route path="/" element={<Home />} />
-            <Route path="/doctors" element={<TeammatePlaceholder name="Doctor Registry" />} />
+            <Route path="/doctors" element={<DoctorsList />} />
+            <Route path="/doctors/:id" element={<DoctorDetails />} />
             <Route path="/book-appointment" element={<TeammatePlaceholder name="Appointment Booking" />} />
             <Route path="/store" element={<TeammatePlaceholder name="Medicine Store" />} />
             <Route path="/laboratory" element={<TeammatePlaceholder name="Laboratory Portal" />} />
