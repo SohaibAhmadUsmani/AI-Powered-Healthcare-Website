@@ -1,4 +1,5 @@
 import LabTest from '../models/LabTest.js';
+import Booking from '../models/Booking.js';
 
 export const getAllTests = async (req, res) => {
   try {
@@ -34,11 +35,27 @@ export const bookTest = async (req, res) => {
       return res.status(404).json({ message: 'Lab test not found' });
     }
 
+    const newBooking = await Booking.create({
+      testId,
+      testName: test.name,
+      patientName,
+      phone,
+      date,
+    });
+
     res.status(201).json({
       message: 'Test booked successfully',
-      booking: { testId, testName: test.name, patientName, phone, date },
+      booking: newBooking,
     });
   } catch (error) {
     res.status(500).json({ message: 'Failed to book test', error: error.message });
+  }
+};
+export const getAllBookings = async (req, res) => {
+  try {
+    const bookings = await Booking.find().sort({ createdAt: -1 });
+    res.status(200).json(bookings);
+  } catch (error) {
+    res.status(500).json({ message: 'Failed to fetch bookings', error: error.message });
   }
 };

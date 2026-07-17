@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 
 const fallbackTests = [
   { id: 1, name: 'Complete Blood Count (CBC)', price: 'Rs. 800' },
@@ -9,10 +9,159 @@ const fallbackTests = [
   { id: 6, name: 'Thyroid Profile (T3, T4, TSH)', price: 'Rs. 1800' },
 ];
 
+const createRipple = (event) => {
+  const button = event.currentTarget;
+  const circle = document.createElement('span');
+  const diameter = Math.max(button.clientWidth, button.clientHeight);
+  const radius = diameter / 2;
+
+  circle.style.width = diameter + 'px';
+  circle.style.height = diameter + 'px';
+  circle.style.left = event.clientX - button.getBoundingClientRect().left - radius + 'px';
+  circle.style.top = event.clientY - button.getBoundingClientRect().top - radius + 'px';
+  circle.style.position = 'absolute';
+  circle.style.borderRadius = '50%';
+  circle.style.background = 'rgba(255, 255, 255, 0.6)';
+  circle.style.pointerEvents = 'none';
+  circle.classList.add('animate-ripple');
+
+  const existingRipple = button.getElementsByClassName('animate-ripple')[0];
+  if (existingRipple) existingRipple.remove();
+
+  button.appendChild(circle);
+  setTimeout(() => circle.remove(), 600);
+};
+
+const RevealCard = ({ children }) => {
+  const ref = useRef(null);
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.15 }
+    );
+    if (ref.current) observer.observe(ref.current);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <div ref={ref} className={visible ? 'animate-fade-in' : 'opacity-0'}>
+      {children}
+    </div>
+  );
+};
+
+const BookingForm = ({ test, onClose }) => {
+  const [patientName, setPatientName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [date, setDate] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const [confirmed, setConfirmed] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (!patientName || !phone || !date) {
+      setErrorMsg('Please fill in all fields.');
+      return;
+    }
+
+    setSubmitting(true);
+    setErrorMsg('');
+
+    fetch('http://localhost:5000/api/lab/book', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        testId: test.id,
+        patientName,
+        phone,
+        date,
+      }),
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error('Booking failed');
+        return res.json();
+      })
+      .then(() => {
+        setConfirmed(true);
+        setSubmitting(false);
+      })
+      .catch(() => {
+        setErrorMsg('Could not book right now. Please try again.');
+        setSubmitting(false);
+      });
+  };
+
+  if (confirmed) {
+    return (
+      <div className="mt-4 p-4 bg-emerald-50 border border-emerald-200 rounded-lg text-emerald-700 text-sm">
+        Test booked successfully for {patientName} on {date}.
+        <button onClick={onClose} className="block mt-2 text-sky-600 underline text-xs">
+          Close
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="mt-4 space-y-3 border-t pt-4">
+      <input
+  type="text"
+  placeholder="Patient Name"
+  value={patientName}
+  onChange={(e) => setPatientName(e.target.value)}
+  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-800"
+/>
+<input
+  type="tel"
+  placeholder="Phone Number"
+  value={phone}
+  onChange={(e) => setPhone(e.target.value)}
+  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-800"
+/>
+<input
+  type="date"
+  value={date}
+  onChange={(e) => setDate(e.target.value)}
+  className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-800"
+/>
+
+      {errorMsg && <p className="text-red-500 text-xs">{errorMsg}</p>}
+
+      <div className="flex gap-2">
+        <button
+          type="submit"
+          disabled={submitting}
+          onClick={createRipple}
+          className="ripple-btn flex-1 bg-sky-600 text-white py-2 rounded-lg hover:bg-sky-700 transition-colors text-sm"
+        >
+          {submitting ? 'Booking...' : 'Confirm Booking'}
+        </button>
+        <button
+          type="button"
+          onClick={onClose}
+          className="px-4 py-2 rounded-lg border border-gray-300 text-gray-600 text-sm hover:bg-gray-50"
+        >
+          Cancel
+        </button>
+      </div>
+    </form>
+  );
+};
+
 const LabTests = () => {
   const [tests, setTests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [activeBookingId, setActiveBookingId] = useState(null);
 
   useEffect(() => {
     fetch('http://localhost:5000/api/lab')
@@ -39,14 +188,10 @@ const LabTests = () => {
   return (
     <section className="max-w-6xl mx-auto px-4 py-12">
       <h2 className="text-3xl font-bold text-sky-600 mb-2">Lab Tests</h2>
-      <p className="text-gray-600 mb-8">
-        Browse available lab tests and book the ones you need.
-      </p>
+      <p className="text-gray-600 mb-8">Browse available lab tests and book the ones you need.</p>
 
       {error && (
-        <p className="text-amber-600 text-sm mb-4">
-          Couldn't reach the live server — showing sample data instead.
-        </p>
+        <p className="text-amber-600 text-sm mb-4">Couldn't reach the live server — showing sample data instead.</p>
       )}
 
       {loading ? (
@@ -54,18 +199,26 @@ const LabTests = () => {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {tests.map((test) => (
-            <div
-              key={test.id}
-              className="bg-white rounded-xl shadow-md p-6 hover:shadow-lg hover:scale-[1.02] transition-all duration-300"
-            >
-              <h3 className="text-lg font-semibold text-gray-800 mb-2">
-                {test.name}
-              </h3>
-              <p className="text-sky-600 font-bold mb-4">{test.price}</p>
-              <button className="w-full bg-sky-600 text-white py-2 rounded-lg hover:bg-sky-700 transition-colors">
-                Book Test
-              </button>
-            </div>
+            <RevealCard key={test.id}>
+              <div className="bg-white rounded-xl shadow-md p-6 hover-card-zoom">
+                <h3 className="text-lg font-semibold text-gray-800 mb-2">{test.name}</h3>
+                <p className="text-sky-600 font-bold mb-4">{test.price}</p>
+
+                {activeBookingId === test.id ? (
+                  <BookingForm test={test} onClose={() => setActiveBookingId(null)} />
+                ) : (
+                  <button
+                    onClick={(e) => {
+                      createRipple(e);
+                      setActiveBookingId(test.id);
+                    }}
+                    className="ripple-btn w-full bg-sky-600 text-white py-2 rounded-lg hover:bg-sky-700 transition-colors"
+                  >
+                    Book Test
+                  </button>
+                )}
+              </div>
+            </RevealCard>
           ))}
         </div>
       )}
