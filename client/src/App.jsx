@@ -14,7 +14,6 @@ import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage";
 import ResetPasswordPage from "./pages/auth/ResetPasswordPage";
 import OAuthCallback from "./pages/auth/OAuthCallback";
 import Home from './pages/Home';
-import Dashboard from './pages/Dashboard';
 import SplashScreen from './components/splash/SplashScreen';
 import PageTransition from './components/PageTransition';
 import RippleButton from './components/RippleButton';
@@ -54,7 +53,7 @@ const MainLayout = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'dark');
-  const { isAuthenticated, logout } = useAuth();
+  const { user, isAuthenticated, logout } = useAuth();
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const location = useLocation();
 
@@ -136,11 +135,12 @@ const MainLayout = () => {
 
             {isAuthenticated ? (
               <div className="flex items-center gap-3">
-                <Link to="/dashboard">
-                  <RippleButton className="px-5 py-2.5 rounded-xl bg-lightPrimary dark:bg-darkPrimary text-white dark:text-darkBg font-bold text-xs shadow-glowLightPrimary dark:shadow-glowPrimary hover:bg-lightPrimary/95 dark:hover:bg-darkPrimary/95 transition-all">
-                    Dashboard
-                  </RippleButton>
-                </Link>
+                <span className="text-xs font-semibold tracking-wide text-slate-700 dark:text-gray-300 px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 flex items-center gap-2 select-none animate-fade-in shadow-sm">
+                  <div className="w-5 h-5 rounded-full bg-lightPrimary/10 dark:bg-darkPrimary/10 text-lightPrimary dark:text-darkPrimary flex items-center justify-center font-bold text-[10px] uppercase font-sans">
+                    {(user?.fullName || "U").charAt(0)}
+                  </div>
+                  <span className="text-slate-800 dark:text-white font-bold font-sans">{user?.fullName || "User"}</span>
+                </span>
                 <RippleButton 
                   onClick={() => setIsLogoutModalOpen(true)}
                   className="px-5 py-2.5 rounded-xl bg-transparent border border-lightPrimary/40 dark:border-darkPrimary/50 text-lightPrimary dark:text-darkPrimary font-bold text-xs hover:bg-lightPrimary/5 dark:hover:bg-darkPrimary/10 transition-all cursor-pointer"
@@ -242,12 +242,13 @@ const MainLayout = () => {
 
               <div className="pt-6 border-t border-slate-200/50 dark:border-white/5 flex flex-col gap-3">
                 {isAuthenticated ? (
-                  <div className="flex flex-col gap-3 w-full">
-                    <Link to="/dashboard" onClick={() => setMobileMenuOpen(false)} className="w-full">
-                      <RippleButton className="w-full py-3.5 rounded-xl bg-lightPrimary dark:bg-darkPrimary text-white dark:text-darkBg font-bold text-xs shadow-glowLightPrimary dark:shadow-glowPrimary hover:bg-lightPrimary/95 dark:hover:bg-darkPrimary/95 transition-all">
-                        Dashboard
-                      </RippleButton>
-                    </Link>
+                  <div className="flex flex-col gap-3 w-full animate-fade-in">
+                    <div className="w-full py-2.5 px-4 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-xs font-semibold tracking-wide text-slate-700 dark:text-gray-300 select-none flex items-center justify-center gap-2 animate-fade-in">
+                      <div className="w-5 h-5 rounded-full bg-lightPrimary/10 dark:bg-darkPrimary/10 text-lightPrimary dark:text-darkPrimary flex items-center justify-center font-bold text-[10px] uppercase font-sans">
+                        {(user?.fullName || "U").charAt(0)}
+                      </div>
+                      <span className="text-slate-800 dark:text-white font-bold font-sans">{user?.fullName || "User"}</span>
+                    </div>
                     <RippleButton 
                       onClick={() => {
                         setMobileMenuOpen(false);
@@ -483,8 +484,6 @@ function App() {
             <Route path="/blog" element={<TeammatePlaceholder name="Health Blog" />} />
             <Route path="/contact" element={<TeammatePlaceholder name="Contact Operations" />} />
           </Route>
-
-          <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
 
           <Route element={<AuthLayout />}>
             <Route path="/login" element={<LoginPage />} />

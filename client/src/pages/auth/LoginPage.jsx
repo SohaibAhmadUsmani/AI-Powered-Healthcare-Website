@@ -33,7 +33,7 @@ const LoginPage = () => {
   const onSubmit = async (data) => {
     const result = await login(data.email, data.password, data.rememberMe);
     if (result.success) {
-      navigate("/dashboard", { replace: true });
+      navigate("/", { replace: true });
     } else {
       setError("root", { message: result.message });
     }
