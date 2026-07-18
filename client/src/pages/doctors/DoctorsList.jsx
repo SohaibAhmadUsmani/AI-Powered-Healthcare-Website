@@ -25,7 +25,7 @@ function DoctorsList() {
             Find Your Specialist
           </span>
 
-          <h1 className="text-5xl md:text-6xl font-bold text-white mt-8">
+          <h1 className="font-sora text-5xl md:text-6xl font-bold text-white mt-8">
             Our{" "}
             <span className="bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent">
               Doctors

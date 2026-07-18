@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
+import RippleButton from '../components/RippleButton';
 
 const fallbackContacts = [
   { id: 1, title: 'Ambulance', number: '1122' },
@@ -6,29 +7,6 @@ const fallbackContacts = [
   { id: 3, title: 'Nearby Hospitals', number: '051-9876543' },
   { id: 4, title: 'Police', number: '15' },
 ];
-
-const createRipple = (event) => {
-  const button = event.currentTarget;
-  const circle = document.createElement('span');
-  const diameter = Math.max(button.clientWidth, button.clientHeight);
-  const radius = diameter / 2;
-
-  circle.style.width = diameter + 'px';
-  circle.style.height = diameter + 'px';
-  circle.style.left = event.clientX - button.getBoundingClientRect().left - radius + 'px';
-  circle.style.top = event.clientY - button.getBoundingClientRect().top - radius + 'px';
-  circle.style.position = 'absolute';
-  circle.style.borderRadius = '50%';
-  circle.style.background = 'rgba(255, 255, 255, 0.6)';
-  circle.style.pointerEvents = 'none';
-  circle.classList.add('animate-ripple');
-
-  const existingRipple = button.getElementsByClassName('animate-ripple')[0];
-  if (existingRipple) existingRipple.remove();
-
-  button.appendChild(circle);
-  setTimeout(() => circle.remove(), 600);
-};
 
 const RevealCard = ({ children }) => {
   const ref = useRef(null);
@@ -102,8 +80,10 @@ const EmergencyContacts = () => {
                   <h3 className="text-lg font-semibold text-gray-800">{contact.title}</h3>
                   <p className="text-gray-500">{contact.number}</p>
                 </div>
-                <a href={'tel:' + contact.number} onClick={createRipple} className="ripple-btn bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors">
-                  Call
+                <a href={'tel:' + contact.number}>
+                  <RippleButton className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors">
+                    Call
+                  </RippleButton>
                 </a>
               </div>
             </RevealCard>

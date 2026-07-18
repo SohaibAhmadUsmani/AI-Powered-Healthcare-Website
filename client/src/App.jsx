@@ -54,7 +54,8 @@ const MainLayout = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'dark');
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, logout } = useAuth();
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
@@ -134,11 +135,19 @@ const MainLayout = () => {
             </button>
 
             {isAuthenticated ? (
-              <Link to="/dashboard">
-                <RippleButton className="px-5 py-2.5 rounded-xl bg-lightPrimary dark:bg-darkPrimary text-white dark:text-darkBg font-bold text-xs shadow-glowLightPrimary dark:shadow-glowPrimary hover:bg-lightPrimary/95 dark:hover:bg-darkPrimary/95 transition-all">
-                  Dashboard
+              <div className="flex items-center gap-3">
+                <Link to="/dashboard">
+                  <RippleButton className="px-5 py-2.5 rounded-xl bg-lightPrimary dark:bg-darkPrimary text-white dark:text-darkBg font-bold text-xs shadow-glowLightPrimary dark:shadow-glowPrimary hover:bg-lightPrimary/95 dark:hover:bg-darkPrimary/95 transition-all">
+                    Dashboard
+                  </RippleButton>
+                </Link>
+                <RippleButton 
+                  onClick={() => setIsLogoutModalOpen(true)}
+                  className="px-5 py-2.5 rounded-xl bg-transparent border border-lightPrimary/40 dark:border-darkPrimary/50 text-lightPrimary dark:text-darkPrimary font-bold text-xs hover:bg-lightPrimary/5 dark:hover:bg-darkPrimary/10 transition-all cursor-pointer"
+                >
+                  Sign Out
                 </RippleButton>
-              </Link>
+              </div>
             ) : (
               <>
                 <Link to="/login">
@@ -233,11 +242,22 @@ const MainLayout = () => {
 
               <div className="pt-6 border-t border-slate-200/50 dark:border-white/5 flex flex-col gap-3">
                 {isAuthenticated ? (
-                  <Link to="/dashboard" onClick={() => setMobileMenuOpen(false)} className="w-full">
-                    <RippleButton className="w-full py-3.5 rounded-xl bg-lightPrimary dark:bg-darkPrimary text-white dark:text-darkBg font-bold text-xs shadow-glowLightPrimary dark:shadow-glowPrimary hover:bg-lightPrimary/95 dark:hover:bg-darkPrimary/95 transition-all">
-                      Dashboard
+                  <div className="flex flex-col gap-3 w-full">
+                    <Link to="/dashboard" onClick={() => setMobileMenuOpen(false)} className="w-full">
+                      <RippleButton className="w-full py-3.5 rounded-xl bg-lightPrimary dark:bg-darkPrimary text-white dark:text-darkBg font-bold text-xs shadow-glowLightPrimary dark:shadow-glowPrimary hover:bg-lightPrimary/95 dark:hover:bg-darkPrimary/95 transition-all">
+                        Dashboard
+                      </RippleButton>
+                    </Link>
+                    <RippleButton 
+                      onClick={() => {
+                        setMobileMenuOpen(false);
+                        setIsLogoutModalOpen(true);
+                      }}
+                      className="w-full py-3 rounded-xl bg-transparent border border-lightPrimary/40 dark:border-darkPrimary/50 text-lightPrimary dark:text-darkPrimary font-bold text-xs hover:bg-lightPrimary/5 dark:hover:bg-darkPrimary/10 transition-all cursor-pointer"
+                    >
+                      Sign Out
                     </RippleButton>
-                  </Link>
+                  </div>
                 ) : (
                   <>
                     <Link to="/login" onClick={() => setMobileMenuOpen(false)} className="w-full">
@@ -366,6 +386,48 @@ const MainLayout = () => {
           </div>
         </div>
       </footer>
+
+      <AnimatePresence>
+        {isLogoutModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="glass-panel w-full max-w-md p-8 rounded-2xl border border-slate-200/60 dark:border-white/5 shadow-2xl relative overflow-hidden text-center"
+            >
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-500 to-amber-500"></div>
+              
+              <h3 className="font-sora text-2xl font-bold text-slate-900 dark:text-white mb-3">
+                Sign Out
+              </h3>
+              
+              <p className="text-slate-600 dark:text-gray-400 text-sm mb-8">
+                Are you sure you want to log out of your session?
+              </p>
+              
+              <div className="flex gap-4 justify-center">
+                <RippleButton 
+                  onClick={() => setIsLogoutModalOpen(false)}
+                  className="px-6 py-3 rounded-xl bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-800 dark:text-white font-bold text-xs border border-slate-200 dark:border-white/10 transition-all"
+                >
+                  Cancel
+                </RippleButton>
+                <RippleButton 
+                  onClick={() => {
+                    logout();
+                    setIsLogoutModalOpen(false);
+                    window.location.href = "/";
+                  }}
+                  className="px-6 py-3 rounded-xl bg-red-500 text-white font-bold text-xs shadow-lg shadow-red-500/20 hover:bg-red-600 transition-all"
+                >
+                  Yes, Sign Out
+                </RippleButton>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
@@ -412,11 +474,11 @@ function App() {
         <Routes>
           <Route element={<MainLayout />}>
             <Route path="/" element={<Home />} />
-            <Route path="/doctors" element={<DoctorsList />} />
-            <Route path="/doctors/:id" element={<DoctorDetails />} />
-            <Route path="/book-appointment" element={<TeammatePlaceholder name="Appointment Booking" />} />
-            <Route path="/store" element={<TeammatePlaceholder name="Medicine Store" />} />
-            <Route path="/laboratory" element={<LabTests />} />
+            <Route path="/doctors" element={<ProtectedRoute><DoctorsList /></ProtectedRoute>} />
+            <Route path="/doctors/:id" element={<ProtectedRoute><DoctorDetails /></ProtectedRoute>} />
+            <Route path="/book-appointment" element={<ProtectedRoute><TeammatePlaceholder name="Appointment Booking" /></ProtectedRoute>} />
+            <Route path="/store" element={<ProtectedRoute><TeammatePlaceholder name="Medicine Store" /></ProtectedRoute>} />
+            <Route path="/laboratory" element={<ProtectedRoute><LabTests /></ProtectedRoute>} />
             <Route path="/emergency" element={<EmergencyContacts />} />
             <Route path="/blog" element={<TeammatePlaceholder name="Health Blog" />} />
             <Route path="/contact" element={<TeammatePlaceholder name="Contact Operations" />} />
