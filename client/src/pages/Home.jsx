@@ -5,10 +5,12 @@ import FeaturedDoctors from './HomeSections/FeaturedDoctors';
 import Testimonials from './HomeSections/Testimonials';
 import HealthStats from './HomeSections/HealthStats';
 import CTA from './HomeSections/CTA';
+import FloatingBackground from '../components/common/FloatingBackground';
 
 const Home = () => {
   return (
-    <div className="space-y-12">
+    <div className="relative space-y-12 overflow-hidden">
+      <FloatingBackground />
       <Hero />
       <Services />
       <FeaturedDoctors />
@@ -20,3 +22,4 @@ const Home = () => {
 };
 
 export default Home;
+

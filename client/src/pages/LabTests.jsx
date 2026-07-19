@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
+import RippleButton from '../components/RippleButton';
 
 const fallbackTests = [
   { id: 1, name: 'Complete Blood Count (CBC)', price: 'Rs. 800' },
@@ -8,29 +9,6 @@ const fallbackTests = [
   { id: 5, name: 'Lipid Profile', price: 'Rs. 1200' },
   { id: 6, name: 'Thyroid Profile (T3, T4, TSH)', price: 'Rs. 1800' },
 ];
-
-const createRipple = (event) => {
-  const button = event.currentTarget;
-  const circle = document.createElement('span');
-  const diameter = Math.max(button.clientWidth, button.clientHeight);
-  const radius = diameter / 2;
-
-  circle.style.width = diameter + 'px';
-  circle.style.height = diameter + 'px';
-  circle.style.left = event.clientX - button.getBoundingClientRect().left - radius + 'px';
-  circle.style.top = event.clientY - button.getBoundingClientRect().top - radius + 'px';
-  circle.style.position = 'absolute';
-  circle.style.borderRadius = '50%';
-  circle.style.background = 'rgba(255, 255, 255, 0.6)';
-  circle.style.pointerEvents = 'none';
-  circle.classList.add('animate-ripple');
-
-  const existingRipple = button.getElementsByClassName('animate-ripple')[0];
-  if (existingRipple) existingRipple.remove();
-
-  button.appendChild(circle);
-  setTimeout(() => circle.remove(), 600);
-};
 
 const RevealCard = ({ children }) => {
   const ref = useRef(null);
@@ -137,21 +115,20 @@ const BookingForm = ({ test, onClose }) => {
       {errorMsg && <p className="text-red-500 text-xs">{errorMsg}</p>}
 
       <div className="flex gap-2">
-        <button
+        <RippleButton
           type="submit"
           disabled={submitting}
-          onClick={createRipple}
-          className="ripple-btn flex-1 bg-sky-600 text-white py-2 rounded-lg hover:bg-sky-700 transition-colors text-sm"
+          className="flex-1 bg-sky-600 text-white py-2 rounded-lg hover:bg-sky-700 transition-colors text-sm"
         >
           {submitting ? 'Booking...' : 'Confirm Booking'}
-        </button>
-        <button
+        </RippleButton>
+        <RippleButton
           type="button"
           onClick={onClose}
           className="px-4 py-2 rounded-lg border border-gray-300 text-gray-600 text-sm hover:bg-gray-50"
         >
           Cancel
-        </button>
+        </RippleButton>
       </div>
     </form>
   );
@@ -207,15 +184,14 @@ const LabTests = () => {
                 {activeBookingId === test.id ? (
                   <BookingForm test={test} onClose={() => setActiveBookingId(null)} />
                 ) : (
-                  <button
-                    onClick={(e) => {
-                      createRipple(e);
+                  <RippleButton
+                    onClick={() => {
                       setActiveBookingId(test.id);
                     }}
-                    className="ripple-btn w-full bg-sky-600 text-white py-2 rounded-lg hover:bg-sky-700 transition-colors"
+                    className="w-full bg-sky-600 text-white py-2 rounded-lg hover:bg-sky-700 transition-colors"
                   >
                     Book Test
-                  </button>
+                  </RippleButton>
                 )}
               </div>
             </RevealCard>

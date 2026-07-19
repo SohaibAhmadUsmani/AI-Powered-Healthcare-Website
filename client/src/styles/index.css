@@ -82,3 +82,12 @@ html, body {
   background: rgba(6, 182, 212, 0.4); /* Cyan darkPrimary glow hover */
 }
 
+/* GPU Hardware Acceleration helper */
+.gpu-accelerated {
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+  will-change: transform, opacity;
+}
+
+

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Link, Navigate, Outlet, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Toaster } from "react-hot-toast";
@@ -8,22 +8,23 @@ import {
 } from 'lucide-react';
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import AuthLayout from "./layouts/AuthLayout";
-import LoginPage from "./pages/auth/LoginPage";
-import SignupPage from "./pages/auth/SignupPage";
-import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage";
-import ResetPasswordPage from "./pages/auth/ResetPasswordPage";
 import OAuthCallback from "./pages/auth/OAuthCallback";
 import Home from './pages/Home';
-import Dashboard from './pages/Dashboard';
 import SplashScreen from './components/splash/SplashScreen';
 import PageTransition from './components/PageTransition';
 import RippleButton from './components/RippleButton';
-import LabTests from './pages/LabTests';
-import EmergencyContacts from './pages/EmergencyContacts';
-import DoctorsList from "./pages/doctors/DoctorsList";
-import DoctorDetails from "./pages/doctors/DoctorDetails";
 import ScrollToTop from "./components/common/ScrollToTop";
-import Appointment from "./pages/Appointment";
+
+// Lazy load non-homepage routes for bundle size optimization and faster loading
+const LoginPage = lazy(() => import("./pages/auth/LoginPage"));
+const SignupPage = lazy(() => import("./pages/auth/SignupPage"));
+const ForgotPasswordPage = lazy(() => import("./pages/auth/ForgotPasswordPage"));
+const ResetPasswordPage = lazy(() => import("./pages/auth/ResetPasswordPage"));
+const LabTests = lazy(() => import("./pages/LabTests"));
+const EmergencyContacts = lazy(() => import("./pages/EmergencyContacts"));
+const DoctorsList = lazy(() => import("./pages/doctors/DoctorsList"));
+const DoctorDetails = lazy(() => import("./pages/doctors/DoctorDetails"));
+const Appointment = lazy(() => import("./pages/appointment"));
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated } = useAuth();
@@ -55,7 +56,8 @@ const MainLayout = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'dark');
-  const { isAuthenticated } = useAuth();
+  const { user, isAuthenticated, logout } = useAuth();
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const location = useLocation();
 
   useEffect(() => {
@@ -135,11 +137,20 @@ const MainLayout = () => {
             </button>
 
             {isAuthenticated ? (
-              <Link to="/dashboard">
-                <RippleButton className="px-5 py-2.5 rounded-xl bg-lightPrimary dark:bg-darkPrimary text-white dark:text-darkBg font-bold text-xs shadow-glowLightPrimary dark:shadow-glowPrimary hover:bg-lightPrimary/95 dark:hover:bg-darkPrimary/95 transition-all">
-                  Dashboard
+              <div className="flex items-center gap-3">
+                <span className="text-xs font-semibold tracking-wide text-slate-700 dark:text-gray-300 px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 flex items-center gap-2 select-none animate-fade-in shadow-sm">
+                  <div className="w-5 h-5 rounded-full bg-lightPrimary/10 dark:bg-darkPrimary/10 text-lightPrimary dark:text-darkPrimary flex items-center justify-center font-bold text-[10px] uppercase font-sans">
+                    {(user?.fullName || "U").charAt(0)}
+                  </div>
+                  <span className="text-slate-800 dark:text-white font-bold font-sans">{user?.fullName || "User"}</span>
+                </span>
+                <RippleButton 
+                  onClick={() => setIsLogoutModalOpen(true)}
+                  className="px-5 py-2.5 rounded-xl bg-transparent border border-lightPrimary/40 dark:border-darkPrimary/50 text-lightPrimary dark:text-darkPrimary font-bold text-xs hover:bg-lightPrimary/5 dark:hover:bg-darkPrimary/10 transition-all cursor-pointer"
+                >
+                  Sign Out
                 </RippleButton>
-              </Link>
+              </div>
             ) : (
               <>
                 <Link to="/login">
@@ -234,11 +245,23 @@ const MainLayout = () => {
 
               <div className="pt-6 border-t border-slate-200/50 dark:border-white/5 flex flex-col gap-3">
                 {isAuthenticated ? (
-                  <Link to="/dashboard" onClick={() => setMobileMenuOpen(false)} className="w-full">
-                    <RippleButton className="w-full py-3.5 rounded-xl bg-lightPrimary dark:bg-darkPrimary text-white dark:text-darkBg font-bold text-xs shadow-glowLightPrimary dark:shadow-glowPrimary hover:bg-lightPrimary/95 dark:hover:bg-darkPrimary/95 transition-all">
-                      Dashboard
+                  <div className="flex flex-col gap-3 w-full animate-fade-in">
+                    <div className="w-full py-2.5 px-4 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-xs font-semibold tracking-wide text-slate-700 dark:text-gray-300 select-none flex items-center justify-center gap-2 animate-fade-in">
+                      <div className="w-5 h-5 rounded-full bg-lightPrimary/10 dark:bg-darkPrimary/10 text-lightPrimary dark:text-darkPrimary flex items-center justify-center font-bold text-[10px] uppercase font-sans">
+                        {(user?.fullName || "U").charAt(0)}
+                      </div>
+                      <span className="text-slate-800 dark:text-white font-bold font-sans">{user?.fullName || "User"}</span>
+                    </div>
+                    <RippleButton 
+                      onClick={() => {
+                        setMobileMenuOpen(false);
+                        setIsLogoutModalOpen(true);
+                      }}
+                      className="w-full py-3 rounded-xl bg-transparent border border-lightPrimary/40 dark:border-darkPrimary/50 text-lightPrimary dark:text-darkPrimary font-bold text-xs hover:bg-lightPrimary/5 dark:hover:bg-darkPrimary/10 transition-all cursor-pointer"
+                    >
+                      Sign Out
                     </RippleButton>
-                  </Link>
+                  </div>
                 ) : (
                   <>
                     <Link to="/login" onClick={() => setMobileMenuOpen(false)} className="w-full">
@@ -264,7 +287,16 @@ const MainLayout = () => {
       <main className="flex-grow">
         <AnimatePresence mode="wait">
           <PageTransition key={location.pathname}>
-            <Outlet />
+            <Suspense fallback={
+              <div className="min-h-[50vh] flex flex-col items-center justify-center gap-4 relative z-10">
+                <div className="p-3 rounded-xl bg-lightPrimary/10 dark:bg-darkPrimary/10 border border-lightPrimary/30 dark:border-darkPrimary/30 animate-pulse">
+                  <Activity className="w-8 h-8 text-lightPrimary dark:text-darkPrimary animate-spin" />
+                </div>
+                <span className="font-mono text-xs font-bold text-slate-400 dark:text-slate-500 tracking-widest uppercase">Loading Portal...</span>
+              </div>
+            }>
+              <Outlet />
+            </Suspense>
           </PageTransition>
         </AnimatePresence>
       </main>
@@ -367,6 +399,48 @@ const MainLayout = () => {
           </div>
         </div>
       </footer>
+
+      <AnimatePresence>
+        {isLogoutModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm">
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="glass-panel w-full max-w-md p-8 rounded-2xl border border-slate-200/60 dark:border-white/5 shadow-2xl relative overflow-hidden text-center"
+            >
+              <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-red-500 to-amber-500"></div>
+              
+              <h3 className="font-sora text-2xl font-bold text-slate-900 dark:text-white mb-3">
+                Sign Out
+              </h3>
+              
+              <p className="text-slate-600 dark:text-gray-400 text-sm mb-8">
+                Are you sure you want to log out of your session?
+              </p>
+              
+              <div className="flex gap-4 justify-center">
+                <RippleButton 
+                  onClick={() => setIsLogoutModalOpen(false)}
+                  className="px-6 py-3 rounded-xl bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-800 dark:text-white font-bold text-xs border border-slate-200 dark:border-white/10 transition-all"
+                >
+                  Cancel
+                </RippleButton>
+                <RippleButton 
+                  onClick={() => {
+                    logout();
+                    setIsLogoutModalOpen(false);
+                    window.location.href = "/";
+                  }}
+                  className="px-6 py-3 rounded-xl bg-red-500 text-white font-bold text-xs shadow-lg shadow-red-500/20 hover:bg-red-600 transition-all"
+                >
+                  Yes, Sign Out
+                </RippleButton>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
@@ -413,17 +487,15 @@ function App() {
         <Routes>
           <Route element={<MainLayout />}>
             <Route path="/" element={<Home />} />
-            <Route path="/doctors" element={<DoctorsList />} />
-            <Route path="/doctors/:id" element={<DoctorDetails />} />
-            <Route path="/book-appointment" element={<Appointment />} />
-            <Route path="/store" element={<TeammatePlaceholder name="Medicine Store" />} />
-            <Route path="/laboratory" element={<LabTests />} />
+            <Route path="/doctors" element={<ProtectedRoute><DoctorsList /></ProtectedRoute>} />
+            <Route path="/doctors/:id" element={<ProtectedRoute><DoctorDetails /></ProtectedRoute>} />
+            <Route path="/book-appointment" element={<ProtectedRoute><Appointment /></ProtectedRoute>} />
+            <Route path="/store" element={<ProtectedRoute><TeammatePlaceholder name="Medicine Store" /></ProtectedRoute>} />
+            <Route path="/laboratory" element={<ProtectedRoute><LabTests /></ProtectedRoute>} />
             <Route path="/emergency" element={<EmergencyContacts />} />
             <Route path="/blog" element={<TeammatePlaceholder name="Health Blog" />} />
             <Route path="/contact" element={<TeammatePlaceholder name="Contact Operations" />} />
           </Route>
-
-          <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
 
           <Route element={<AuthLayout />}>
             <Route path="/login" element={<LoginPage />} />
