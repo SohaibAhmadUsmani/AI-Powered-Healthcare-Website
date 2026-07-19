@@ -1,5 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import doctors from "../../assets/data/doctors";
+import RippleButton from "../../components/RippleButton";
 
 function DoctorDetails() {
   const { id } = useParams();
@@ -12,7 +13,7 @@ function DoctorDetails() {
   if (!correctDoctor) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#0B0F19] text-white">
-        <h1 className="text-3xl font-bold">Doctor not found.</h1>
+        <h1 className="font-sora text-3xl font-bold">Doctor not found.</h1>
       </div>
     );
   }
@@ -24,12 +25,12 @@ function DoctorDetails() {
 
         {/* Back Button */}
 
-        <button
+        <RippleButton
           onClick={() => navigate("/doctors")}
           className="mb-6 px-5 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 transition"
         >
           ← Back
-        </button>
+        </RippleButton>
 
         {/* Top Section */}
 
@@ -51,7 +52,7 @@ function DoctorDetails() {
 
           <div className="md:col-span-2 flex flex-col justify-center space-y-4">
 
-            <h1 className="text-4xl font-bold">
+            <h1 className="font-sora text-4xl font-bold">
               {correctDoctor.name}
             </h1>
 
@@ -71,11 +72,11 @@ function DoctorDetails() {
               {correctDoctor.hospital}
             </p>
 
-            <button
+            <RippleButton
               className="w-fit mt-4 px-6 py-3 rounded-xl bg-cyan-500 hover:bg-cyan-600 font-semibold transition"
             >
               Book Appointment
-            </button>
+            </RippleButton>
 
           </div>
 
@@ -85,7 +86,7 @@ function DoctorDetails() {
 
         <div className="bg-gray-900 rounded-3xl mt-8 p-8">
 
-          <h2 className="text-3xl font-bold mb-6">
+          <h2 className="font-sora text-3xl font-bold mb-6">
             About Doctor
           </h2>
 
@@ -123,7 +124,7 @@ function DoctorDetails() {
 
         <div className="bg-gray-900 rounded-3xl mt-8 p-8">
 
-          <h2 className="text-3xl font-bold mb-6">
+          <h2 className="font-sora text-3xl font-bold mb-6">
             Professional Information
           </h2>
 
@@ -171,7 +172,7 @@ function DoctorDetails() {
 
         <div className="bg-gray-900 rounded-3xl mt-8 p-8">
 
-          <h2 className="text-3xl font-bold mb-6">
+          <h2 className="font-sora text-3xl font-bold mb-6">
             Availability
           </h2>
 

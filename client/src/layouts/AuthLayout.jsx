@@ -1,6 +1,6 @@
+import { Suspense, useMemo } from "react";
 import { Outlet, Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
-import { useMemo } from "react";
 import neuroCareLogo from "../assets/logo (2).png";
 import loginBg from "../assets/sigin.jpg";
 import signupBg from "../assets/sign up.jpg";
@@ -182,7 +182,14 @@ const AuthLayout = () => {
           transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
           style={{ width: "100%", maxWidth: "440px" }}
         >
-          <Outlet />
+          <Suspense fallback={
+            <div className="flex flex-col items-center justify-center p-8 gap-3">
+              <div className="w-6 h-6 border-2 border-lightPrimary dark:border-darkPrimary border-t-transparent rounded-full animate-spin"></div>
+              <span className="font-mono text-[10px] uppercase text-slate-500 tracking-wider">Loading Form...</span>
+            </div>
+          }>
+            <Outlet />
+          </Suspense>
         </motion.div>
       </main>
 
