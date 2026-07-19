@@ -23,6 +23,7 @@ import EmergencyContacts from './pages/EmergencyContacts';
 import DoctorsList from "./pages/doctors/DoctorsList";
 import DoctorDetails from "./pages/doctors/DoctorDetails";
 import ScrollToTop from "./components/common/ScrollToTop";
+import Appointment from "./pages/Appointment";
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated } = useAuth();
@@ -414,7 +415,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/doctors" element={<DoctorsList />} />
             <Route path="/doctors/:id" element={<DoctorDetails />} />
-            <Route path="/book-appointment" element={<TeammatePlaceholder name="Appointment Booking" />} />
+            <Route path="/book-appointment" element={<Appointment />} />
             <Route path="/store" element={<TeammatePlaceholder name="Medicine Store" />} />
             <Route path="/laboratory" element={<LabTests />} />
             <Route path="/emergency" element={<EmergencyContacts />} />
