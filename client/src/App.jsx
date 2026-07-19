@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Link, Navigate, Outlet, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Toaster } from "react-hot-toast";
@@ -8,20 +8,22 @@ import {
 } from 'lucide-react';
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import AuthLayout from "./layouts/AuthLayout";
-import LoginPage from "./pages/auth/LoginPage";
-import SignupPage from "./pages/auth/SignupPage";
-import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage";
-import ResetPasswordPage from "./pages/auth/ResetPasswordPage";
 import OAuthCallback from "./pages/auth/OAuthCallback";
 import Home from './pages/Home';
 import SplashScreen from './components/splash/SplashScreen';
 import PageTransition from './components/PageTransition';
 import RippleButton from './components/RippleButton';
-import LabTests from './pages/LabTests';
-import EmergencyContacts from './pages/EmergencyContacts';
-import DoctorsList from "./pages/doctors/DoctorsList";
-import DoctorDetails from "./pages/doctors/DoctorDetails";
 import ScrollToTop from "./components/common/ScrollToTop";
+
+// Lazy load non-homepage routes for bundle size optimization and faster loading
+const LoginPage = lazy(() => import("./pages/auth/LoginPage"));
+const SignupPage = lazy(() => import("./pages/auth/SignupPage"));
+const ForgotPasswordPage = lazy(() => import("./pages/auth/ForgotPasswordPage"));
+const ResetPasswordPage = lazy(() => import("./pages/auth/ResetPasswordPage"));
+const LabTests = lazy(() => import("./pages/LabTests"));
+const EmergencyContacts = lazy(() => import("./pages/EmergencyContacts"));
+const DoctorsList = lazy(() => import("./pages/doctors/DoctorsList"));
+const DoctorDetails = lazy(() => import("./pages/doctors/DoctorDetails"));
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated } = useAuth();
@@ -284,7 +286,16 @@ const MainLayout = () => {
       <main className="flex-grow">
         <AnimatePresence mode="wait">
           <PageTransition key={location.pathname}>
-            <Outlet />
+            <Suspense fallback={
+              <div className="min-h-[50vh] flex flex-col items-center justify-center gap-4 relative z-10">
+                <div className="p-3 rounded-xl bg-lightPrimary/10 dark:bg-darkPrimary/10 border border-lightPrimary/30 dark:border-darkPrimary/30 animate-pulse">
+                  <Activity className="w-8 h-8 text-lightPrimary dark:text-darkPrimary animate-spin" />
+                </div>
+                <span className="font-mono text-xs font-bold text-slate-400 dark:text-slate-500 tracking-widest uppercase">Loading Portal...</span>
+              </div>
+            }>
+              <Outlet />
+            </Suspense>
           </PageTransition>
         </AnimatePresence>
       </main>
