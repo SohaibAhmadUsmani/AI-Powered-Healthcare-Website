@@ -1,29 +1,29 @@
 import { useNavigate } from "react-router-dom";
-import {motion} from "framer-motion"
+import { motion } from "framer-motion"
+import { fadeUp, buttonHover, cardHover } from "../../animations/variants"
 
-function DoctorCard({ doctor , index}) {
+function DoctorCard({ doctor }) {
   const navigate = useNavigate();
 
   return (
-    <motion.div 
-    initial={
-      {opacity: 0 , y: 40  }
-    }
-    animate={
-      {opacity: 1 , y:0}
-    }
-    transition={{
-      duration: 0.4, delay: index * 0.08
-    }}
-    exit={{opacity:0, y : -20, 
-      transition: {
-        duration: 0.2
-      }
-     }}
-    
-    className="w-full max-w-[360px] glass-panel glass-card-glow rounded-2xl p-5 border border-slate-200 dark:border-white/5 shadow-premiumLight dark:shadow-2xl transition-all duration-300 hover:scale-[1.02] hover:shadow-premiumLightHover dark:hover:shadow-glowPrimary">
+    <motion.div
+      variants={fadeUp}
+      initial="hidden"
+      animate="visible"
+      exit={{
+        opacity: 0, y: -20,
+        transition: {
+          duration: 0.2
+        }
+      }}
+      whileHover={cardHover}
 
-      <img
+      className="w-full max-w-[360px] glass-panel glass-card-glow rounded-2xl p-5 border border-slate-200 dark:border-white/5 shadow-premiumLight dark:shadow-2xl transition-all duration-300  hover:shadow-premiumLightHover dark:hover:shadow-glowPrimary">
+
+      <motion.img
+        whileHover={{
+          scale: 1.08,
+        }}
         src={doctor.image}
         alt={doctor.name}
         className="w-full h-56 object-contain rounded-xl bg-lightAccent dark:bg-white"
@@ -55,12 +55,13 @@ function DoctorCard({ doctor , index}) {
         </span>
       </div>
 
-      <button
+      <motion.button
+        whileHover={buttonHover}
         onClick={() => navigate(`/doctors/${doctor.id}`)}
         className="w-full mt-6 py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-lightPrimary to-lightSecondary dark:from-darkPrimary dark:to-darkSecondary hover:opacity-90 transition-all duration-300 shadow-glowLightPrimary dark:shadow-glowPrimary"
       >
         View Details
-      </button>
+      </motion.button>
 
     </motion.div>
   );

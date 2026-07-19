@@ -2,7 +2,8 @@ import { useState } from "react";
 import SearchBar from "../../components/doctors/SearchBar";
 import doctors from "../../assets/data/doctors";
 import DoctorCard from "../../components/doctors/DoctorCard";
-import {motion , AnimatePresence  } from "framer-motion"
+import { motion, AnimatePresence } from "framer-motion";
+import {staggerContainer} from "../../animations/variants"
 
 function DoctorsList() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -171,16 +172,19 @@ function DoctorsList() {
         {/* Doctors */}
 
         {filteredDoctors.length > 0 ? (
-          <div className="grid gap-10 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 justify-items-center">
-           <AnimatePresence mode="wait">
-            {filteredDoctors.map((doctor , index) => (
-              <DoctorCard 
-                index={index}
-                key={doctor.id}
-                doctor={doctor}
-              />
-            ))} </AnimatePresence>
-          </div>
+          <AnimatePresence mode="wait">
+            <motion.div
+              variants={staggerContainer}
+              initial="hidden"
+              animate="visible"
+              className="grid gap-10 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 justify-items-center">
+              {filteredDoctors.map((doctor) => (
+                <DoctorCard
+                  key={doctor.id}
+                  doctor={doctor}
+                />
+              ))}
+            </motion.div></AnimatePresence>
         ) : (
           <div className="glass-panel rounded-3xl p-12 text-center max-w-2xl mx-auto border border-slate-200 dark:border-white/5 shadow-premiumLight dark:shadow-2xl transition-all duration-300">
 

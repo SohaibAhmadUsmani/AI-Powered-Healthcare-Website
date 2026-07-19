@@ -1,5 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import doctors from "../../assets/data/doctors";
+import { motion } from "framer-motion"
+import { fadeUp , buttonHover } from "../../animations/variants"
 
 function DoctorDetails() {
   const { id } = useParams();
@@ -18,17 +20,23 @@ function DoctorDetails() {
   }
 
   return (
-    <div className="min-h-screen bg-lightBg dark:bg-darkBg text-slate-900 dark:text-white py-10 px-6 transition-colors duration-300">
+    <motion.div
+      variants={fadeUp}
+      initial="hidden"
+      animate="visible"
+      className="min-h-screen bg-lightBg dark:bg-darkBg text-slate-900 dark:text-white py-10 px-6 transition-colors duration-300">
+
       <div className="max-w-6xl mx-auto">
 
         {/* Back Button */}
 
-        <button
+        <motion.button
+          whileHover={buttonHover}
           onClick={() => navigate("/doctors")}
           className="mb-6 px-5 py-2 rounded-lg bg-lightAccent dark:bg-darkAccent border border-slate-200 dark:border-gray-700 hover:bg-slate-100 dark:hover:bg-gray-800 transition-all duration-300"
         >
           ← Back
-        </button>
+        </motion.button>
 
         {/* Top Section */}
 
@@ -70,11 +78,13 @@ function DoctorDetails() {
               {correctDoctor.hospital}
             </p>
 
-            <button
+            <motion.button
+              whileHover={buttonHover}
+              onClick={() => navigate("/book-appointment")}
               className="w-fit mt-4 px-6 py-3 rounded-xl bg-lightPrimary dark:bg-darkPrimary hover:bg-lightPrimary/90 dark:hover:bg-darkPrimary/90 text-white font-semibold shadow-glowLightPrimary dark:shadow-glowPrimary transition-all duration-300"
             >
               Book Appointment
-            </button>
+            </motion.button>
 
           </div>
 
@@ -193,7 +203,7 @@ function DoctorDetails() {
         </div>
 
       </div>
-    </div>
+    </motion.div>
   );
 }
 
