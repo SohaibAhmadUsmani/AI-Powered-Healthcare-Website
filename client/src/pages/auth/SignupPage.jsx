@@ -33,7 +33,7 @@ const SignupPage = () => {
   const onSubmit = async (data) => {
     const result = await signup(data.fullName, data.email, data.password);
     if (result.success) {
-      navigate("/dashboard", { replace: true });
+      navigate("/", { replace: true });
     } else {
       setError("root", { message: result.message });
     }

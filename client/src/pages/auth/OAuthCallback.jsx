@@ -22,7 +22,7 @@ const OAuthCallback = () => {
           const response = await api.get("/auth/me");
           const { user } = response.data.data;
           login(user, accessToken, refreshToken);
-          navigate("/dashboard", { replace: true });
+          navigate("/", { replace: true });
         } catch {
           setError("Failed to fetch user details.");
         }
