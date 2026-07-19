@@ -24,6 +24,7 @@ const LabTests = lazy(() => import("./pages/LabTests"));
 const EmergencyContacts = lazy(() => import("./pages/EmergencyContacts"));
 const DoctorsList = lazy(() => import("./pages/doctors/DoctorsList"));
 const DoctorDetails = lazy(() => import("./pages/doctors/DoctorDetails"));
+const Appointment = lazy(() => import("./pages/appointment"));
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated } = useAuth();
@@ -488,7 +489,7 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/doctors" element={<ProtectedRoute><DoctorsList /></ProtectedRoute>} />
             <Route path="/doctors/:id" element={<ProtectedRoute><DoctorDetails /></ProtectedRoute>} />
-            <Route path="/book-appointment" element={<ProtectedRoute><TeammatePlaceholder name="Appointment Booking" /></ProtectedRoute>} />
+            <Route path="/book-appointment" element={<ProtectedRoute><Appointment /></ProtectedRoute>} />
             <Route path="/store" element={<ProtectedRoute><TeammatePlaceholder name="Medicine Store" /></ProtectedRoute>} />
             <Route path="/laboratory" element={<ProtectedRoute><LabTests /></ProtectedRoute>} />
             <Route path="/emergency" element={<EmergencyContacts />} />
