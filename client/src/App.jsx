@@ -23,7 +23,7 @@ import EmergencyContacts from './pages/EmergencyContacts';
 import DoctorsList from "./pages/doctors/DoctorsList";
 import DoctorDetails from "./pages/doctors/DoctorDetails";
 import ScrollToTop from "./components/common/ScrollToTop";
-
+import StorePage from './pages/medicine-store/storePage';
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated } = useAuth();
   if (!isAuthenticated) {
@@ -415,7 +415,7 @@ function App() {
             <Route path="/doctors" element={<DoctorsList />} />
             <Route path="/doctors/:id" element={<DoctorDetails />} />
             <Route path="/book-appointment" element={<TeammatePlaceholder name="Appointment Booking" />} />
-            <Route path="/store" element={<TeammatePlaceholder name="Medicine Store" />} />
+            <Route path="/store" element={<StorePage />} />
             <Route path="/laboratory" element={<LabTests />} />
             <Route path="/emergency" element={<EmergencyContacts />} />
             <Route path="/blog" element={<TeammatePlaceholder name="Health Blog" />} />
@@ -434,6 +434,7 @@ function App() {
           </Route>
 
           <Route path="/auth/oauth/callback" element={<OAuthCallback />} />
+        
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </AuthProvider>
