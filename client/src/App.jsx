@@ -11,6 +11,8 @@ import OAuthCallback from "./pages/auth/OAuthCallback";
 import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
 import SplashScreen from "./components/splash/SplashScreen";
+import CartPage from "./pages/CartPage";
+import CheckoutPage from "./pages/CheckoutPage";
 
 const ProtectedRoute = ({ children }) => {
   const { isAuthenticated } = useAuth();
@@ -60,6 +62,8 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+          <Route path="/cart" element={<CartPage />} />
+   <Route path="/checkout" element={<CheckoutPage />} />
           <Route element={<AuthLayout />}>
             <Route path="/login" element={<LoginPage />} />
             <Route path="/signup" element={<SignupPage />} />

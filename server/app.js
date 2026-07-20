@@ -30,6 +30,9 @@ app.use("/auth", oauthRoutes);
 const statsRoutes = require("./routes/statsRoutes");
 app.use("/api/stats", statsRoutes);
 
+const orderRoutes = require("./routes/orderRoutes");
+app.use("/api/orders", orderRoutes);
+
 app.use((err, _req, res, _next) => {
   console.error("Unhandled Error:", err);
   res.status(500).json({ success: false, message: "Internal server error" });
