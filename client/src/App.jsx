@@ -95,6 +95,15 @@ const MainLayout = () => {
     setTheme(prev => (prev === 'dark' ? 'light' : 'dark'));
   };
 
+  const handleNavLinkClick = (e, href) => {
+    if (location.pathname === href) {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    }
+  };
+
   const navLinks = [
     { name: 'Home', href: '/', icon: HomeIcon },
     { name: 'Find Doctors', href: '/doctors', icon: Users },
@@ -109,7 +118,7 @@ const MainLayout = () => {
     <div className="min-h-screen flex flex-col bg-lightBg dark:bg-darkBg bg-grid-pattern text-slate-850 dark:text-slate-100 font-sans selection:bg-lightPrimary/20 dark:selection:bg-darkPrimary/30 selection:text-lightPrimary dark:selection:text-white transition-colors duration-300">
       <header className={`fixed top-0 left-0 w-full z-40 transition-all duration-300 ${scrolled ? 'glass-panel py-4 shadow-premiumLight dark:shadow-lg dark:border-b dark:border-white/5' : 'bg-transparent py-6'}`}>
         <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
-          <Link to="/" className="flex items-center gap-2 group">
+          <Link to="/" className="flex items-center gap-2 group" onClick={(e) => handleNavLinkClick(e, '/')}>
             <div className="p-2 rounded-xl bg-lightPrimary/10 dark:bg-darkPrimary/10 border border-lightPrimary/30 dark:border-darkPrimary/30 group-hover:border-lightPrimary/60 dark:group-hover:border-darkPrimary/60 transition-colors">
               <Activity className="w-5 h-5 text-lightPrimary dark:text-darkPrimary animate-pulse" />
             </div>
@@ -123,6 +132,7 @@ const MainLayout = () => {
               <Link 
                 key={link.name} 
                 to={link.href} 
+                onClick={(e) => handleNavLinkClick(e, link.href)}
                 className="text-sm font-semibold tracking-wide text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white transition-colors duration-200"
               >
                 {link.name}
@@ -240,7 +250,10 @@ const MainLayout = () => {
                       >
                         <Link 
                           to={link.href}
-                          onClick={() => setMobileMenuOpen(false)}
+                          onClick={(e) => {
+                            setMobileMenuOpen(false);
+                            handleNavLinkClick(e, link.href);
+                          }}
                           className="group flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-100 dark:hover:bg-white/5 text-sm font-semibold text-slate-700 dark:text-gray-200 hover:text-lightPrimary dark:hover:text-darkPrimary hover:translate-x-1 transition-all duration-200"
                         >
                           <LinkIcon className="w-5 h-5 text-slate-400 dark:text-gray-500 group-hover:text-lightPrimary dark:group-hover:text-darkPrimary transition-colors" />
