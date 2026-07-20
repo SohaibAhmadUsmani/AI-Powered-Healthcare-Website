@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion"
-import { fadeUp, buttonHover, cardHover } from "../../animations/variants"
+import { fadeUp, cardHover } from "../../animations/variants"
+import RippleButton from "../RippleButton"; 
 
 function DoctorCard({ doctor }) {
   const navigate = useNavigate();
@@ -55,13 +56,12 @@ function DoctorCard({ doctor }) {
         </span>
       </div>
 
-      <motion.button
-        whileHover={buttonHover}
+      <RippleButton       
         onClick={() => navigate(`/doctors/${doctor.id}`)}
         className="w-full mt-6 py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-lightPrimary to-lightSecondary dark:from-darkPrimary dark:to-darkSecondary hover:opacity-90 transition-all duration-300 shadow-glowLightPrimary dark:shadow-glowPrimary"
       >
         View Details
-      </motion.button>
+      </RippleButton>
 
     </motion.div>
   );

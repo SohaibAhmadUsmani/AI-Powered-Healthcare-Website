@@ -4,6 +4,7 @@ import doctors from "../../assets/data/doctors";
 import DoctorCard from "../../components/doctors/DoctorCard";
 import { motion, AnimatePresence } from "framer-motion";
 import {staggerContainer} from "../../animations/variants"
+import RippleButton from "../RippleButton"; 
 
 function DoctorsList() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -143,7 +144,7 @@ function DoctorsList() {
           </div>
           {hasActiveFilters && (
             <div className="flex justify-end mt-5">
-              <button
+              <RippleButton
                 onClick={() => {
                   setSearchTerm("");
                   setSpecialization("");
@@ -153,7 +154,7 @@ function DoctorsList() {
                 className="px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-semibold hover:opacity-90 hover:shadow-lg transition-all duration-300"
               >
                 🧹 Clear Filters
-              </button>
+              </RippleButton>
             </div>
           )}
 

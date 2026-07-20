@@ -29,10 +29,4 @@ export const cardHover = {
     }
 };
 
-export const buttonHover = {
-    scale: 1.03,
-    y: -2,
-    transition: {
-        duration: 0.2
-    }
-};
+
