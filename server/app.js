@@ -33,6 +33,9 @@ const emergencyRoutes = require("./routes/emergencyRoutes");
 app.use("/api/lab", labRoutes);
 app.use("/api/emergency", emergencyRoutes);
 
+const orderRoutes = require("./routes/orderRoutes");
+app.use("/api/orders", orderRoutes);
+
 app.use((err, _req, res, _next) => {
   console.error("Unhandled Error:", err);
   res.status(500).json({ success: false, message: "Internal server error" });

@@ -7,6 +7,7 @@ import {
   Home as HomeIcon, Users, ShoppingBag, FlaskConical, PhoneCall, BookOpen, Mail
 } from 'lucide-react';
 import { AuthProvider, useAuth } from "./context/AuthContext";
+import { CartProvider } from "./context/CartContext";
 import AuthLayout from "./layouts/AuthLayout";
 import OAuthCallback from "./pages/auth/OAuthCallback";
 import Home from './pages/Home';
@@ -15,6 +16,8 @@ import PageTransition from './components/PageTransition';
 import RippleButton from './components/RippleButton';
 import ScrollToTop from "./components/common/ScrollToTop";
 import StorePage from './pages/medicine-store/storePage';
+import CartPage from "./pages/CartPage";
+import CheckoutPage from "./pages/CheckoutPage";
 // Lazy load non-homepage routes for bundle size optimization and faster loading
 const LoginPage = lazy(() => import("./pages/auth/LoginPage"));
 const SignupPage = lazy(() => import("./pages/auth/SignupPage"));
@@ -125,6 +128,12 @@ const MainLayout = () => {
                 {link.name}
               </Link>
             ))}
+            <Link 
+              to="/cart" 
+              className="text-sm font-semibold tracking-wide text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white transition-colors duration-200"
+            >
+              Cart
+            </Link>
           </nav>
 
           <div className="hidden xl:flex items-center gap-4">
@@ -240,6 +249,20 @@ const MainLayout = () => {
                       </motion.div>
                     );
                   })}
+                  <motion.div
+                    initial={{ opacity: 0, x: 15 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: navLinks.length * 0.04 }}
+                  >
+                    <Link 
+                      to="/cart"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="group flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-100 dark:hover:bg-white/5 text-sm font-semibold text-slate-700 dark:text-gray-200 hover:text-lightPrimary dark:hover:text-darkPrimary hover:translate-x-1 transition-all duration-200"
+                    >
+                      <ShoppingBag className="w-5 h-5 text-slate-400 dark:text-gray-500 group-hover:text-lightPrimary dark:group-hover:text-darkPrimary transition-colors" />
+                      <span>Cart</span>
+                    </Link>
+                  </motion.div>
                 </nav>
               </div>
 
@@ -458,58 +481,62 @@ function App() {
     <BrowserRouter>
     <ScrollToTop />
       <AuthProvider>
-        <AnimatePresence>
-          {!appReady && (
-            <SplashScreen onFinish={handleSplashFinish} />
-          )}
-        </AnimatePresence>
-        <Toaster
-          position="top-right"
-          toastOptions={{
-            duration: 4000,
-            style: {
-              borderRadius: "10px",
-              background: "#0F172A",
-              color: "#FFFFFF",
-              fontSize: "0.875rem",
-              fontWeight: 500,
-              boxShadow:
-                "0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1)",
-            },
-            success: {
-              iconTheme: { primary: "#16A34A", secondary: "#FFFFFF" },
-            },
-            error: {
-              iconTheme: { primary: "#DC2626", secondary: "#FFFFFF" },
-            },
-          }}
-        />
-        <Routes>
-          <Route element={<MainLayout />}>
-            <Route path="/" element={<Home />} />
-            <Route path="/doctors" element={<ProtectedRoute><DoctorsList /></ProtectedRoute>} />
-            <Route path="/doctors/:id" element={<ProtectedRoute><DoctorDetails /></ProtectedRoute>} />
-            <Route path="/book-appointment" element={<ProtectedRoute><Appointment /></ProtectedRoute>} />
-            <Route path="/store" element={<ProtectedRoute><StorePage/></ProtectedRoute>} />
-            <Route path="/laboratory" element={<ProtectedRoute><LabTests /></ProtectedRoute>} />
-            <Route path="/emergency" element={<EmergencyContacts />} />
-            <Route path="/blog" element={<TeammatePlaceholder name="Health Blog" />} />
-            <Route path="/contact" element={<TeammatePlaceholder name="Contact Operations" />} />
-          </Route>
+        <CartProvider>
+          <AnimatePresence>
+            {!appReady && (
+              <SplashScreen onFinish={handleSplashFinish} />
+            )}
+          </AnimatePresence>
+          <Toaster
+            position="top-right"
+            toastOptions={{
+              duration: 4000,
+              style: {
+                borderRadius: "10px",
+                background: "#0F172A",
+                color: "#FFFFFF",
+                fontSize: "0.875rem",
+                fontWeight: 500,
+                boxShadow:
+                  "0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1)",
+              },
+              success: {
+                iconTheme: { primary: "#16A34A", secondary: "#FFFFFF" },
+              },
+              error: {
+                iconTheme: { primary: "#DC2626", secondary: "#FFFFFF" },
+              },
+            }}
+          />
+          <Routes>
+            <Route element={<MainLayout />}>
+              <Route path="/" element={<Home />} />
+              <Route path="/doctors" element={<ProtectedRoute><DoctorsList /></ProtectedRoute>} />
+              <Route path="/doctors/:id" element={<ProtectedRoute><DoctorDetails /></ProtectedRoute>} />
+              <Route path="/book-appointment" element={<ProtectedRoute><Appointment /></ProtectedRoute>} />
+              <Route path="/store" element={<ProtectedRoute><StorePage/></ProtectedRoute>} />
+              <Route path="/laboratory" element={<ProtectedRoute><LabTests /></ProtectedRoute>} />
+              <Route path="/emergency" element={<EmergencyContacts />} />
+              <Route path="/blog" element={<TeammatePlaceholder name="Health Blog" />} />
+              <Route path="/contact" element={<TeammatePlaceholder name="Contact Operations" />} />
+              <Route path="/cart" element={<CartPage />} />
+              <Route path="/checkout" element={<CheckoutPage />} />
+            </Route>
 
-          <Route element={<AuthLayout />}>
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/signup" element={<SignupPage />} />
-            <Route path="/auth/login" element={<LoginPage />} />
-            <Route path="/auth/signup" element={<SignupPage />} />
-            <Route path="/auth/forgot-password" element={<ForgotPasswordPage />} />
-            <Route path="/auth/reset-password/:token" element={<ResetPasswordPage />} />
-          </Route>
+            <Route element={<AuthLayout />}>
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/signup" element={<SignupPage />} />
+              <Route path="/auth/login" element={<LoginPage />} />
+              <Route path="/auth/signup" element={<SignupPage />} />
+              <Route path="/auth/forgot-password" element={<ForgotPasswordPage />} />
+              <Route path="/auth/reset-password/:token" element={<ResetPasswordPage />} />
+            </Route>
 
-          <Route path="/auth/oauth/callback" element={<OAuthCallback />} />
-        
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
+            <Route path="/auth/oauth/callback" element={<OAuthCallback />} />
+
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </CartProvider>
       </AuthProvider>
     </BrowserRouter>
   );
