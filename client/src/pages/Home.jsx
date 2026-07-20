@@ -2,6 +2,7 @@ import React from 'react';
 import Hero from './HomeSections/Hero';
 import Services from './HomeSections/Services';
 import FeaturedDoctors from './HomeSections/FeaturedDoctors';
+import PharmacyPreview from './HomeSections/PharmacyPreview';
 import Testimonials from './HomeSections/Testimonials';
 import HealthStats from './HomeSections/HealthStats';
 import CTA from './HomeSections/CTA';
@@ -14,6 +15,7 @@ const Home = () => {
       <Hero />
       <Services />
       <FeaturedDoctors />
+      <PharmacyPreview />
       <HealthStats />
       <Testimonials />
       <CTA />
