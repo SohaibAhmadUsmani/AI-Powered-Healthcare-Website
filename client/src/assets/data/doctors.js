@@ -19,7 +19,7 @@ const doctors = [
 
   {
     id: 2,
-    name: "Dr. Abdullah",
+    name: "Dr. Abdullah Asim",
     specialization: "Dentist",
     qualification: "BDS",
     experience: 8,
@@ -105,6 +105,57 @@ const doctors = [
       "https://images.unsplash.com/photo-1651008376811-b90baee60c1f?auto=format&fit=crop&crop=faces&w=400&h=400&q=80",
     description:
       "Pioneer in robotic neurosurgery with expertise in minimally invasive brain surgery and neurotechnology.",
+  },
+  {
+    id: 7,
+    name: "Dr. Zahoor Iqbal Mirza",
+    specialization: "Urologist",
+    qualification: "MBBS, FCPS (Urology)",
+    experience: 30,
+    rating: 4.9,
+    reviews: 40,
+    hospital: "Bahria International Hospital",
+    institute: "Rawalpindi Medical College",
+    research: "Advancing urological care through research in minimally invasive surgery, urinary tract disorders, kidney health, and prostate disease management.",
+    availability: "10:00 AM - 2:00 PM",
+    image:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSY0sFHE8ZaHydHtcqohNPhO1TbFOcCTuzc3hpN9OvBQK2b_SL64KiV0Vw&s=10",
+    description:
+      "Prof. Dr. Zahoor Iqbal Mirza is a qualified Urologist in Rawalpindi with over 30 years in the field of urology. With specialized qualifications and a broad range of experience, this doctor provides the best treatment for all diseases related to the urinary tract or reproductive organs.",
+  },
+  {
+    id: 8,
+    name: "Dr. Syeda Afshan Batool",
+    specialization: "Gynecologist",
+    qualification: "MBBS, FCPS",
+    experience: 15,
+    rating: 5.0,
+    reviews: 401,
+    hospital: "Bilal Hospial",
+    institute: "Rawalpindi Medical College",
+    research: "Developing advanced women's healthcare solutions, focusing on reproductive medicine, maternal health, and minimally invasive gynecological procedures.",
+    availability: "8:00 AM - 6:00 PM",
+    image:
+      "https://images.unsplash.com/photo-1628258473666-9d3149c1da55?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+    description:
+      "Dr. Syeda Afshan Batool is a highly qualified and experienced gynecologist based in Islamabad. As an expert in women's reproductive health, Dr. Syeda Afshan Batool provides comprehensive care ranging from menstruation to post-menopause. The doctor is skilled in diagnosing and treating conditions that affect the cervix, uterus, ovaries, fallopian tubes.",
+  },
+  {
+    id: 9,
+    name: "Dr. Nazir Ahmed Malik",
+    specialization: "Pediatrician ",
+    qualification: "MBBS, FCPS(Paediatrics)",
+    experience: 36,
+    rating: 5.0,
+    reviews: 401,
+    hospital: "Nusrat Hospital, Rawalpindi",
+    institute: "Johns Hopkins University",
+    research: "Advancing pediatric healthcare through child development research, preventive medicine, and innovative treatments for childhood diseases.",
+    availability: "8:00 AM - 6:00 PM",
+    image:
+      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSAf6q-bl4pFFAsB1TkIgrEhaKNWNh_nqmuuqugAvylGA&s",
+    description:
+      "Brigadier (Retd.) Professor Dr. Nazir Ahmed Malik is a distinguished Child Specialist with 36 years of clinical and academic experience. Currently serving as Professor & Head of Department of Paediatrics and Associate Dean at HITEC Medical College & HIT Hospital, Taxila Cantt. He is also working as Consultant Child Specialist at Nusrat Hospital and Al-Ihsan Hospital in Rawalpindi. Having served with distinction in the Pakistan Army Medical Corps, he brings unmatched expertise and compassion to every consultation.",
   },
 ];
 
