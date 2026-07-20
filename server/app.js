@@ -3,8 +3,8 @@ const cors = require("cors");
 const helmet = require("helmet");
 const morgan = require("morgan");
 const cookieParser = require("cookie-parser");
-const passport = require("./config/passport");
 const { CLIENT_URL } = require("./config/env");
+const passport = require("./config/passport");
 
 const app = express();
 
@@ -27,8 +27,11 @@ const oauthRoutes = require("./routes/oauth.routes");
 app.use("/auth", authRoutes);
 app.use("/auth", oauthRoutes);
 
-const statsRoutes = require("./routes/statsRoutes");
-app.use("/api/stats", statsRoutes);
+const labRoutes = require("./routes/labRoutes");
+const emergencyRoutes = require("./routes/emergencyRoutes");
+
+app.use("/api/lab", labRoutes);
+app.use("/api/emergency", emergencyRoutes);
 
 const orderRoutes = require("./routes/orderRoutes");
 app.use("/api/orders", orderRoutes);

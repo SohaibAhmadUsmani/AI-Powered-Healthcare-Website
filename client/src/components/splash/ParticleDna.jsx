@@ -83,24 +83,22 @@ function ParticleDna() {
     return pos;
   }, []);
 
-  const strand1Mat = useMemo(() => new THREE.MeshPhysicalMaterial({
-    transparent: true, opacity: 0.45, roughness: 0.05, metalness: 0.0,
-    clearcoat: 1.0, clearcoatRoughness: 0.08, color: "#06B6D4",
-    envMapIntensity: 1.0, emissive: "#06B6D4", emissiveIntensity: 0.08,
-    side: THREE.DoubleSide,
+  const strand1Mat = useMemo(() => new THREE.MeshStandardMaterial({
+    transparent: true, opacity: 0.45, roughness: 0.1, metalness: 0.1,
+    color: "#06B6D4", envMapIntensity: 1.0, emissive: "#06B6D4",
+    emissiveIntensity: 0.2, side: THREE.DoubleSide,
   }), []);
 
-  const strand2Mat = useMemo(() => new THREE.MeshPhysicalMaterial({
-    transparent: true, opacity: 0.35, roughness: 0.05, metalness: 0.0,
-    clearcoat: 1.0, clearcoatRoughness: 0.12, color: "#8B5CF6",
-    envMapIntensity: 0.8, emissive: "#8B5CF6", emissiveIntensity: 0.05,
-    side: THREE.DoubleSide,
+  const strand2Mat = useMemo(() => new THREE.MeshStandardMaterial({
+    transparent: true, opacity: 0.35, roughness: 0.1, metalness: 0.1,
+    color: "#8B5CF6", envMapIntensity: 0.8, emissive: "#8B5CF6",
+    emissiveIntensity: 0.15, side: THREE.DoubleSide,
   }), []);
 
-  const rungMat = useMemo(() => new THREE.MeshPhysicalMaterial({
-    transparent: true, opacity: 0.12, roughness: 0.2, metalness: 0,
-    clearcoat: 0.3, color: "#94A3B8", emissive: "#06B6D4",
-    emissiveIntensity: 0.03, side: THREE.DoubleSide,
+  const rungMat = useMemo(() => new THREE.MeshStandardMaterial({
+    transparent: true, opacity: 0.12, roughness: 0.3, metalness: 0.1,
+    color: "#94A3B8", emissive: "#06B6D4",
+    emissiveIntensity: 0.1, side: THREE.DoubleSide,
   }), []);
 
   const sphereGeom = useMemo(() => new THREE.SphereGeometry(0.22, 24, 24), []);
