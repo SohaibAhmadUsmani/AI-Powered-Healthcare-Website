@@ -4,7 +4,7 @@ import doctors from "../../assets/data/doctors";
 import DoctorCard from "../../components/doctors/DoctorCard";
 import { motion, AnimatePresence } from "framer-motion";
 import {staggerContainer} from "../../animations/variants"
-import RippleButton from "../RippleButton"; 
+import RippleButton from "../../components/RippleButton"; 
 
 function DoctorsList() {
   const [searchTerm, setSearchTerm] = useState("");

@@ -78,12 +78,12 @@ function DoctorDetails() {
               {correctDoctor.hospital}
             </p>
 
-            <Ripplebutton
+            <RippleButton
               onClick={() => navigate("/book-appointment")}
               className="w-fit mt-4 px-6 py-3 rounded-xl bg-lightPrimary dark:bg-darkPrimary hover:bg-lightPrimary/90 dark:hover:bg-darkPrimary/90 text-white font-semibold shadow-glowLightPrimary dark:shadow-glowPrimary transition-all duration-300"
             >
               Book Appointment
-            </Ripplebutton>
+            </RippleButton>
 
           </div>
 
