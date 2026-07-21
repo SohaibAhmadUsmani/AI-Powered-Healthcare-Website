@@ -32,7 +32,7 @@ export default function CartPage() {
               Add medicines or lab tests to see them here.
             </p>
             <button
-              onClick={() => navigate("/medicines")}
+              onClick={() => navigate("/store")}
               className="mt-6 rounded-lg bg-cyan-500 px-6 py-2.5 text-sm font-semibold text-[#0B0F19] hover:bg-cyan-400"
             >
               Browse Medicines
