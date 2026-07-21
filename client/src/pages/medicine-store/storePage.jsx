@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { Search, ShoppingCart, Star, ChevronRight } from "lucide-react";
+import { useCart } from "../../context/CartContext";
 import aspirinPlusImage from "../../assets/pngs/aspirinPlus.png";
 import calmzzImage from "../../assets/pngs/calmzz.png";
 import syrupImage from "../../assets/pngs/coldCareSyrup.png";
@@ -106,7 +107,8 @@ const StorePage = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [priceCap, setPriceCap] = useState(50);
   const [sortBy, setSortBy] = useState("recommended");
-  const [cartCount, setCartCount] = useState(0);
+  const { addItem, items } = useCart();
+  const cartCount = useMemo(() => items.reduce((sum, item) => sum + item.quantity, 0), [items]);
   const [selectedMedicine, setSelectedMedicine] = useState(medicines[0]);
 
   const filteredMedicines = useMemo(() => {
@@ -137,7 +139,14 @@ const StorePage = () => {
   }, [filteredMedicines, selectedMedicine]);
 
   const handleAddToCart = (medicine) => {
-    setCartCount((current) => current + 1);
+    addItem({
+      id: medicine.id,
+      name: medicine.name,
+      category: medicine.category,
+      price: medicine.price,
+      image: medicine.image,
+      quantity: 1
+    });
     setSelectedMedicine(medicine);
   };
 
