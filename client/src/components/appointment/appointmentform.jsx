@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import toast from "react-hot-toast";
 import DatePicker from "./DatePicker";
 import TimeSlots from "./TimeSlots";
 
@@ -10,7 +11,7 @@ const AppointmentForm = () => {
   const [reason, setReason] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedTime, setSelectedTime] = useState("");
-
+  const [loading, setLoading] = useState(false);
   const [appointments, setAppointments] = useState([]);
 
   const fetchAppointments = async () => {
@@ -39,12 +40,14 @@ const AppointmentForm = () => {
       !selectedDate ||
       !selectedTime
     ) {
-      alert("Please fill all required fields.");
+      toast.error("Please fill all required fields.");
       return;
     }
 
     try {
-      const response = await axios.post(
+      setLoading(true);
+
+      await axios.post(
         "http://localhost:5000/api/appointments",
         {
           patientName,
@@ -56,7 +59,7 @@ const AppointmentForm = () => {
         }
       );
 
-      alert(response.data.message);
+      toast.success("Appointment booked successfully!");
 
       setPatientName("");
       setEmail("");
@@ -69,9 +72,11 @@ const AppointmentForm = () => {
     } catch (error) {
       console.error(error);
 
-      alert(
+      toast.error(
         error.response?.data?.message || "Something went wrong."
       );
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -80,6 +85,7 @@ const AppointmentForm = () => {
       onSubmit={handleSubmit}
       className="space-y-6 p-6 rounded-xl border"
     >
+      {/* Patient Name */}
       <div>
         <label className="block mb-2 font-medium">
           Patient Name
@@ -94,6 +100,7 @@ const AppointmentForm = () => {
         />
       </div>
 
+      {/* Email */}
       <div>
         <label className="block mb-2 font-medium">
           Email
@@ -108,6 +115,7 @@ const AppointmentForm = () => {
         />
       </div>
 
+      {/* Phone */}
       <div>
         <label className="block mb-2 font-medium">
           Phone Number
@@ -122,6 +130,7 @@ const AppointmentForm = () => {
         />
       </div>
 
+      {/* Reason */}
       <div>
         <label className="block mb-2 font-medium">
           Reason <span className="text-gray-400">(Optional)</span>
@@ -150,9 +159,10 @@ const AppointmentForm = () => {
 
       <button
         type="submit"
-        className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-6 py-3 rounded-lg transition"
+        disabled={loading}
+        className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-500 text-white font-semibold px-6 py-3 rounded-lg transition"
       >
-        Book Appointment
+        {loading ? "Booking..." : "Book Appointment"}
       </button>
     </form>
   );
