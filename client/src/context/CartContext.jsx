@@ -2,36 +2,8 @@ import React, { createContext, useContext, useState, useMemo } from "react";
 
 const CartContext = createContext(null);
 
-// Sample seed data — replace with items coming from the Medicine Store module
-const initialItems = [
-  {
-    id: "med_001",
-    name: "Paracetamol 500mg",
-    category: "Pain Relief",
-    price: 4.5,
-    quantity: 2,
-    image:
-      "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=200&h=200&fit=crop",
-  },
-  {
-    id: "med_002",
-    name: "Vitamin C Effervescent",
-    category: "Immunity",
-    price: 8.99,
-    quantity: 1,
-    image:
-      "https://images.unsplash.com/photo-1550572017-edd951b55104?w=200&h=200&fit=crop",
-  },
-  {
-    id: "med_003",
-    name: "Digital Thermometer",
-    category: "Devices",
-    price: 12.0,
-    quantity: 1,
-    image:
-      "https://images.unsplash.com/photo-1583947215259-38e31be8751f?w=200&h=200&fit=crop",
-  },
-];
+// Start with an empty cart; medicines are added from the Medicine Store page.
+const initialItems = [];
 
 const TAX_RATE = 0.05; // 5% — kept in sync with backend/utils/billing.js
 const FREE_SHIPPING_THRESHOLD = 50;
@@ -51,6 +23,31 @@ export function CartProvider({ children }) {
 
   const removeItem = (id) => {
     setItems((prev) => prev.filter((item) => item.id !== id));
+  };
+
+  const addItem = (product, quantity = 1) => {
+    setItems((prev) => {
+      const existing = prev.find((item) => item.id === product.id);
+      if (existing) {
+        return prev.map((item) =>
+          item.id === product.id
+            ? { ...item, quantity: item.quantity + quantity }
+            : item
+        );
+      }
+
+      return [
+        ...prev,
+        {
+          id: product.id,
+          name: product.name,
+          category: product.category,
+          price: product.price,
+          image: product.image,
+          quantity,
+        },
+      ];
+    });
   };
 
   const applyPromoCode = (code) => {
@@ -88,6 +85,7 @@ export function CartProvider({ children }) {
 
   const value = {
     items,
+    addItem,
     updateQuantity,
     removeItem,
     promoCode,

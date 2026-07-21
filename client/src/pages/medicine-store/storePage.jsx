@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { Search, ShoppingCart, Star, ChevronRight } from "lucide-react";
+import { useCart } from "../../context/CartContext";
 import aspirinPlusImage from "../../assets/pngs/aspirinPlus.png";
 import calmzzImage from "../../assets/pngs/calmzz.png";
 import syrupImage from "../../assets/pngs/coldCareSyrup.png";
@@ -102,11 +103,11 @@ const sortOptions = [
 ];
 
 const StorePage = () => {
+  const { addItem, items } = useCart();
   const [query, setQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [priceCap, setPriceCap] = useState(50);
   const [sortBy, setSortBy] = useState("recommended");
-  const [cartCount, setCartCount] = useState(0);
   const [selectedMedicine, setSelectedMedicine] = useState(medicines[0]);
 
   const filteredMedicines = useMemo(() => {
@@ -137,7 +138,7 @@ const StorePage = () => {
   }, [filteredMedicines, selectedMedicine]);
 
   const handleAddToCart = (medicine) => {
-    setCartCount((current) => current + 1);
+    addItem(medicine);
     setSelectedMedicine(medicine);
   };
 
@@ -166,7 +167,7 @@ const StorePage = () => {
               <ShoppingCart className="w-5 h-5 text-lightPrimary" />
               <div>
                 <p className="text-sm uppercase text-slate-500 tracking-[0.2em]">Cart items</p>
-                <p className="text-2xl font-semibold text-white">{cartCount}</p>
+                <p className="text-2xl font-semibold text-white">{items.reduce((sum, item) => sum + item.quantity, 0)}</p>
               </div>
             </div>
           </div>
