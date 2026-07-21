@@ -7,6 +7,7 @@ import {
   Home as HomeIcon, Users, ShoppingBag, FlaskConical, PhoneCall, BookOpen, Mail
 } from 'lucide-react';
 import { AuthProvider, useAuth } from "./context/AuthContext";
+import { CartProvider } from "./context/CartContext";
 import AuthLayout from "./layouts/AuthLayout";
 import OAuthCallback from "./pages/auth/OAuthCallback";
 import Home from './pages/Home';
@@ -15,6 +16,8 @@ import PageTransition from './components/PageTransition';
 import RippleButton from './components/RippleButton';
 import ScrollToTop from "./components/common/ScrollToTop";
 import StorePage from './pages/medicine-store/storePage';
+import CartPage from "./pages/CartPage";
+import CheckoutPage from "./pages/CheckoutPage";
 // Lazy load non-homepage routes for bundle size optimization and faster loading
 const LoginPage = lazy(() => import("./pages/auth/LoginPage"));
 const SignupPage = lazy(() => import("./pages/auth/SignupPage"));
@@ -92,6 +95,15 @@ const MainLayout = () => {
     setTheme(prev => (prev === 'dark' ? 'light' : 'dark'));
   };
 
+  const handleNavLinkClick = (e, href) => {
+    if (location.pathname === href) {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    }
+  };
+
   const navLinks = [
     { name: 'Home', href: '/', icon: HomeIcon },
     { name: 'Find Doctors', href: '/doctors', icon: Users },
@@ -106,7 +118,7 @@ const MainLayout = () => {
     <div className="min-h-screen flex flex-col bg-lightBg dark:bg-darkBg bg-grid-pattern text-slate-850 dark:text-slate-100 font-sans selection:bg-lightPrimary/20 dark:selection:bg-darkPrimary/30 selection:text-lightPrimary dark:selection:text-white transition-colors duration-300">
       <header className={`fixed top-0 left-0 w-full z-40 transition-all duration-300 ${scrolled ? 'glass-panel py-4 shadow-premiumLight dark:shadow-lg dark:border-b dark:border-white/5' : 'bg-transparent py-6'}`}>
         <div className="max-w-7xl mx-auto px-6 flex justify-between items-center">
-          <Link to="/" className="flex items-center gap-2 group">
+          <Link to="/" className="flex items-center gap-2 group" onClick={(e) => handleNavLinkClick(e, '/')}>
             <div className="p-2 rounded-xl bg-lightPrimary/10 dark:bg-darkPrimary/10 border border-lightPrimary/30 dark:border-darkPrimary/30 group-hover:border-lightPrimary/60 dark:group-hover:border-darkPrimary/60 transition-colors">
               <Activity className="w-5 h-5 text-lightPrimary dark:text-darkPrimary animate-pulse" />
             </div>
@@ -120,11 +132,18 @@ const MainLayout = () => {
               <Link 
                 key={link.name} 
                 to={link.href} 
+                onClick={(e) => handleNavLinkClick(e, link.href)}
                 className="text-sm font-semibold tracking-wide text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white transition-colors duration-200"
               >
                 {link.name}
               </Link>
             ))}
+            <Link 
+              to="/cart" 
+              className="text-sm font-semibold tracking-wide text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white transition-colors duration-200"
+            >
+              Cart
+            </Link>
           </nav>
 
           <div className="hidden xl:flex items-center gap-4">
@@ -231,7 +250,10 @@ const MainLayout = () => {
                       >
                         <Link 
                           to={link.href}
-                          onClick={() => setMobileMenuOpen(false)}
+                          onClick={(e) => {
+                            setMobileMenuOpen(false);
+                            handleNavLinkClick(e, link.href);
+                          }}
                           className="group flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-100 dark:hover:bg-white/5 text-sm font-semibold text-slate-700 dark:text-gray-200 hover:text-lightPrimary dark:hover:text-darkPrimary hover:translate-x-1 transition-all duration-200"
                         >
                           <LinkIcon className="w-5 h-5 text-slate-400 dark:text-gray-500 group-hover:text-lightPrimary dark:group-hover:text-darkPrimary transition-colors" />
@@ -240,6 +262,20 @@ const MainLayout = () => {
                       </motion.div>
                     );
                   })}
+                  <motion.div
+                    initial={{ opacity: 0, x: 15 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: navLinks.length * 0.04 }}
+                  >
+                    <Link 
+                      to="/cart"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="group flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-100 dark:hover:bg-white/5 text-sm font-semibold text-slate-700 dark:text-gray-200 hover:text-lightPrimary dark:hover:text-darkPrimary hover:translate-x-1 transition-all duration-200"
+                    >
+                      <ShoppingBag className="w-5 h-5 text-slate-400 dark:text-gray-500 group-hover:text-lightPrimary dark:group-hover:text-darkPrimary transition-colors" />
+                      <span>Cart</span>
+                    </Link>
+                  </motion.div>
                 </nav>
               </div>
 
@@ -458,58 +494,62 @@ function App() {
     <BrowserRouter>
     <ScrollToTop />
       <AuthProvider>
-        <AnimatePresence>
-          {!appReady && (
-            <SplashScreen onFinish={handleSplashFinish} />
-          )}
-        </AnimatePresence>
-        <Toaster
-          position="top-right"
-          toastOptions={{
-            duration: 4000,
-            style: {
-              borderRadius: "10px",
-              background: "#0F172A",
-              color: "#FFFFFF",
-              fontSize: "0.875rem",
-              fontWeight: 500,
-              boxShadow:
-                "0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1)",
-            },
-            success: {
-              iconTheme: { primary: "#16A34A", secondary: "#FFFFFF" },
-            },
-            error: {
-              iconTheme: { primary: "#DC2626", secondary: "#FFFFFF" },
-            },
-          }}
-        />
-        <Routes>
-          <Route element={<MainLayout />}>
-            <Route path="/" element={<Home />} />
-            <Route path="/doctors" element={<ProtectedRoute><DoctorsList /></ProtectedRoute>} />
-            <Route path="/doctors/:id" element={<ProtectedRoute><DoctorDetails /></ProtectedRoute>} />
-            <Route path="/book-appointment" element={<ProtectedRoute><Appointment /></ProtectedRoute>} />
-            <Route path="/store" element={<ProtectedRoute><StorePage/></ProtectedRoute>} />
-            <Route path="/laboratory" element={<ProtectedRoute><LabTests /></ProtectedRoute>} />
-            <Route path="/emergency" element={<EmergencyContacts />} />
-            <Route path="/blog" element={<TeammatePlaceholder name="Health Blog" />} />
-            <Route path="/contact" element={<TeammatePlaceholder name="Contact Operations" />} />
-          </Route>
+        <CartProvider>
+          <AnimatePresence>
+            {!appReady && (
+              <SplashScreen onFinish={handleSplashFinish} />
+            )}
+          </AnimatePresence>
+          <Toaster
+            position="top-right"
+            toastOptions={{
+              duration: 4000,
+              style: {
+                borderRadius: "10px",
+                background: "#0F172A",
+                color: "#FFFFFF",
+                fontSize: "0.875rem",
+                fontWeight: 500,
+                boxShadow:
+                  "0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -4px rgba(0,0,0,0.1)",
+              },
+              success: {
+                iconTheme: { primary: "#16A34A", secondary: "#FFFFFF" },
+              },
+              error: {
+                iconTheme: { primary: "#DC2626", secondary: "#FFFFFF" },
+              },
+            }}
+          />
+          <Routes>
+            <Route element={<MainLayout />}>
+              <Route path="/" element={<Home />} />
+              <Route path="/doctors" element={<ProtectedRoute><DoctorsList /></ProtectedRoute>} />
+              <Route path="/doctors/:id" element={<ProtectedRoute><DoctorDetails /></ProtectedRoute>} />
+              <Route path="/book-appointment" element={<ProtectedRoute><Appointment /></ProtectedRoute>} />
+              <Route path="/store" element={<ProtectedRoute><StorePage/></ProtectedRoute>} />
+              <Route path="/laboratory" element={<ProtectedRoute><LabTests /></ProtectedRoute>} />
+              <Route path="/emergency" element={<EmergencyContacts />} />
+              <Route path="/blog" element={<TeammatePlaceholder name="Health Blog" />} />
+              <Route path="/contact" element={<TeammatePlaceholder name="Contact Operations" />} />
+              <Route path="/cart" element={<CartPage />} />
+              <Route path="/checkout" element={<CheckoutPage />} />
+            </Route>
 
-          <Route element={<AuthLayout />}>
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/signup" element={<SignupPage />} />
-            <Route path="/auth/login" element={<LoginPage />} />
-            <Route path="/auth/signup" element={<SignupPage />} />
-            <Route path="/auth/forgot-password" element={<ForgotPasswordPage />} />
-            <Route path="/auth/reset-password/:token" element={<ResetPasswordPage />} />
-          </Route>
+            <Route element={<AuthLayout />}>
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/signup" element={<SignupPage />} />
+              <Route path="/auth/login" element={<LoginPage />} />
+              <Route path="/auth/signup" element={<SignupPage />} />
+              <Route path="/auth/forgot-password" element={<ForgotPasswordPage />} />
+              <Route path="/auth/reset-password/:token" element={<ResetPasswordPage />} />
+            </Route>
 
-          <Route path="/auth/oauth/callback" element={<OAuthCallback />} />
-        
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
+            <Route path="/auth/oauth/callback" element={<OAuthCallback />} />
+
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </CartProvider>
       </AuthProvider>
     </BrowserRouter>
   );
