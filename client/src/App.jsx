@@ -3,11 +3,11 @@ import { BrowserRouter, Routes, Route, Link, Navigate, Outlet, useLocation } fro
 import { motion, AnimatePresence } from 'framer-motion';
 import { Toaster } from "react-hot-toast";
 import { 
-  Activity, Menu, X, Shield, Sun, Moon,
+  Activity, Menu, X, Shield, Sun, Moon, ShoppingCart,
   Home as HomeIcon, Users, ShoppingBag, FlaskConical, PhoneCall, BookOpen, Mail
 } from 'lucide-react';
 import { AuthProvider, useAuth } from "./context/AuthContext";
-import { CartProvider } from "./context/CartContext";
+import { CartProvider, useCart } from "./context/CartContext";
 import AuthLayout from "./layouts/AuthLayout";
 import OAuthCallback from "./pages/auth/OAuthCallback";
 import Home from './pages/Home';
@@ -62,6 +62,8 @@ const MainLayout = () => {
   const { user, isAuthenticated, logout } = useAuth();
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const location = useLocation();
+  const { items } = useCart();
+  const cartCount = items.reduce((sum, item) => sum + item.quantity, 0);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -138,15 +140,22 @@ const MainLayout = () => {
                 {link.name}
               </Link>
             ))}
-            <Link 
-              to="/cart" 
-              className="text-sm font-semibold tracking-wide text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white transition-colors duration-200"
-            >
-              Cart
-            </Link>
           </nav>
 
           <div className="hidden xl:flex items-center gap-4">
+            <Link 
+              to="/cart"
+              className="relative p-2.5 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white transition-all shadow-sm cursor-pointer"
+              aria-label="View Cart"
+            >
+              <ShoppingCart className="w-4 h-4" />
+              {cartCount > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-lightPrimary dark:bg-darkPrimary text-[10px] font-bold text-white dark:text-darkBg animate-fade-in shadow-sm">
+                  {cartCount}
+                </span>
+              )}
+            </Link>
+
             <button 
               onClick={toggleTheme}
               className="p-2.5 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white transition-all shadow-sm cursor-pointer"
@@ -187,6 +196,19 @@ const MainLayout = () => {
           </div>
 
           <div className="flex items-center gap-3 xl:hidden">
+            <Link 
+              to="/cart"
+              className="relative p-2.5 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white transition-all shadow-sm cursor-pointer"
+              aria-label="View Cart"
+            >
+              <ShoppingCart className="w-4 h-4" />
+              {cartCount > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-lightPrimary dark:bg-darkPrimary text-[10px] font-bold text-white dark:text-darkBg animate-fade-in shadow-sm">
+                  {cartCount}
+                </span>
+              )}
+            </Link>
+
             <button 
               onClick={toggleTheme}
               className="p-2.5 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white transition-all cursor-pointer"
@@ -262,20 +284,6 @@ const MainLayout = () => {
                       </motion.div>
                     );
                   })}
-                  <motion.div
-                    initial={{ opacity: 0, x: 15 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: navLinks.length * 0.04 }}
-                  >
-                    <Link 
-                      to="/cart"
-                      onClick={() => setMobileMenuOpen(false)}
-                      className="group flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-slate-100 dark:hover:bg-white/5 text-sm font-semibold text-slate-700 dark:text-gray-200 hover:text-lightPrimary dark:hover:text-darkPrimary hover:translate-x-1 transition-all duration-200"
-                    >
-                      <ShoppingBag className="w-5 h-5 text-slate-400 dark:text-gray-500 group-hover:text-lightPrimary dark:group-hover:text-darkPrimary transition-colors" />
-                      <span>Cart</span>
-                    </Link>
-                  </motion.div>
                 </nav>
               </div>
 
