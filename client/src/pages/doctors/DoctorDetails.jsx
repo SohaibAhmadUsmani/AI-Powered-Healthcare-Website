@@ -1,19 +1,99 @@
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import doctors from "../../assets/data/doctors";
 import { motion } from "framer-motion";
-import { fadeUp  } from "../../animations/variants";
+import { fadeUp } from "../../animations/variants";
 import RippleButton from "../../components/RippleButton";
 import { ArrowLeft } from "lucide-react";
+
+const fallbackDoctors = [
+  {
+    id: 1,
+    name: "Dr. Sarah Jenkins",
+    specialization: "Cardiology",
+    rating: 4.9,
+    reviews: 124,
+    experience: 15,
+    hospital: "Mayo Clinic",
+    qualification: "MD, Johns Hopkins University",
+    institute: "Johns Hopkins Medical School",
+    image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&crop=faces&w=400&h=400&q=80",
+    description: "Chief of Cardiology specializing in advanced telemetry monitoring, vital tracking, and bio-integration diagnostics.",
+    research: "Real-time telemetry algorithms, wearable cardiovascular sensors, predictive cardiac failure indicators.",
+    availability: "Mon, Wed, Fri (9:00 AM - 1:00 PM)"
+  },
+  {
+    id: 2,
+    name: "Dr. Marcus Chen",
+    specialization: "Neurology",
+    rating: 4.8,
+    reviews: 98,
+    experience: 12,
+    hospital: "Stanford Hospital",
+    qualification: "MD-PhD in Biomedical Informatics",
+    institute: "Stanford University",
+    image: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&crop=faces&w=400&h=400&q=80",
+    description: "Leads AI Genetics Research Initiative at Stanford. Specialized in neurological risk mapping and MRI diagnostic analytics.",
+    research: "Neural disease risk mapping, genomic sequencing networks, predictive oncology biomarkers.",
+    availability: "Tue, Thu (10:00 AM - 4:00 PM)"
+  },
+  {
+    id: 3,
+    name: "Dr. Elena Rostova",
+    specialization: "Pediatrics",
+    rating: 5.0,
+    reviews: 156,
+    experience: 10,
+    hospital: "Johns Hopkins Hospital",
+    qualification: "MD in Pediatric Neurological Surgery",
+    institute: "Harvard Medical School",
+    image: "https://images.unsplash.com/photo-1594824813566-88855ce78947?auto=format&fit=crop&crop=faces&w=400&h=400&q=80",
+    description: "Pediatric care specialist focusing on child development, immunizations, and preventive pediatric healthcare.",
+    research: "Pediatric bio-imaging, early development diagnostics.",
+    availability: "Mon – Fri (8:00 AM - 2:00 PM)"
+  }
+];
 
 function DoctorDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
+  
+  const [doctor, setDoctor] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  const correctDoctor = doctors.find(
-    (doctor) => doctor.id === Number(id)
-  );
+  useEffect(() => {
+    const fetchDoctor = async () => {
+      try {  
+        const response = await fetch(`http://localhost:5000/api/doctors/${id}`);
+        if (!response.ok) {
+          throw new Error("Failed to fetch doctor.");
+        }
+        const result = await response.json();
+        setDoctor(result.data);
+      }
+      catch (error) {
+        console.error(error);
+        // Fallback to local data if backend is offline
+        const found = fallbackDoctors.find((d) => String(d.id) === String(id) || String(d._id) === String(id)) || fallbackDoctors[0];
+        setDoctor(found);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchDoctor();
+  }, [id]);
 
-  if (!correctDoctor) {
+  if (loading) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-lightBg dark:bg-darkBg">
+        <div className="w-12 h-12 border-4 border-lightPrimary dark:border-darkPrimary border-t-transparent rounded-full animate-spin"></div>
+        <p className="mt-4 text-sm font-mono text-slate-600 dark:text-gray-400">
+          Loading doctor details...
+        </p>
+      </div>
+    );
+  }
+
+  if (!doctor) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-lightBg dark:bg-darkBg text-slate-900 dark:text-white transition-colors duration-300">
         <h1 className="font-sora text-3xl font-bold">Doctor not found.</h1>
@@ -48,8 +128,8 @@ function DoctorDetails() {
           <div className="flex justify-center items-center">
 
             <img
-              src={correctDoctor.image}
-              alt={correctDoctor.name}
+              src={doctor.image}
+              alt={doctor.name}
               className="w-72 h-72 rounded-2xl object-cover border-4 border-lightPrimary dark:border-darkPrimary"
             />
 
@@ -60,23 +140,23 @@ function DoctorDetails() {
           <div className="md:col-span-2 flex flex-col justify-center space-y-4">
 
             <h1 className="text-4xl font-bold">
-              {correctDoctor.name}
+              {doctor.name}
             </h1>
 
             <p className="text-xl font-medium text-lightPrimary dark:text-darkPrimary">
-              {correctDoctor.specialization}
+              {doctor.specialization}
             </p>
 
             <p className="text-lg">
-              ⭐ {correctDoctor.rating} ({correctDoctor.reviews} Reviews)
+              ⭐ {doctor.rating} ({doctor.reviews || 100} Reviews)
             </p>
 
             <p className="text-lg">
-              {correctDoctor.experience} Years Experience
+              {doctor.experience} Years Experience
             </p>
 
             <p className="text-lg">
-              {correctDoctor.hospital}
+              {doctor.hospital}
             </p>
 
             <RippleButton
@@ -99,7 +179,7 @@ function DoctorDetails() {
           </h2>
 
           <p className="text-slate-600 dark:text-gray-400 leading-8">
-            {correctDoctor.description}
+            {doctor.description || doctor.bio}
           </p>
 
           <div className="mt-8">
@@ -109,7 +189,7 @@ function DoctorDetails() {
             </h3>
 
             <p className="text-slate-600 dark:text-gray-400">
-              {correctDoctor.qualification}
+              {doctor.qualification || doctor.education}
             </p>
 
           </div>
@@ -121,7 +201,7 @@ function DoctorDetails() {
             </h3>
 
             <p className="text-slate-600 dark:text-gray-400">
-              {correctDoctor.institute}
+              {doctor.institute || doctor.hospital}
             </p>
 
           </div>
@@ -143,7 +223,7 @@ function DoctorDetails() {
             </h3>
 
             <p className="text-slate-600 dark:text-gray-400 leading-8">
-              {correctDoctor.research}
+              {doctor.research}
             </p>
 
           </div>
@@ -195,7 +275,7 @@ function DoctorDetails() {
               <span className="font-semibold text-lightPrimary dark:text-darkPrimary">
                 Time:
               </span>{" "}
-              {correctDoctor.availability}
+              {doctor.availability || "9:00 AM - 5:00 PM"}
             </p>
 
           </div>

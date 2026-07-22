@@ -27,6 +27,10 @@ const oauthRoutes = require("./routes/oauth.routes");
 app.use("/auth", authRoutes);
 app.use("/auth", oauthRoutes);
 
+const docRoutes = require("./routes/doctor.routes");
+
+app.use("/api/doctors", docRoutes);
+
 const labRoutes = require("./routes/labRoutes");
 const emergencyRoutes = require("./routes/emergencyRoutes");
 
