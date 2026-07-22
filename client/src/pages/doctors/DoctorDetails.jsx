@@ -1,48 +1,102 @@
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { motion } from "framer-motion"
-import { fadeUp  } from "../../animations/variants"
+import { motion } from "framer-motion";
+import { fadeUp } from "../../animations/variants";
 import RippleButton from "../../components/RippleButton";
-import { useState , useEffect } from "react";
- 
+import { ArrowLeft } from "lucide-react";
+
+const fallbackDoctors = [
+  {
+    id: 1,
+    name: "Dr. Sarah Jenkins",
+    specialization: "Cardiology",
+    rating: 4.9,
+    reviews: 124,
+    experience: 15,
+    hospital: "Mayo Clinic",
+    qualification: "MD, Johns Hopkins University",
+    institute: "Johns Hopkins Medical School",
+    image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&crop=faces&w=400&h=400&q=80",
+    description: "Chief of Cardiology specializing in advanced telemetry monitoring, vital tracking, and bio-integration diagnostics.",
+    research: "Real-time telemetry algorithms, wearable cardiovascular sensors, predictive cardiac failure indicators.",
+    availability: "Mon, Wed, Fri (9:00 AM - 1:00 PM)"
+  },
+  {
+    id: 2,
+    name: "Dr. Marcus Chen",
+    specialization: "Neurology",
+    rating: 4.8,
+    reviews: 98,
+    experience: 12,
+    hospital: "Stanford Hospital",
+    qualification: "MD-PhD in Biomedical Informatics",
+    institute: "Stanford University",
+    image: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&crop=faces&w=400&h=400&q=80",
+    description: "Leads AI Genetics Research Initiative at Stanford. Specialized in neurological risk mapping and MRI diagnostic analytics.",
+    research: "Neural disease risk mapping, genomic sequencing networks, predictive oncology biomarkers.",
+    availability: "Tue, Thu (10:00 AM - 4:00 PM)"
+  },
+  {
+    id: 3,
+    name: "Dr. Elena Rostova",
+    specialization: "Pediatrics",
+    rating: 5.0,
+    reviews: 156,
+    experience: 10,
+    hospital: "Johns Hopkins Hospital",
+    qualification: "MD in Pediatric Neurological Surgery",
+    institute: "Harvard Medical School",
+    image: "https://images.unsplash.com/photo-1594824813566-88855ce78947?auto=format&fit=crop&crop=faces&w=400&h=400&q=80",
+    description: "Pediatric care specialist focusing on child development, immunizations, and preventive pediatric healthcare.",
+    research: "Pediatric bio-imaging, early development diagnostics.",
+    availability: "Mon – Fri (8:00 AM - 2:00 PM)"
+  }
+];
 
 function DoctorDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
   
-const [doctor , setDoctor] = useState(null);
+  const [doctor, setDoctor] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-      const fetchDoctor = async () => {
-        try {  
-          const response = await fetch(`http://localhost:5000/api/doctors/${id}`);
-          if (!response.ok) {
-            throw new Error("Failed to fetch doctor. ")
-          }
-          const result = await response.json();
-          setDoctor(result.data);
+    const fetchDoctor = async () => {
+      try {  
+        const response = await fetch(`http://localhost:5000/api/doctors/${id}`);
+        if (!response.ok) {
+          throw new Error("Failed to fetch doctor.");
         }
-        catch (error) {
-             console.error(error);
-             alert("Failed to fetch doctor. ")
-        }
-      };
-      fetchDoctor();
-    }, [id]);
+        const result = await response.json();
+        setDoctor(result.data);
+      }
+      catch (error) {
+        console.error(error);
+        // Fallback to local data if backend is offline
+        const found = fallbackDoctors.find((d) => String(d.id) === String(id) || String(d._id) === String(id)) || fallbackDoctors[0];
+        setDoctor(found);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchDoctor();
+  }, [id]);
 
-    if (doctor === null) {
-  return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-lightBg dark:bg-darkBg">
-      <div className="w-12 h-12 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin"></div>
-      <p className="mt-4 text-lg text-slate-700 dark:text-gray-300">
-        Loading doctor...
-      </p>
-    </div>
-  );
-}
+  if (loading) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-lightBg dark:bg-darkBg">
+        <div className="w-12 h-12 border-4 border-lightPrimary dark:border-darkPrimary border-t-transparent rounded-full animate-spin"></div>
+        <p className="mt-4 text-sm font-mono text-slate-600 dark:text-gray-400">
+          Loading doctor details...
+        </p>
+      </div>
+    );
+  }
+
   if (!doctor) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-lightBg dark:bg-darkBg text-slate-900 dark:text-white transition-colors duration-300">
-        <h1 className="text-3xl font-bold">Doctor not found.</h1>
+        <h1 className="font-sora text-3xl font-bold">Doctor not found.</h1>
       </div>
     );
   }
@@ -52,17 +106,17 @@ const [doctor , setDoctor] = useState(null);
       variants={fadeUp}
       initial="hidden"
       animate="visible"
-      className="min-h-screen bg-lightBg dark:bg-darkBg text-slate-900 dark:text-white py-10 px-6 transition-colors duration-300">
+      className="min-h-screen bg-lightBg dark:bg-darkBg text-slate-900 dark:text-white py-12 px-4 sm:px-6 transition-colors duration-300">
 
       <div className="max-w-6xl mx-auto">
 
         {/* Back Button */}
-
         <RippleButton
           onClick={() => navigate("/doctors")}
-          className="mb-6 px-5 py-2 rounded-lg bg-lightAccent dark:bg-darkAccent border border-slate-200 dark:border-gray-700 hover:bg-slate-100 dark:hover:bg-gray-800 transition-all duration-300"
+          className="mb-8 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl glass-panel bg-white/70 dark:bg-slate-900/70 border border-slate-200/80 dark:border-white/10 text-slate-700 dark:text-slate-200 hover:text-lightPrimary dark:hover:text-darkPrimary hover:border-lightPrimary/40 dark:hover:border-darkPrimary/40 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer font-sans font-semibold text-xs uppercase tracking-wider group"
         >
-          ← Back
+          <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
+          <span>Back to Doctors</span>
         </RippleButton>
 
         {/* Top Section */}
@@ -94,7 +148,7 @@ const [doctor , setDoctor] = useState(null);
             </p>
 
             <p className="text-lg">
-              ⭐ {doctor.rating} ({doctor.reviews} Reviews)
+              ⭐ {doctor.rating} ({doctor.reviews || 100} Reviews)
             </p>
 
             <p className="text-lg">
@@ -125,7 +179,7 @@ const [doctor , setDoctor] = useState(null);
           </h2>
 
           <p className="text-slate-600 dark:text-gray-400 leading-8">
-            {doctor.description}
+            {doctor.description || doctor.bio}
           </p>
 
           <div className="mt-8">
@@ -135,7 +189,7 @@ const [doctor , setDoctor] = useState(null);
             </h3>
 
             <p className="text-slate-600 dark:text-gray-400">
-              {doctor.qualification}
+              {doctor.qualification || doctor.education}
             </p>
 
           </div>
@@ -147,7 +201,7 @@ const [doctor , setDoctor] = useState(null);
             </h3>
 
             <p className="text-slate-600 dark:text-gray-400">
-              {doctor.institute}
+              {doctor.institute || doctor.hospital}
             </p>
 
           </div>
@@ -221,7 +275,7 @@ const [doctor , setDoctor] = useState(null);
               <span className="font-semibold text-lightPrimary dark:text-darkPrimary">
                 Time:
               </span>{" "}
-              {doctor.availability}
+              {doctor.availability || "9:00 AM - 5:00 PM"}
             </p>
 
           </div>

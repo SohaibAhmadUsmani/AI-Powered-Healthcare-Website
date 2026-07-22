@@ -399,24 +399,24 @@ const MainLayout = () => {
             <span className="font-mono text-xs font-bold text-slate-400 dark:text-slate-500 tracking-widest uppercase mb-4 block">Company</span>
             <ul className="space-y-3">
               <li>
-                <a href="#" className="text-slate-500 dark:text-slate-400 hover:text-lightPrimary dark:hover:text-darkPrimary transition-all duration-300 hover:translate-x-1 block text-sm">
+                <Link to="/contact" onClick={(e) => handleNavLinkClick(e, "/contact")} className="text-slate-500 dark:text-slate-400 hover:text-lightPrimary dark:hover:text-darkPrimary transition-all duration-300 hover:translate-x-1 block text-sm">
                   About Us
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-slate-500 dark:text-slate-400 hover:text-lightPrimary dark:hover:text-darkPrimary transition-all duration-300 hover:translate-x-1 block text-sm">
+                <Link to="/blog" onClick={(e) => handleNavLinkClick(e, "/blog")} className="text-slate-500 dark:text-slate-400 hover:text-lightPrimary dark:hover:text-darkPrimary transition-all duration-300 hover:translate-x-1 block text-sm">
                   Research Papers
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-slate-500 dark:text-slate-400 hover:text-lightPrimary dark:hover:text-darkPrimary transition-all duration-300 hover:translate-x-1 block text-sm">
+                <Link to="/blog" onClick={(e) => handleNavLinkClick(e, "/blog")} className="text-slate-500 dark:text-slate-400 hover:text-lightPrimary dark:hover:text-darkPrimary transition-all duration-300 hover:translate-x-1 block text-sm">
                   Careers
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-slate-500 dark:text-slate-400 hover:text-lightPrimary dark:hover:text-darkPrimary transition-all duration-300 hover:translate-x-1 block text-sm">
+                <Link to="/store" onClick={(e) => handleNavLinkClick(e, "/store")} className="text-slate-500 dark:text-slate-400 hover:text-lightPrimary dark:hover:text-darkPrimary transition-all duration-300 hover:translate-x-1 block text-sm">
                   Press Kit
-                </a>
+                </Link>
               </li>
             </ul>
           </div>

@@ -74,3 +74,18 @@
   position: relative;
   overflow: hidden;
 }
+
+/* Success Bounce Feedback Animation */
+@keyframes bounceShort {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.12);
+  }
+}
+
+.animate-bounce-short {
+  animation: bounceShort 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+

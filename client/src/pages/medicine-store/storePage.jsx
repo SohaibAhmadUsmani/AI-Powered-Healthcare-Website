@@ -1,12 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
-import { motion } from "framer-motion";
-import { Search, ShoppingCart, Star, ChevronRight } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Search, ShoppingCart, Star, ChevronRight, Check, Plus, ChevronDown } from "lucide-react";
 import { useCart } from "../../context/CartContext";
+import RippleButton from "../../components/RippleButton";
 import aspirinPlusImage from "../../assets/pngs/aspirinPlus.png";
 import calmzzImage from "../../assets/pngs/calmzz.png";
 import syrupImage from "../../assets/pngs/coldCareSyrup.png";
 import oralGuardImage from "../../assets/pngs/oralGuard.png";
 import supplementsImage from "../../assets/pngs/supplements.png";
+import toast from "react-hot-toast";
 
 const medicines = [
   {
@@ -107,6 +109,7 @@ const StorePage = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [priceCap, setPriceCap] = useState(50);
   const [sortBy, setSortBy] = useState("recommended");
+  const [addedMap, setAddedMap] = useState({});
   const { addItem, items } = useCart();
   const cartCount = useMemo(() => items.reduce((sum, item) => sum + item.quantity, 0), [items]);
   const [selectedMedicine, setSelectedMedicine] = useState(medicines[0]);
@@ -138,7 +141,8 @@ const StorePage = () => {
     }
   }, [filteredMedicines, selectedMedicine]);
 
-  const handleAddToCart = (medicine) => {
+  const handleAddToCart = (medicine, e) => {
+    if (e) e.stopPropagation();
     addItem({
       id: medicine.id,
       name: medicine.name,
@@ -148,58 +152,75 @@ const StorePage = () => {
       quantity: 1
     });
     setSelectedMedicine(medicine);
+
+    // Provide visual feedback state on button
+    setAddedMap(prev => ({ ...prev, [medicine.id]: true }));
+    toast.success(`${medicine.name} added to cart!`, { id: `cart-${medicine.id}` });
+    
+    setTimeout(() => {
+      setAddedMap(prev => ({ ...prev, [medicine.id]: false }));
+    }, 1600);
   };
 
   const formatPrice = (value) => `$${value.toFixed(2)}`;
   const selectedReviews = selectedMedicine?.reviews || [];
 
   return (
-    <main className="min-h-screen bg-darkBg text-slate-100 bg-grid-pattern py-28 sm:py-32 px-4 sm:px-8 lg:px-12">
+    <main className="min-h-screen bg-lightBg dark:bg-darkBg text-slate-850 dark:text-slate-100 bg-grid-pattern py-20 sm:py-24 px-4 sm:px-8 lg:px-12 transition-colors duration-300">
       <div className="max-w-7xl mx-auto space-y-10">
-        <section className="glass-panel bg-slate-950/80 border border-slate-800/70 shadow-premiumLight rounded-[32px] p-8 lg:p-10">
+        
+        {/* Hero Section & Filters */}
+        <section className="glass-panel border border-slate-200/60 dark:border-white/5 shadow-premiumLight dark:shadow-2xl rounded-[32px] p-6 sm:p-8 lg:p-10 transition-all duration-300">
           <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-            <div className="space-y-4 max-w-3xl">
+            <div className="space-y-3 max-w-3xl">
               <motion.h1
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="text-4xl sm:text-5xl font-bold tracking-tight text-white"
+                className="font-sora text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight text-slate-900 dark:text-white"
               >
-                Medicine Store
+                Pharmacy{" "}
+                <span className="bg-gradient-to-r from-lightPrimary via-cyan-500 to-lightSecondary dark:from-darkPrimary dark:to-darkSecondary bg-clip-text text-transparent">
+                  Medicine Store
+                </span>
               </motion.h1>
-              <p className="max-w-2xl text-slate-400 text-sm sm:text-base leading-7">
-                Find the right treatment, compare prices, and keep your cart ready. Browse categories, adjust your budget, and view medicine details in one smooth experience.
+              <p className="max-w-2xl text-slate-600 dark:text-slate-400 text-sm sm:text-base leading-relaxed">
+                Find prescribed medications, compare prices, and order online with fast delivery. Browse categories, adjust budget caps, and view comprehensive drug descriptions.
               </p>
             </div>
 
-            <div className="inline-flex items-center gap-3 rounded-3xl border border-slate-700/80 bg-slate-950/80 px-4 py-3 shadow-glowPrimary">
-              <ShoppingCart className="w-5 h-5 text-lightPrimary" />
+            <div className="inline-flex items-center gap-3 rounded-2xl border border-slate-200 dark:border-white/10 bg-white/80 dark:bg-darkBg/80 px-5 py-3.5 shadow-sm dark:shadow-glowPrimary">
+              <div className="p-2 rounded-xl bg-lightPrimary/10 dark:bg-darkPrimary/10 text-lightPrimary dark:text-darkPrimary">
+                <ShoppingCart className="w-5 h-5" />
+              </div>
               <div>
-                <p className="text-sm uppercase text-slate-500 tracking-[0.2em]">Cart items</p>
-                <p className="text-2xl font-semibold text-white">{cartCount}</p>
+                <p className="text-[10px] font-mono font-bold uppercase text-slate-400 dark:text-slate-500 tracking-wider">Cart Items</p>
+                <p className="font-sora text-2xl font-bold text-slate-900 dark:text-white leading-none">{cartCount}</p>
               </div>
             </div>
           </div>
 
-          <div className="mt-10 grid gap-4 lg:grid-cols-[1.3fr_0.9fr]">
-            <div className="space-y-4">
-              <label className="block text-sm font-medium text-slate-300">Search medicines</label>
+          <div className="mt-8 grid gap-4 lg:grid-cols-[1.3fr_0.9fr]">
+            {/* Search Input */}
+            <div className="space-y-2">
+              <label className="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Search Medicines</label>
               <div className="relative">
-                <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-500" />
+                <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400 dark:text-slate-500" />
                 <input
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Search by medicine, category, or symptom"
-                  className="w-full rounded-3xl border border-slate-700/80 bg-slate-950/90 py-4 pl-12 pr-4 text-sm text-white outline-none transition focus:border-lightPrimary/70 focus:ring-2 focus:ring-lightPrimary/20"
+                  placeholder="Search by medicine, category, or symptom..."
+                  className="w-full rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-darkBg/60 py-3.5 pl-11 pr-4 text-sm text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 outline-none transition focus:border-lightSecondary/50 dark:focus:border-darkSecondary/50 focus:ring-2 focus:ring-lightSecondary/20 dark:focus:ring-darkSecondary/20"
                 />
               </div>
             </div>
 
+            {/* Filter Sliders & Dropdown */}
             <div className="grid gap-4 sm:grid-cols-2">
-              <div className="rounded-3xl border border-slate-700/80 bg-slate-950/80 p-5">
-                <p className="text-sm text-slate-400">Max price</p>
-                <div className="mt-3 flex items-center justify-between gap-3">
-                  <span className="text-base font-semibold text-white">{formatPrice(priceCap)}</span>
-                  <span className="text-sm text-slate-500">Up to</span>
+              <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-darkBg/60 p-4">
+                <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Max Budget</p>
+                <div className="mt-2 flex items-center justify-between gap-3">
+                  <span className="font-sora text-base font-bold text-lightPrimary dark:text-darkPrimary">{formatPrice(priceCap)}</span>
+                  <span className="text-xs text-slate-400">Cap limit</span>
                 </div>
                 <input
                   type="range"
@@ -208,98 +229,138 @@ const StorePage = () => {
                   step="1"
                   value={priceCap}
                   onChange={(e) => setPriceCap(Number(e.target.value))}
-                  className="mt-4 w-full accent-lightPrimary"
+                  className="mt-3 w-full accent-lightPrimary dark:accent-darkPrimary cursor-pointer"
                 />
               </div>
 
-              <div className="rounded-3xl border border-slate-700/80 bg-slate-950/80 p-5">
-                <label className="text-sm text-slate-400">Sort by</label>
-                <select
-                  value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value)}
-                  className="mt-3 w-full rounded-3xl border border-slate-700/80 bg-slate-950/90 py-3 px-4 text-sm text-white outline-none transition focus:border-lightPrimary/70 focus:ring-2 focus:ring-lightPrimary/20"
-                >
-                  {sortOptions.map((option) => (
-                    <option key={option.value} value={option.value} className="bg-slate-950 text-white">
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
+              <div className="rounded-2xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-darkBg/60 p-4">
+                <label className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Sort By</label>
+                <div className="relative mt-2">
+                  <select
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value)}
+                    className="w-full appearance-none rounded-xl border border-slate-200 dark:border-white/10 bg-white dark:bg-slate-900 py-2.5 pl-3.5 pr-10 text-xs font-semibold text-slate-800 dark:text-white outline-none transition focus:border-lightPrimary dark:focus:border-darkPrimary cursor-pointer"
+                  >
+                    {sortOptions.map((option) => (
+                      <option key={option.value} value={option.value} className="bg-white dark:bg-slate-900 text-slate-800 dark:text-white">
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 dark:text-slate-500" />
+                </div>
               </div>
             </div>
           </div>
 
+          {/* Categories Pills */}
           <div className="mt-6">
-            <p className="text-sm text-slate-400">Categories</p>
-            <div className="mt-4 flex flex-wrap gap-3">
+            <p className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3">Categories</p>
+            <div className="flex flex-wrap gap-2.5">
               {categories.map((category) => {
                 const isActive = category === selectedCategory;
                 return (
-                  <button
+                  <RippleButton
                     key={category}
                     onClick={() => setSelectedCategory(category)}
-                    className={`rounded-full px-4 py-2 text-sm font-medium transition ${isActive ? "bg-lightPrimary text-slate-950 shadow-glowLightPrimary" : "bg-slate-950/80 text-slate-300 border border-slate-700/80 hover:border-lightPrimary/50 hover:text-white"}`}
+                    className={`rounded-full px-4 py-2 text-xs font-semibold transition-all duration-200 ${
+                      isActive
+                        ? "bg-lightPrimary dark:bg-darkPrimary text-white dark:text-darkBg shadow-glowLightPrimary dark:shadow-glowPrimary font-bold"
+                        : "bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-white/10 hover:border-lightPrimary/40 dark:hover:border-darkPrimary/40 hover:text-slate-900 dark:hover:text-white"
+                    }`}
                   >
                     {category}
-                  </button>
+                  </RippleButton>
                 );
               })}
             </div>
           </div>
         </section>
 
-        <div className="grid gap-8 xl:grid-cols-[1.45fr_1fr]">
-          <section className="grid gap-6">
-            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        {/* Medicines Grid & Detail Sidebar */}
+        <div className="grid gap-8 xl:grid-cols-[1.4fr_1fr]">
+          
+          {/* Available Medicines List */}
+          <section className="space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div>
-                <p className="text-sm uppercase tracking-[0.24em] text-slate-500">Available medicines</p>
-                <h2 className="text-2xl font-semibold text-white">{filteredMedicines.length} options</h2>
+                <p className="text-xs font-mono font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">Inventory Catalog</p>
+                <h2 className="font-sora text-2xl font-bold text-slate-900 dark:text-white">{filteredMedicines.length} Medicines Available</h2>
               </div>
-              <p className="text-sm text-slate-400">Showing medicines under {formatPrice(priceCap)} and matching search terms.</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400">Showing items up to {formatPrice(priceCap)}</p>
             </div>
 
-            <div className="grid gap-4 sm:grid-cols-2">
+            <div className="grid gap-5 sm:grid-cols-2">
               {filteredMedicines.map((medicine) => {
                 const isActive = selectedMedicine?.id === medicine.id;
+                const isAdded = !!addedMap[medicine.id];
+
                 return (
                   <motion.article
                     key={medicine.id}
-                    initial={{ opacity: 0, y: 10 }}
+                    initial={{ opacity: 0, y: 15 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.25 }}
-                    className={`group rounded-[28px] border p-5 shadow-premiumLight transition ${isActive ? "border-lightPrimary/50 bg-slate-950/90 shadow-glowPrimary" : "border-slate-800/80 bg-slate-950/70 hover:border-lightPrimary/30 hover:bg-slate-950/90"}`}
+                    onClick={() => setSelectedMedicine(medicine)}
+                    className={`group relative rounded-3xl border p-5 transition-all duration-300 cursor-pointer ${
+                      isActive
+                        ? "glass-panel border-lightPrimary/60 dark:border-darkPrimary/60 bg-lightPrimary/5 dark:bg-darkPrimary/10 shadow-premiumLight dark:shadow-glowPrimary"
+                        : "glass-panel bg-white/70 dark:bg-slate-900/60 border-slate-200/80 dark:border-white/5 hover:border-lightPrimary/30 dark:hover:border-darkPrimary/30 shadow-sm hover:shadow-md hover:-translate-y-1"
+                    }`}
                   >
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="space-y-3">
-                        <div className="flex items-center gap-2">
-                          <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-lightPrimary/10 text-lightPrimary">{medicine.category.charAt(0)}</span>
-                          <div>
-                            <p className="text-sm font-semibold text-slate-300">{medicine.category}</p>
-                            <p className="text-lg font-bold text-white">{medicine.name}</p>
+                    <div className="flex flex-col justify-between h-full gap-4">
+                      
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-2">
+                            <span className="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-lightPrimary/10 dark:bg-darkPrimary/10 text-lightPrimary dark:text-darkPrimary font-bold text-xs font-sora">
+                              {medicine.category.charAt(0)}
+                            </span>
+                            <div>
+                              <p className="text-xs font-semibold text-slate-500 dark:text-slate-400">{medicine.category}</p>
+                              <h3 className="font-sora text-base font-bold text-slate-900 dark:text-white group-hover:text-lightPrimary dark:group-hover:text-darkPrimary transition-colors">
+                                {medicine.name}
+                              </h3>
+                            </div>
                           </div>
+                          
+                          <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-400 line-clamp-2">
+                            {medicine.description}
+                          </p>
                         </div>
 
-                        <p className="text-sm leading-6 text-slate-400 line-clamp-2">{medicine.description}</p>
-
-                        <div className="flex flex-wrap items-center gap-2">
-                          <span className="rounded-full bg-slate-800/80 px-3 py-1 text-xs uppercase tracking-[0.18em] text-slate-400">{medicine.dosage}</span>
-                          <span className="rounded-full bg-slate-800/80 px-3 py-1 text-xs uppercase tracking-[0.18em] text-slate-400">{formatPrice(medicine.price)}</span>
-                        </div>
-                      </div>
-
-                      <div className="flex flex-col items-end gap-3">
                         <img
                           src={medicine.image}
                           alt={medicine.name}
-                          className="h-24 w-24 rounded-3xl object-cover border border-slate-700/80"
+                          className="h-20 w-20 rounded-2xl object-cover border border-slate-200/80 dark:border-white/10 shrink-0"
                         />
-                        <button
-                          onClick={() => handleAddToCart(medicine)}
-                          className="inline-flex items-center gap-2 rounded-2xl bg-lightPrimary px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-lightPrimary/95"
+                      </div>
+
+                      <div className="flex items-center justify-between pt-3 border-t border-slate-200/60 dark:border-white/5">
+                        <div>
+                          <p className="font-mono text-[10px] uppercase text-slate-400">{medicine.dosage}</p>
+                          <p className="font-sora text-lg font-bold text-slate-900 dark:text-white">{formatPrice(medicine.price)}</p>
+                        </div>
+
+                        <RippleButton
+                          onClick={(e) => handleAddToCart(medicine, e)}
+                          className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition-all duration-300 shadow-sm ${
+                            isAdded
+                              ? "bg-emerald-500 text-white animate-bounce-short shadow-emerald-500/20"
+                              : "bg-lightPrimary dark:bg-darkPrimary text-white dark:text-darkBg shadow-glowLightPrimary dark:shadow-glowPrimary hover:scale-[1.02] active:scale-[0.98]"
+                          }`}
                         >
-                          Add to Cart
-                          <ChevronRight className="w-4 h-4" />
-                        </button>
+                          {isAdded ? (
+                            <>
+                              <Check className="w-3.5 h-3.5" />
+                              <span>Added ✓</span>
+                            </>
+                          ) : (
+                            <>
+                              <Plus className="w-3.5 h-3.5" />
+                              <span>Add to Cart</span>
+                            </>
+                          )}
+                        </RippleButton>
                       </div>
                     </div>
                   </motion.article>
@@ -308,69 +369,86 @@ const StorePage = () => {
             </div>
           </section>
 
+          {/* Selected Medicine Details Sidebar */}
           {selectedMedicine ? (
-            <aside className="glass-panel rounded-[32px] border border-slate-800/70 bg-slate-950/85 p-6 shadow-premiumLight">
-              <div className="flex items-center justify-between gap-4 mb-6">
+            <aside className="glass-panel rounded-3xl border border-slate-200/80 dark:border-white/5 bg-white/80 dark:bg-slate-900/80 p-6 sm:p-8 shadow-premiumLight dark:shadow-2xl space-y-6 self-start sticky top-28">
+              <div className="flex items-center justify-between gap-4 pb-4 border-b border-slate-200/60 dark:border-white/5">
                 <div>
-                  <p className="text-sm uppercase tracking-[0.24em] text-slate-500">Medicine details</p>
-                  <h2 className="text-3xl font-semibold text-white">{selectedMedicine.name}</h2>
+                  <p className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-400 dark:text-slate-500">Selected Medicine</p>
+                  <h2 className="font-sora text-2xl font-bold text-slate-900 dark:text-white">{selectedMedicine.name}</h2>
                 </div>
-                <span className="rounded-3xl bg-slate-800/90 px-4 py-2 text-sm font-semibold text-slate-200">{selectedMedicine.category}</span>
+                <span className="rounded-xl bg-lightPrimary/10 dark:bg-darkPrimary/10 border border-lightPrimary/20 dark:border-darkPrimary/20 px-3 py-1.5 text-xs font-semibold text-lightPrimary dark:text-darkPrimary">
+                  {selectedMedicine.category}
+                </span>
               </div>
 
-              <div className="overflow-hidden rounded-[28px] border border-slate-800/80">
-                <img src={selectedMedicine.image} alt={selectedMedicine.name} className="h-72 w-full object-cover" />
+              <div className="overflow-hidden rounded-2xl border border-slate-200/80 dark:border-white/10 max-h-60 bg-slate-100 dark:bg-slate-950">
+                <img src={selectedMedicine.image} alt={selectedMedicine.name} className="h-56 w-full object-cover" />
               </div>
 
-              <div className="mt-6 grid gap-4 sm:grid-cols-2">
-                <div className="space-y-3 rounded-3xl bg-slate-950/80 p-5 border border-slate-800/80">
-                  <p className="text-sm text-slate-400">Dosage</p>
-                  <p className="text-lg font-semibold text-white">{selectedMedicine.dosage}</p>
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div className="rounded-2xl bg-slate-50 dark:bg-white/5 p-4 border border-slate-200/60 dark:border-white/5">
+                  <p className="text-xs text-slate-500 dark:text-slate-400">Dosage Spec</p>
+                  <p className="font-semibold text-sm text-slate-900 dark:text-white mt-1">{selectedMedicine.dosage}</p>
                 </div>
-                <div className="space-y-3 rounded-3xl bg-slate-950/80 p-5 border border-slate-800/80">
-                  <p className="text-sm text-slate-400">Price</p>
-                  <p className="text-3xl font-semibold text-lightPrimary">{formatPrice(selectedMedicine.price)}</p>
+                <div className="rounded-2xl bg-slate-50 dark:bg-white/5 p-4 border border-slate-200/60 dark:border-white/5">
+                  <p className="text-xs text-slate-500 dark:text-slate-400">Unit Price</p>
+                  <p className="font-sora text-2xl font-bold text-lightPrimary dark:text-darkPrimary mt-1">{formatPrice(selectedMedicine.price)}</p>
                 </div>
               </div>
 
-              <div className="mt-6 space-y-4">
-                <div className="flex items-center gap-3">
-                  {Array.from({ length: 5 }, (_, index) => (
-                    <Star
-                      key={index}
-                      className={`w-5 h-5 ${index < Math.round(selectedReviews.reduce((acc, review) => acc + review.rating, 0) / selectedReviews.length) ? "text-lightPrimary" : "text-slate-700"}`}
-                    />
-                  ))}
-                  <p className="text-sm text-slate-400">{selectedReviews.length} reviews</p>
-                </div>
-                <p className="text-slate-300 leading-7">{selectedMedicine.description}</p>
-              </div>
-
-              <div className="mt-8 grid gap-4">
-                <button
-                  onClick={() => handleAddToCart(selectedMedicine)}
-                  className="rounded-full bg-lightPrimary px-6 py-4 text-sm font-semibold text-slate-950 transition hover:bg-lightPrimary/95"
-                >
-                  Add to Cart
-                </button>
-
-                <div className="rounded-[28px] border border-slate-800/80 bg-slate-950/80 p-5">
-                  <div className="flex items-center justify-between gap-2 mb-4">
-                    <p className="text-sm uppercase tracking-[0.24em] text-slate-500">Customer reviews</p>
-                    <span className="text-sm text-slate-400">{selectedReviews.length} feedback</span>
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center text-amber-500">
+                    {Array.from({ length: 5 }, (_, index) => (
+                      <Star
+                        key={index}
+                        className={`w-4 h-4 ${index < Math.round(selectedReviews.reduce((acc, review) => acc + review.rating, 0) / (selectedReviews.length || 1)) ? "fill-amber-400 text-amber-400" : "text-slate-300 dark:text-slate-700"}`}
+                      />
+                    ))}
                   </div>
-                  <div className="space-y-4">
-                    {selectedReviews.map((review) => (
-                      <div key={review.author} className="rounded-3xl border border-slate-800/90 bg-slate-950/90 p-4">
-                        <div className="flex items-center justify-between gap-3">
-                          <p className="font-semibold text-white">{review.author}</p>
-                          <div className="inline-flex items-center gap-1 text-sm text-lightPrimary">
-                            {Array.from({ length: 5 }, (_, index) => (
-                              <Star key={index} className={`w-4 h-4 ${index < review.rating ? "text-lightPrimary" : "text-slate-700"}`} />
-                            ))}
-                          </div>
+                  <span className="text-xs font-semibold text-slate-600 dark:text-slate-400">({selectedReviews.length} Verified Reviews)</span>
+                </div>
+                <p className="text-xs leading-relaxed text-slate-600 dark:text-slate-300">{selectedMedicine.description}</p>
+              </div>
+
+              <div className="pt-4 border-t border-slate-200/60 dark:border-white/5 space-y-4">
+                <RippleButton
+                  onClick={(e) => handleAddToCart(selectedMedicine, e)}
+                  className={`w-full py-3.5 rounded-xl font-bold text-sm transition-all duration-300 flex items-center justify-center gap-2 shadow-md ${
+                    addedMap[selectedMedicine.id]
+                      ? "bg-emerald-500 text-white animate-bounce-short"
+                      : "bg-lightPrimary dark:bg-darkPrimary text-white dark:text-darkBg shadow-glowLightPrimary dark:shadow-glowPrimary hover:bg-lightPrimary/95 dark:hover:bg-darkPrimary/95"
+                  }`}
+                >
+                  {addedMap[selectedMedicine.id] ? (
+                    <>
+                      <Check className="w-4 h-4" />
+                      <span>Added to Shopping Cart ✓</span>
+                    </>
+                  ) : (
+                    <>
+                      <ShoppingCart className="w-4 h-4" />
+                      <span>Add {selectedMedicine.name} to Cart</span>
+                    </>
+                  )}
+                </RippleButton>
+
+                {/* Customer Reviews Accordion */}
+                <div className="rounded-2xl border border-slate-200/80 dark:border-white/5 bg-slate-50/50 dark:bg-white/5 p-4 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-mono font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Customer Feedback</span>
+                    <span className="text-[10px] text-slate-400">{selectedReviews.length} reviews</span>
+                  </div>
+                  
+                  <div className="space-y-2.5 max-h-40 overflow-y-auto pr-1">
+                    {selectedReviews.map((review, i) => (
+                      <div key={i} className="rounded-xl border border-slate-200/60 dark:border-white/5 bg-white dark:bg-slate-900 p-3 text-xs">
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="font-semibold text-slate-800 dark:text-white">{review.author}</span>
+                          <span className="text-amber-500 font-bold">★ {review.rating}.0</span>
                         </div>
-                        <p className="mt-3 text-sm leading-6 text-slate-400">{review.comment}</p>
+                        <p className="text-slate-600 dark:text-slate-400 text-[11px] leading-relaxed">{review.comment}</p>
                       </div>
                     ))}
                   </div>
@@ -378,8 +456,8 @@ const StorePage = () => {
               </div>
             </aside>
           ) : (
-            <aside className="glass-panel rounded-[32px] border border-slate-800/70 bg-slate-950/85 p-8 shadow-premiumLight text-slate-400">
-              No medicines match your search. Adjust your filters to browse more options.
+            <aside className="glass-panel rounded-3xl border border-slate-200/80 dark:border-white/5 bg-white/80 dark:bg-slate-900/80 p-8 shadow-premiumLight text-slate-500 text-sm text-center">
+              No medicines match your search filter. Try clearing your category selection.
             </aside>
           )}
         </div>
