@@ -1,44 +1,87 @@
-import { useState } from "react";
+import { useEffect, useState , useMemo } from "react";
 import SearchBar from "../../components/doctors/SearchBar";
-import doctors from "../../assets/data/doctors";
 import DoctorCard from "../../components/doctors/DoctorCard";
 import { motion, AnimatePresence } from "framer-motion";
-import {staggerContainer} from "../../animations/variants"
-import RippleButton from "../../components/RippleButton"; 
+import { staggerContainer } from "../../animations/variants"
+import RippleButton from "../../components/RippleButton";
 
 function DoctorsList() {
+  //states
   const [searchTerm, setSearchTerm] = useState("");
   const [specialization, setSpecialization] = useState("");
   const [rating, setRating] = useState("");
   const [experience, setExperience] = useState("");
+  const [doctors, setDoctors] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState(searchTerm);
 
-  const uniqueSpecialization = [
-    ...new Set(doctors.map((doctor) => doctor.specialization))
-  ];
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedSearch(searchTerm);
+    }, 500);
 
+    return () => clearTimeout(timer);
+  }, [searchTerm]);
 
-  const lowerCaseSearchTerm = searchTerm.toLowerCase();
+  //fetching the data
+  useEffect(() => {
+    const fetchDoctors = async () => {
+      try {
+        setLoading(true);
+        setError("");
+        const params = new URLSearchParams();
+        if (debouncedSearch.trim()) {
+          params.set("search", debouncedSearch)
+        }
 
-  const filteredDoctors = doctors.filter((doctor) => {
-    const matchesSearch =
-      doctor.name.toLowerCase().includes(lowerCaseSearchTerm) ||
-      doctor.specialization.toLowerCase().includes(lowerCaseSearchTerm);
-    const matchesSpecialization =
-      specialization === "" || doctor.specialization === specialization;
-    const matchesExperience =
-      experience === "" || doctor.experience >= Number(experience)
-    const matchesRating =
-      rating === "" || doctor.rating >= Number(rating)
+        if (specialization) {
+          params.set("specialization", specialization)
+        }
 
+        if (experience) {
+          params.set("experience", experience)
+        }
 
-    return matchesSearch && matchesSpecialization && matchesExperience && matchesRating
-  });
+        if (rating) {
+          params.set("rating", rating)
+        }
+
+        const response = await fetch(`http://localhost:5000/api/doctors?${params.toString()}`);
+        if (!response.ok) {
+          throw new Error(`Request failed (${response.status})`)
+        }
+        const result = await response.json();
+        setDoctors(result.data);
+      }
+      catch (error) {
+        console.error(error);
+        setError("Unable to load doctors. Please try again.");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchDoctors();
+  }, [debouncedSearch, specialization, rating, experience]);
+
+  const uniqueSpecialization = useMemo(
+    () => [...new Set(doctors.map((doctor) => doctor.specialization))],
+    [doctors]
+  );
   const hasActiveFilters =
-    searchTerm !== "" || specialization !== "" || experience !== "" || rating !== ""
+    searchTerm !== "" || specialization !== "" || experience !== "" || rating !== "";
+
+
+
+
   return (
     <section className="min-h-screen bg-lightBg dark:bg-darkBg py-20 px-6 transition-colors duration-300">
       <div className="max-w-7xl mx-auto">
-
+        {error && (
+          <div className="mb-6 rounded-xl bg-red-100 dark:bg-red-900/20 border border-red-300 dark:border-red-700 p-4 text-red-700 dark:text-red-300">
+            {error}
+          </div>
+        )}
         {/* Heading */}
 
         <div className="text-center mb-14">
@@ -165,30 +208,40 @@ function DoctorsList() {
           <p className="text-slate-700 dark:text-gray-300 text-lg">
             🩺 Showing{" "}
             <span className="font-bold text-lightPrimary dark:text-darkPrimary">
-              {filteredDoctors.length}
+              {doctors.length}
             </span>{" "}
-            {filteredDoctors.length === 1 ? "Doctor" : "Doctors"}
+            {doctors.length === 1 ? "Doctor" : "Doctors"}
           </p>
         </div>
+
+
         {/* Doctors */}
 
-        {filteredDoctors.length > 0 ? (
+        {loading ? (
+          <div className="flex flex-col items-center justify-center py-16">
+            <div className="w-10 h-10 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin"></div>
+            <p className="mt-4 text-slate-600 dark:text-gray-300">
+              Loading doctors...
+            </p>
+          </div>
+        ) : doctors.length > 0 ? (
           <AnimatePresence mode="wait">
             <motion.div
               variants={staggerContainer}
               initial="hidden"
               animate="visible"
-              className="grid gap-10 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 justify-items-center">
-              {filteredDoctors.map((doctor) => (
+              className="grid gap-10 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 justify-items-center"
+            >
+              {doctors.map((doctor) => (
                 <DoctorCard
-                  key={doctor.id}
+                  key={doctor._id}
                   doctor={doctor}
                 />
               ))}
-            </motion.div></AnimatePresence>
+            </motion.div>
+          </AnimatePresence>
         ) : (
           <div className="glass-panel rounded-3xl p-12 text-center max-w-2xl mx-auto border border-slate-200 dark:border-white/5 shadow-premiumLight dark:shadow-2xl transition-all duration-300">
-
             <h2 className="text-3xl font-bold text-slate-900 dark:text-white">
               No Doctors Found
             </h2>
@@ -198,7 +251,6 @@ function DoctorsList() {
               <br />
               Try searching using another name or specialization.
             </p>
-
           </div>
         )}
 

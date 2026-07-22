@@ -57,7 +57,7 @@ function DoctorCard({ doctor }) {
       </div>
 
       <RippleButton       
-        onClick={() => navigate(`/doctors/${doctor.id}`)}
+        onClick={() => navigate(`/doctors/${doctor._id}`)}
         className="w-full mt-6 py-3 rounded-xl font-semibold text-white bg-gradient-to-r from-lightPrimary to-lightSecondary dark:from-darkPrimary dark:to-darkSecondary hover:opacity-90 transition-all duration-300 shadow-glowLightPrimary dark:shadow-glowPrimary"
       >
         View Details

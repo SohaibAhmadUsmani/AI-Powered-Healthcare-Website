@@ -1,18 +1,45 @@
 import { useParams, useNavigate } from "react-router-dom";
-import doctors from "../../assets/data/doctors";
 import { motion } from "framer-motion"
 import { fadeUp  } from "../../animations/variants"
 import RippleButton from "../../components/RippleButton";
+import { useState , useEffect } from "react";
+ 
 
 function DoctorDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
+  
+const [doctor , setDoctor] = useState(null);
 
-  const correctDoctor = doctors.find(
-    (doctor) => doctor.id === Number(id)
+  useEffect(() => {
+      const fetchDoctor = async () => {
+        try {  
+          const response = await fetch(`http://localhost:5000/api/doctors/${id}`);
+          if (!response.ok) {
+            throw new Error("Failed to fetch doctor. ")
+          }
+          const result = await response.json();
+          setDoctor(result.data);
+        }
+        catch (error) {
+             console.error(error);
+             alert("Failed to fetch doctor. ")
+        }
+      };
+      fetchDoctor();
+    }, [id]);
+
+    if (doctor === null) {
+  return (
+    <div className="min-h-screen flex flex-col items-center justify-center bg-lightBg dark:bg-darkBg">
+      <div className="w-12 h-12 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin"></div>
+      <p className="mt-4 text-lg text-slate-700 dark:text-gray-300">
+        Loading doctor...
+      </p>
+    </div>
   );
-
-  if (!correctDoctor) {
+}
+  if (!doctor) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-lightBg dark:bg-darkBg text-slate-900 dark:text-white transition-colors duration-300">
         <h1 className="text-3xl font-bold">Doctor not found.</h1>
@@ -47,8 +74,8 @@ function DoctorDetails() {
           <div className="flex justify-center items-center">
 
             <img
-              src={correctDoctor.image}
-              alt={correctDoctor.name}
+              src={doctor.image}
+              alt={doctor.name}
               className="w-72 h-72 rounded-2xl object-cover border-4 border-lightPrimary dark:border-darkPrimary"
             />
 
@@ -59,23 +86,23 @@ function DoctorDetails() {
           <div className="md:col-span-2 flex flex-col justify-center space-y-4">
 
             <h1 className="text-4xl font-bold">
-              {correctDoctor.name}
+              {doctor.name}
             </h1>
 
             <p className="text-xl font-medium text-lightPrimary dark:text-darkPrimary">
-              {correctDoctor.specialization}
+              {doctor.specialization}
             </p>
 
             <p className="text-lg">
-              ⭐ {correctDoctor.rating} ({correctDoctor.reviews} Reviews)
+              ⭐ {doctor.rating} ({doctor.reviews} Reviews)
             </p>
 
             <p className="text-lg">
-              {correctDoctor.experience} Years Experience
+              {doctor.experience} Years Experience
             </p>
 
             <p className="text-lg">
-              {correctDoctor.hospital}
+              {doctor.hospital}
             </p>
 
             <RippleButton
@@ -98,7 +125,7 @@ function DoctorDetails() {
           </h2>
 
           <p className="text-slate-600 dark:text-gray-400 leading-8">
-            {correctDoctor.description}
+            {doctor.description}
           </p>
 
           <div className="mt-8">
@@ -108,7 +135,7 @@ function DoctorDetails() {
             </h3>
 
             <p className="text-slate-600 dark:text-gray-400">
-              {correctDoctor.qualification}
+              {doctor.qualification}
             </p>
 
           </div>
@@ -120,7 +147,7 @@ function DoctorDetails() {
             </h3>
 
             <p className="text-slate-600 dark:text-gray-400">
-              {correctDoctor.institute}
+              {doctor.institute}
             </p>
 
           </div>
@@ -142,7 +169,7 @@ function DoctorDetails() {
             </h3>
 
             <p className="text-slate-600 dark:text-gray-400 leading-8">
-              {correctDoctor.research}
+              {doctor.research}
             </p>
 
           </div>
@@ -194,7 +221,7 @@ function DoctorDetails() {
               <span className="font-semibold text-lightPrimary dark:text-darkPrimary">
                 Time:
               </span>{" "}
-              {correctDoctor.availability}
+              {doctor.availability}
             </p>
 
           </div>
