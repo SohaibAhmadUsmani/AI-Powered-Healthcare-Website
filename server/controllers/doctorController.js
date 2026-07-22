@@ -1,29 +1,12 @@
 const doctorService = require("../services/doctorService");
 
-const getDoctors = async (req, res) => {
-    try {
-        const doctors = await doctorService.getDoctors();
-        return res.status(200).json({
-            success: true,
-            message: "Doctors Fetched Successfully. ",
-            data: doctors,
-        });
-    }
-    catch (error) {
-        return res.status(500).json({
-            success: false,
-            message: error.message || "Internal server error. "
-        });
-    }
-};
 
-
-const getDoctorById = async (req, res) => {
+const getDoctor = async (req, res) => {
     try {
         const { id } = req.params;
-        const doctorById = await doctorService.getDoctorById(id);
+        const doctor = await doctorService.getDoctor(id);
 
-        if (!doctorById) {
+        if (!doctor) {
             return res.status(404).json({
                 success: false,
                 message: "Doctor not found. "
@@ -32,7 +15,7 @@ const getDoctorById = async (req, res) => {
         return res.status(200).json({
             success: true,
             message: "Doctor fetched successfully. ",
-            data: doctorById
+            data: doctor
         });
     }
     catch (error) {
@@ -44,6 +27,31 @@ const getDoctorById = async (req, res) => {
     }
 };
 
+const getDoctors= async (req , res) => {
+    try{
+      const {search , specialization , experience, rating} = req.query;
+      const doctors = await doctorService.getDoctors({search,specialization,rating,experience });
+        
+        if (doctors.length === 0) {
+            return res.status(200).json({
+                success: true,
+                message: "No doctors found.",
+                data: [],
+            });
+        }
+       return res.status(200).json({
+            success: true,
+            message: "Doctors retrieved successfully. ",
+            data: doctors
+        });
+    }
+    catch(error){
+        return res.status(500).json({
+            success: false,
+            message: error.message || "Internal server error. "
+        })}  
+};
+
 module.exports = {
-    getDoctors, getDoctorById
+    getDoctors, getDoctor
 }
