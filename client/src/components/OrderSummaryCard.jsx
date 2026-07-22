@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { ShieldCheck } from "lucide-react";
+import RippleButton from "./RippleButton";
 
 export default function OrderSummaryCard({
   totals,
@@ -18,87 +19,87 @@ export default function OrderSummaryCard({
   };
 
   return (
-    <div className="rounded-2xl border border-slate-800 bg-[#111827] p-6">
+    <div className="glass-panel rounded-3xl border border-slate-200/80 dark:border-white/5 bg-white/80 dark:bg-slate-900/70 p-6 shadow-premiumLight dark:shadow-2xl transition-all">
       <div className="mb-4 flex items-center gap-2">
-        <span className="h-2 w-2 rounded-full bg-emerald-400" />
-        <span className="text-xs font-semibold uppercase tracking-wide text-emerald-400">
+        <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+        <span className="text-xs font-mono font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
           Order Summary
         </span>
       </div>
 
       {onApplyPromo && (
-        <div className="mb-5 flex gap-2">
+        <div className="mb-4 flex gap-2">
           <input
             value={code}
             onChange={(e) => setCode(e.target.value)}
             placeholder="Promo code"
-            className="w-full rounded-lg border border-slate-700 bg-[#0B0F19] px-3 py-2 text-sm text-white placeholder-slate-500 focus:border-cyan-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
+            className="w-full rounded-xl border border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-darkBg/60 px-3.5 py-2 text-xs text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:border-lightSecondary dark:focus:border-darkSecondary focus:outline-none transition-all"
           />
-          <button
+          <RippleButton
             type="button"
             onClick={handleApply}
-            className="whitespace-nowrap rounded-lg border border-cyan-500 px-4 py-2 text-sm font-semibold text-cyan-400 hover:bg-cyan-500/10 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+            className="whitespace-nowrap rounded-xl border border-lightPrimary dark:border-darkPrimary px-4 py-2 text-xs font-bold text-lightPrimary dark:text-darkPrimary hover:bg-lightPrimary/10 dark:hover:bg-darkPrimary/10 transition-all cursor-pointer"
           >
             Apply
-          </button>
+          </RippleButton>
         </div>
       )}
       {promoMessage && (
         <p
-          className={`-mt-3 mb-4 text-xs ${
-            promoMessage.success ? "text-emerald-400" : "text-red-400"
+          className={`-mt-2 mb-4 text-xs font-semibold ${
+            promoMessage.success ? "text-emerald-500" : "text-red-500"
           }`}
         >
           {promoMessage.message}
         </p>
       )}
 
-      <dl className="space-y-2 text-sm">
-        <div className="flex justify-between text-slate-400">
+      <dl className="space-y-2.5 text-xs">
+        <div className="flex justify-between text-slate-600 dark:text-slate-400">
           <dt>Subtotal</dt>
-          <dd className="text-slate-200">${totals.subtotal.toFixed(2)}</dd>
+          <dd className="font-semibold text-slate-800 dark:text-slate-200">${totals.subtotal.toFixed(2)}</dd>
         </div>
         {totals.discount > 0 && (
-          <div className="flex justify-between text-slate-400">
+          <div className="flex justify-between text-slate-600 dark:text-slate-400">
             <dt>Discount</dt>
-            <dd className="text-emerald-400">-${totals.discount.toFixed(2)}</dd>
+            <dd className="font-semibold text-emerald-500">-${totals.discount.toFixed(2)}</dd>
           </div>
         )}
-        <div className="flex justify-between text-slate-400">
+        <div className="flex justify-between text-slate-600 dark:text-slate-400">
           <dt>Shipping</dt>
-          <dd className="text-slate-200">
+          <dd className="font-semibold text-slate-800 dark:text-slate-200">
             {totals.shipping === 0 ? "Free" : `$${totals.shipping.toFixed(2)}`}
           </dd>
         </div>
-        <div className="flex justify-between text-slate-400">
+        <div className="flex justify-between text-slate-600 dark:text-slate-400">
           <dt>Tax (5%)</dt>
-          <dd className="text-slate-200">${totals.tax.toFixed(2)}</dd>
+          <dd className="font-semibold text-slate-800 dark:text-slate-200">${totals.tax.toFixed(2)}</dd>
         </div>
       </dl>
 
-      <div className="my-4 border-t border-dashed border-slate-800" />
+      <div className="my-4 border-t border-dashed border-slate-200 dark:border-white/10" />
 
       <div className="flex items-center justify-between">
-        <span className="font-semibold text-white">Total</span>
-        <span className="text-2xl font-bold text-cyan-400">
+        <span className="font-sora font-bold text-slate-900 dark:text-white text-base">Total Amount</span>
+        <span className="font-sora text-2xl font-bold text-lightPrimary dark:text-darkPrimary">
           ${totals.total.toFixed(2)}
         </span>
       </div>
 
       {ctaLabel && (
-        <button
+        <RippleButton
           type="button"
           onClick={onCta}
           disabled={ctaDisabled}
-          className="mt-6 w-full rounded-lg bg-gradient-to-r from-cyan-500 to-cyan-400 py-3 text-sm font-semibold text-[#0B0F19] shadow-[0_0_20px_rgba(6,182,212,0.35)] transition hover:shadow-[0_0_28px_rgba(6,182,212,0.55)] disabled:cursor-not-allowed disabled:opacity-50"
+          className="mt-6 w-full rounded-xl bg-lightPrimary dark:bg-darkPrimary py-3.5 text-xs font-bold text-white dark:text-darkBg shadow-glowLightPrimary dark:shadow-glowPrimary hover:bg-lightPrimary/95 dark:hover:bg-darkPrimary/95 transition-all disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
         >
           {ctaLabel}
-        </button>
+        </RippleButton>
       )}
 
-      <div className="mt-4 flex items-center justify-center gap-2 text-xs text-slate-500">
-        <ShieldCheck size={14} className="text-cyan-500" />
-        Secure checkout, encrypted end to end
+      <div className="mt-4 flex items-center justify-center gap-2 text-[11px] text-slate-500 dark:text-slate-400">
+        <ShieldCheck size={14} className="text-lightPrimary dark:text-darkPrimary" />
+        Fully HIPAA compliant & end-to-end encrypted
       </div>
     </div>
   );

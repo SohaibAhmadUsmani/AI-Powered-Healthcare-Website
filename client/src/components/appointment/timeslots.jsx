@@ -1,3 +1,6 @@
+import React from "react";
+import RippleButton from "../RippleButton";
+
 const slots = [
   "09:00 AM",
   "10:00 AM",
@@ -7,10 +10,10 @@ const slots = [
   "04:00 PM",
 ];
 
-const TimeSlots = ({selectedTime,setSelectedTime,selectedDate,appointments,}) => {
-  
+const TimeSlots = ({ selectedTime, setSelectedTime, selectedDate, appointments = [] }) => {
   const bookedSlots = appointments
     .filter((appointment) => {
+      if (!selectedDate || !appointment.appointmentDate) return false;
       return (
         new Date(appointment.appointmentDate).toDateString() ===
         new Date(selectedDate).toDateString()
@@ -20,30 +23,31 @@ const TimeSlots = ({selectedTime,setSelectedTime,selectedDate,appointments,}) =>
 
   return (
     <div>
-      <label className="block mb-2 font-medium">
-        Select Time
+      <label className="block mb-2 text-sm font-semibold text-slate-700 dark:text-slate-200">
+        Available Time Slots <span className="text-red-500">*</span>
       </label>
 
       <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
         {slots.map((slot) => {
           const isBooked = bookedSlots.includes(slot);
+          const isSelected = selectedTime === slot;
 
           return (
-            <button
+            <RippleButton
               key={slot}
               type="button"
-              disabled={bookedSlots.includes(slot)}
+              disabled={isBooked}
               onClick={() => setSelectedTime(slot)}
-              className={`p-4 rounded-lg border transition-all ${
-              bookedSlots.includes(slot)
-              ? "bg-gray-700 text-gray-400 border-gray-700 cursor-not-allowed opacity-60"
-              : selectedTime === slot
-              ? "bg-blue-600 text-white border-blue-600"
-              : "bg-slate-800 text-white border-gray-600 hover:border-blue-500"
-}`}
+              className={`p-3.5 rounded-xl border text-xs sm:text-sm font-semibold transition-all duration-200 text-center ${
+                isBooked
+                  ? "bg-slate-200/60 dark:bg-slate-800/40 text-slate-400 dark:text-slate-600 border-slate-300 dark:border-slate-800 cursor-not-allowed line-through"
+                  : isSelected
+                  ? "bg-lightPrimary dark:bg-darkPrimary text-white dark:text-darkBg border-lightPrimary dark:border-darkPrimary shadow-glowLightPrimary dark:shadow-glowPrimary scale-[1.02]"
+                  : "bg-slate-50 dark:bg-darkBg/60 text-slate-700 dark:text-slate-200 border-slate-200 dark:border-white/10 hover:border-lightPrimary dark:hover:border-darkPrimary hover:bg-slate-100 dark:hover:bg-white/5"
+              }`}
             >
-              {slot}
-            </button>
+              {slot} {isBooked ? "(Booked)" : ""}
+            </RippleButton>
           );
         })}
       </div>

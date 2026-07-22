@@ -3,6 +3,7 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import DatePicker from "./DatePicker";
 import TimeSlots from "./TimeSlots";
+import RippleButton from "../RippleButton";
 
 const AppointmentForm = () => {
   const [patientName, setPatientName] = useState("");
@@ -20,7 +21,7 @@ const AppointmentForm = () => {
         "http://localhost:5000/api/appointments"
       );
 
-      setAppointments(response.data.data);
+      setAppointments(response.data?.data || []);
     } catch (error) {
       console.error(error);
     }
@@ -80,68 +81,72 @@ const AppointmentForm = () => {
     }
   };
 
+  const inputClasses =
+    "w-full bg-slate-50 dark:bg-darkBg/60 border border-slate-200 dark:border-white/10 text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 rounded-xl p-3.5 outline-none transition-all focus:border-lightSecondary/50 dark:focus:border-darkSecondary/50 focus:ring-2 focus:ring-lightSecondary/20 dark:focus:ring-darkSecondary/20 text-sm";
+
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-6 p-6 rounded-xl border"
+      className="glass-panel shadow-premiumLight dark:shadow-2xl border border-slate-200/60 dark:border-white/5 rounded-3xl p-6 sm:p-8 space-y-6 transition-all duration-300"
     >
       {/* Patient Name */}
       <div>
-        <label className="block mb-2 font-medium">
-          Patient Name
+        <label className="block mb-2 text-sm font-semibold text-slate-700 dark:text-slate-200">
+          Patient Name <span className="text-red-500">*</span>
         </label>
 
         <input
           type="text"
-          placeholder="Enter your name"
+          placeholder="Enter full name"
           value={patientName}
           onChange={(e) => setPatientName(e.target.value)}
-          className="w-full border border-gray-600 bg-slate-800 text-white placeholder-gray-400 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className={inputClasses}
         />
       </div>
 
-      {/* Email */}
-      <div>
-        <label className="block mb-2 font-medium">
-          Email
-        </label>
+      {/* Grid for Email & Phone */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+          <label className="block mb-2 text-sm font-semibold text-slate-700 dark:text-slate-200">
+            Email Address <span className="text-red-500">*</span>
+          </label>
 
-        <input
-          type="email"
-          placeholder="Enter your email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="w-full border border-gray-600 bg-slate-800 text-white placeholder-gray-400 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-      </div>
+          <input
+            type="email"
+            placeholder="example@mail.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className={inputClasses}
+          />
+        </div>
 
-      {/* Phone */}
-      <div>
-        <label className="block mb-2 font-medium">
-          Phone Number
-        </label>
+        <div>
+          <label className="block mb-2 text-sm font-semibold text-slate-700 dark:text-slate-200">
+            Phone Number <span className="text-red-500">*</span>
+          </label>
 
-        <input
-          type="text"
-          placeholder="03001234567"
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-          className="w-full border border-gray-600 bg-slate-800 text-white placeholder-gray-400 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
+          <input
+            type="text"
+            placeholder="03001234567"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            className={inputClasses}
+          />
+        </div>
       </div>
 
       {/* Reason */}
       <div>
-        <label className="block mb-2 font-medium">
-          Reason <span className="text-gray-400">(Optional)</span>
+        <label className="block mb-2 text-sm font-semibold text-slate-700 dark:text-slate-200">
+          Reason for Visit <span className="text-xs text-slate-400 font-normal">(Optional)</span>
         </label>
 
         <textarea
-          placeholder="Describe your problem"
+          placeholder="Briefly describe your symptoms or medical query"
           value={reason}
           onChange={(e) => setReason(e.target.value)}
-          rows={4}
-          className="w-full border border-gray-600 bg-slate-800 text-white placeholder-gray-400 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          rows={3}
+          className={inputClasses}
         />
       </div>
 
@@ -157,13 +162,15 @@ const AppointmentForm = () => {
         appointments={appointments}
       />
 
-      <button
-        type="submit"
-        disabled={loading}
-        className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-500 text-white font-semibold px-6 py-3 rounded-lg transition"
-      >
-        {loading ? "Booking..." : "Book Appointment"}
-      </button>
+      <div className="pt-4">
+        <RippleButton
+          type="submit"
+          disabled={loading}
+          className="w-full sm:w-auto bg-lightPrimary dark:bg-darkPrimary text-white dark:text-darkBg font-bold text-sm px-8 py-3.5 rounded-xl shadow-glowLightPrimary dark:shadow-glowPrimary hover:bg-lightPrimary/95 dark:hover:bg-darkPrimary/95 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          {loading ? "Booking Appointment..." : "Confirm & Book Appointment"}
+        </RippleButton>
+      </div>
     </form>
   );
 };

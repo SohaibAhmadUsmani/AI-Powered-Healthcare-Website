@@ -1,8 +1,9 @@
 import { useParams, useNavigate } from "react-router-dom";
 import doctors from "../../assets/data/doctors";
-import { motion } from "framer-motion"
-import { fadeUp  } from "../../animations/variants"
+import { motion } from "framer-motion";
+import { fadeUp  } from "../../animations/variants";
 import RippleButton from "../../components/RippleButton";
+import { ArrowLeft } from "lucide-react";
 
 function DoctorDetails() {
   const { id } = useParams();
@@ -15,7 +16,7 @@ function DoctorDetails() {
   if (!correctDoctor) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-lightBg dark:bg-darkBg text-slate-900 dark:text-white transition-colors duration-300">
-        <h1 className="text-3xl font-bold">Doctor not found.</h1>
+        <h1 className="font-sora text-3xl font-bold">Doctor not found.</h1>
       </div>
     );
   }
@@ -25,17 +26,17 @@ function DoctorDetails() {
       variants={fadeUp}
       initial="hidden"
       animate="visible"
-      className="min-h-screen bg-lightBg dark:bg-darkBg text-slate-900 dark:text-white py-10 px-6 transition-colors duration-300">
+      className="min-h-screen bg-lightBg dark:bg-darkBg text-slate-900 dark:text-white py-12 px-4 sm:px-6 transition-colors duration-300">
 
       <div className="max-w-6xl mx-auto">
 
         {/* Back Button */}
-
         <RippleButton
           onClick={() => navigate("/doctors")}
-          className="mb-6 px-5 py-2 rounded-lg bg-lightAccent dark:bg-darkAccent border border-slate-200 dark:border-gray-700 hover:bg-slate-100 dark:hover:bg-gray-800 transition-all duration-300"
+          className="mb-8 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl glass-panel bg-white/70 dark:bg-slate-900/70 border border-slate-200/80 dark:border-white/10 text-slate-700 dark:text-slate-200 hover:text-lightPrimary dark:hover:text-darkPrimary hover:border-lightPrimary/40 dark:hover:border-darkPrimary/40 shadow-sm hover:shadow-md transition-all duration-300 cursor-pointer font-sans font-semibold text-xs uppercase tracking-wider group"
         >
-          ← Back
+          <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
+          <span>Back to Doctors</span>
         </RippleButton>
 
         {/* Top Section */}
