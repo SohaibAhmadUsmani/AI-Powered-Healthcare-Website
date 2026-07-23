@@ -3,6 +3,7 @@ require("dotenv").config();
 const LabTest = require("./models/LabTest");
 const EmergencyContact = require("./models/EmergencyContact");
 const Doctor = require("./models/Doctor");
+const BlogPost = require("./models/BlogPost");
 
 const testsData = [
   { name: "Complete Blood Count (CBC)", price: 800, category: "Blood Test" },
@@ -181,6 +182,33 @@ const doctorData =[
   },
 ];
 
+const blogData = [
+  {
+    title: "5 Tips for a Healthy Heart",
+    category: "Health Tips",
+    summary: "Simple daily habits that support long-term heart health.",
+    content: "Maintaining a healthy heart starts with small, consistent habits. First, aim for at least 30 minutes of moderate exercise most days of the week, such as brisk walking or cycling. Second, reduce your intake of processed foods high in sodium and trans fats, and instead focus on fruits, vegetables, whole grains, and lean proteins. Third, manage stress through relaxation techniques like deep breathing or meditation, as chronic stress can raise blood pressure. Fourth, avoid smoking and limit alcohol consumption. Finally, get regular checkups to monitor your blood pressure, cholesterol, and blood sugar levels, since early detection of risk factors makes a significant difference in long-term heart health."
+  },
+  {
+    title: "Understanding Diabetes",
+    category: "Disease Information",
+    summary: "What causes diabetes, its symptoms, and how it is managed.",
+    content: "Diabetes is a chronic condition that affects how your body turns food into energy. There are two main types: Type 1, where the body does not produce insulin, and Type 2, where the body does not use insulin properly. Common symptoms include increased thirst, frequent urination, fatigue, and blurred vision. Risk factors for Type 2 diabetes include being overweight, physical inactivity, and family history. Management typically involves monitoring blood sugar levels, maintaining a balanced diet, regular physical activity, and in some cases, medication or insulin therapy. Working closely with a healthcare provider helps in creating a personalized management plan that reduces the risk of complications."
+  },
+  {
+    title: "Staying Hydrated in Summer",
+    category: "Health Tips",
+    summary: "Why water intake matters more during hot weather.",
+    content: "During hot weather, your body loses water more quickly through sweat, which increases the risk of dehydration. Symptoms of dehydration include dizziness, dry mouth, dark-colored urine, and fatigue. To stay properly hydrated, aim to drink water consistently throughout the day rather than waiting until you feel thirsty. Foods with high water content, such as watermelon, cucumbers, and oranges, can also contribute to your daily fluid intake. It's especially important to increase water intake before, during, and after physical activity or time spent outdoors in the heat. Children and elderly individuals should be monitored closely, as they are more vulnerable to the effects of dehydration."
+  },
+  {
+    title: "Common Cold vs Flu",
+    category: "Disease Information",
+    summary: "Key differences to help you recognize what you have.",
+    content: "The common cold and the flu (influenza) are both respiratory illnesses but are caused by different viruses. Cold symptoms tend to develop gradually and are usually milder, including a runny nose, sneezing, and a mild cough. The flu, on the other hand, often comes on suddenly and includes more severe symptoms such as high fever, body aches, chills, and extreme fatigue. While a cold rarely leads to serious health problems, the flu can lead to complications like pneumonia, especially in young children, older adults, or those with weakened immune systems. If you experience flu-like symptoms, it's a good idea to rest, stay hydrated, and consult a doctor if symptoms worsen or persist."
+  },
+];
+
 const seed = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URI);
@@ -197,6 +225,10 @@ const seed = async () => {
     await Doctor.deleteMany();
     await Doctor.insertMany(doctorData);
     console.log("Doctors data seeded successfully");
+
+    await BlogPost.deleteMany();
+    await BlogPost.insertMany(blogData);
+    console.log("Blog posts seeded successfully");
 
     process.exit();
   } catch (error) {
