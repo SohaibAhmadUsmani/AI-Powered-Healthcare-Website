@@ -35,9 +35,11 @@ app.use("/api/doctors", docRoutes);
 
 const labRoutes = require("./routes/labRoutes");
 const emergencyRoutes = require("./routes/emergencyRoutes");
+const medicineRoutes = require("./routes/medicineRoutes");
 
 app.use("/api/lab", labRoutes);
 app.use("/api/emergency", emergencyRoutes);
+app.use("/api/medicine", medicineRoutes);
 
 const orderRoutes = require("./routes/orderRoutes");
 app.use("/api/orders", orderRoutes);

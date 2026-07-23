@@ -3,101 +3,35 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Search, ShoppingCart, Star, ChevronRight, Check, Plus, ChevronDown } from "lucide-react";
 import { useCart } from "../../context/CartContext";
 import RippleButton from "../../components/RippleButton";
-import aspirinPlusImage from "../../assets/pngs/aspirinPlus.png";
-import calmzzImage from "../../assets/pngs/calmzz.png";
-import syrupImage from "../../assets/pngs/coldCareSyrup.png";
-import oralGuardImage from "../../assets/pngs/oralGuard.png";
-import supplementsImage from "../../assets/pngs/supplements.png";
+import api from "../../services/api";
 import toast from "react-hot-toast";
-
-const medicines = [
-  {
-    id: "aspirin-plus",
-    name: "Aspirin Plus",
-    category: "Pain Relief",
-    price: 12.99,
-    dosage: "500mg • 20 tablets",
-    image: aspirinPlusImage,
-    description:
-      "Fast-acting pain relief for headaches, muscle aches, and minor discomfort. Trusted formula with gentle stomach protection.",
-    reviews: [
-      { author: "Maria K.", comment: "Works quickly and doesn't upset my stomach.", rating: 5 },
-      { author: "Noah S.", comment: "Perfect for daily use after workouts.", rating: 4 },
-    ],
-  },
-  {
-    id: "daily-vitamin-d",
-    name: "Daily Vitamin D",
-    category: "Vitamins",
-    price: 18.99,
-    dosage: "1000 IU • 30 softgels",
-    image: "https://images.unsplash.com/photo-1514996937319-344454492b37?auto=format&fit=crop&w=600&q=80",
-    description:
-      "Support bone strength, immune health, and energy levels with a daily dose of Vitamin D in gentle softgels.",
-    reviews: [
-      { author: "Lena P.", comment: "My energy feels more stable throughout the day.", rating: 5 },
-      { author: "Omar N.", comment: "Great vitamin and easy to swallow.", rating: 4 },
-    ],
-  },
-  {
-    id: "coldcare-syrup",
-    name: "ColdCare Syrup",
-    category: "Cold & Flu",
-    price: 14.5,
-    dosage: "10ml • 100ml bottle",
-    image: syrupImage,
-    description:
-      "Soothing syrup for coughs, congestion, and sore throat. Gentle, non-drowsy support with natural mint extract.",
-    reviews: [
-      { author: "Priya R.", comment: "Stopped my cough by morning.", rating: 5 },
-      { author: "Elias M.", comment: "Nice mint flavor and easy on the throat.", rating: 5 },
-    ],
-  },
-  {
-    id: "probiotic-balance",
-    name: "Probiotic Balance",
-    category: "Supplements",
-    price: 24.99,
-    dosage: "60 capsules",
-    image: supplementsImage,
-    description:
-      "A premium probiotic complex designed to support digestion and maintain a healthy microbiome all month long.",
-    reviews: [
-      { author: "Simone T.", comment: "My digestion feels much better after two weeks.", rating: 5 },
-      { author: "Daniel W.", comment: "No bloating and easy to manage with meals.", rating: 4 },
-    ],
-  },
-  {
-    id: "oralguard-gel",
-    name: "OralGuard Gel",
-    category: "Dental",
-    price: 9.99,
-    dosage: "10g tube",
-    image: oralGuardImage,
-    description:
-      "Cooling dental gel for sensitive gums, mouth sores, and aftercare. Provides soothing relief with a mild antibacterial formula.",
-    reviews: [
-      { author: "Aisha L.", comment: "Relief was instant after application.", rating: 5 },
-      { author: "Jason H.", comment: "A must-have for my dental kit.", rating: 4 },
-    ],
-  },
-  {
-    id: "calmzzz-night",
-    name: "CalmZzz Night",
-    category: "Supplements",
-    price: 29.99,
-    dosage: "10mg • 30 capsules",
-    image: calmzzImage,
-    description:
-      "Gentle sleep support with melatonin and herbal extracts to help you relax and wake up refreshed.",
-    reviews: [
-      { author: "Emilia D.", comment: "I sleep deeper and don't feel groggy.", rating: 5 },
-      { author: "Chris V.", comment: "Nice calming effect without drowsiness during the day.", rating: 4 },
-    ],
-  },
-];
+import aspirinPlus from "../../assets/pngs/aspirinPlus.png";
+import calmzz from "../../assets/pngs/calmzz.png";
+import capsule from "../../assets/pngs/Capsule.png";
+import coldCareSyrup from "../../assets/pngs/coldCareSyrup.png";
+import oralGuard from "../../assets/pngs/oralGuard.png";
+import supplements from "../../assets/pngs/supplements.png";
+import syringe from "../../assets/pngs/Syringe.png";
+import stethoscope from "../../assets/pngs/Stethoscope.png";
+import heartbeatIcon from "../../assets/pngs/Heartbeat Icon.png";
 
 const categories = ["All", "Pain Relief", "Vitamins", "Cold & Flu", "Supplements", "Dental"];
+const localMedicineImages = {
+  "aspirinplus.png": aspirinPlus,
+  "calmzz.png": calmzz,
+  "capsule.png": capsule,
+  "coldcaresyrup.png": coldCareSyrup,
+  "oralguard.png": oralGuard,
+  "supplements.png": supplements,
+  "syringe.png": syringe,
+  "stethoscope.png": stethoscope,
+  "heartbeat icon.png": heartbeatIcon,
+};
+const resolveMedicineImage = (image) => {
+  if (!image) return "";
+  const normalized = String(image).trim().toLowerCase();
+  return localMedicineImages[normalized] || image;
+};
 const sortOptions = [
   { value: "recommended", label: "Recommended" },
   { value: "low", label: "Price: Low to High" },
@@ -110,33 +44,60 @@ const StorePage = () => {
   const [priceCap, setPriceCap] = useState(50);
   const [sortBy, setSortBy] = useState("recommended");
   const [addedMap, setAddedMap] = useState({});
+  const [medicines, setMedicines] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
   const { addItem, items } = useCart();
   const cartCount = useMemo(() => items.reduce((sum, item) => sum + item.quantity, 0), [items]);
-  const [selectedMedicine, setSelectedMedicine] = useState(medicines[0]);
+  const [selectedMedicine, setSelectedMedicine] = useState(null);
+
+  useEffect(() => {
+    const fetchMedicines = async () => {
+      try {
+        setLoading(true);
+        const response = await api.get("/api/medicine");
+        const data = response?.data?.data || response?.data || [];
+        const normalizedMedicines = Array.isArray(data)
+          ? data.map((medicine) => ({ ...medicine, image: resolveMedicineImage(medicine.image) }))
+          : [];
+        setMedicines(normalizedMedicines);
+        setSelectedMedicine(normalizedMedicines[0] || null);
+      } catch (err) {
+        console.error("Failed to fetch medicines", err);
+        setError("Unable to load medicines right now.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMedicines();
+  }, []);
 
   const filteredMedicines = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
+    const normalizedSelectedCategory = selectedCategory === "All" ? "" : selectedCategory.trim().toLowerCase();
 
     return medicines
       .filter((medicine) => {
-        const matchesCategory = selectedCategory === "All" || medicine.category === selectedCategory;
-        const matchesPrice = medicine.price <= priceCap;
+        const category = (medicine.category || "").trim().toLowerCase();
+        const matchesCategory = !normalizedSelectedCategory || category === normalizedSelectedCategory;
+        const matchesPrice = Number(medicine.price) <= priceCap;
         const matchesSearch =
-          medicine.name.toLowerCase().includes(normalizedQuery) ||
-          medicine.category.toLowerCase().includes(normalizedQuery) ||
-          medicine.description.toLowerCase().includes(normalizedQuery);
+          (medicine.name || "").toLowerCase().includes(normalizedQuery) ||
+          category.includes(normalizedQuery) ||
+          (medicine.description || "").toLowerCase().includes(normalizedQuery);
 
         return matchesCategory && matchesPrice && matchesSearch;
       })
       .sort((a, b) => {
-        if (sortBy === "low") return a.price - b.price;
-        if (sortBy === "high") return b.price - a.price;
-        return a.name.localeCompare(b.name);
+        if (sortBy === "low") return Number(a.price) - Number(b.price);
+        if (sortBy === "high") return Number(b.price) - Number(a.price);
+        return (a.name || "").localeCompare(b.name || "");
       });
-  }, [query, selectedCategory, priceCap, sortBy]);
+  }, [medicines, query, selectedCategory, priceCap, sortBy]);
 
   useEffect(() => {
-    if (!filteredMedicines.some((medicine) => medicine.id === selectedMedicine?.id)) {
+    if (!filteredMedicines.some((medicine) => medicine._id === selectedMedicine?._id)) {
       setSelectedMedicine(filteredMedicines[0] || null);
     }
   }, [filteredMedicines, selectedMedicine]);
@@ -144,7 +105,7 @@ const StorePage = () => {
   const handleAddToCart = (medicine, e) => {
     if (e) e.stopPropagation();
     addItem({
-      id: medicine.id,
+      id: medicine._id || medicine.id,
       name: medicine.name,
       category: medicine.category,
       price: medicine.price,
@@ -154,11 +115,11 @@ const StorePage = () => {
     setSelectedMedicine(medicine);
 
     // Provide visual feedback state on button
-    setAddedMap(prev => ({ ...prev, [medicine.id]: true }));
-    toast.success(`${medicine.name} added to cart!`, { id: `cart-${medicine.id}` });
+    setAddedMap(prev => ({ ...prev, [medicine._id || medicine.id]: true }));
+    toast.success(`${medicine.name} added to cart!`, { id: `cart-${medicine._id || medicine.id}` });
     
     setTimeout(() => {
-      setAddedMap(prev => ({ ...prev, [medicine.id]: false }));
+      setAddedMap(prev => ({ ...prev, [medicine._id || medicine.id]: false }));
     }, 1600);
   };
 
@@ -291,13 +252,22 @@ const StorePage = () => {
             </div>
 
             <div className="grid gap-5 sm:grid-cols-2">
-              {filteredMedicines.map((medicine) => {
-                const isActive = selectedMedicine?.id === medicine.id;
-                const isAdded = !!addedMap[medicine.id];
+              {loading ? (
+                <div className="col-span-full rounded-3xl border border-dashed border-slate-300 dark:border-white/10 bg-white/60 dark:bg-slate-900/60 p-8 text-center text-sm text-slate-500 dark:text-slate-400">
+                  Loading medicines...
+                </div>
+              ) : error ? (
+                <div className="col-span-full rounded-3xl border border-rose-200 bg-rose-50 p-8 text-center text-sm text-rose-600">
+                  {error}
+                </div>
+              ) : filteredMedicines.map((medicine) => {
+                const medicineId = medicine._id || medicine.id;
+                const isActive = selectedMedicine?._id === medicineId || selectedMedicine?.id === medicineId;
+                const isAdded = !!addedMap[medicineId];
 
                 return (
                   <motion.article
-                    key={medicine.id}
+                    key={medicineId}
                     initial={{ opacity: 0, y: 15 }}
                     animate={{ opacity: 1, y: 0 }}
                     onClick={() => setSelectedMedicine(medicine)}
@@ -416,12 +386,12 @@ const StorePage = () => {
                 <RippleButton
                   onClick={(e) => handleAddToCart(selectedMedicine, e)}
                   className={`w-full py-3.5 rounded-xl font-bold text-sm transition-all duration-300 flex items-center justify-center gap-2 shadow-md ${
-                    addedMap[selectedMedicine.id]
+                    addedMap[selectedMedicine._id || selectedMedicine.id]
                       ? "bg-emerald-500 text-white animate-bounce-short"
                       : "bg-lightPrimary dark:bg-darkPrimary text-white dark:text-darkBg shadow-glowLightPrimary dark:shadow-glowPrimary hover:bg-lightPrimary/95 dark:hover:bg-darkPrimary/95"
                   }`}
                 >
-                  {addedMap[selectedMedicine.id] ? (
+                  {addedMap[selectedMedicine._id || selectedMedicine.id] ? (
                     <>
                       <Check className="w-4 h-4" />
                       <span>Added to Shopping Cart ✓</span>
