@@ -74,10 +74,15 @@ export default function CheckoutPage() {
 
       if (!res.ok) throw new Error("Order could not be placed");
       const data = await res.json();
-      setOrderPlaced(data.order ?? { id: `ORD-${Date.now()}` });
+      const newOrder = data.order ?? { id: `ORD-${Date.now()}`, ...payload, createdAt: new Date().toISOString() };
+      const existing = JSON.parse(localStorage.getItem('userOrders') || '[]');
+      localStorage.setItem('userOrders', JSON.stringify([newOrder, ...existing]));
+      setOrderPlaced(newOrder);
     } catch (err) {
-      // Fallback so the flow is demoable even before the backend is wired up
-      setOrderPlaced({ id: `ORD-${Date.now()}` });
+      const newOrder = { id: `ORD-${Date.now()}`, ...payload, createdAt: new Date().toISOString() };
+      const existing = JSON.parse(localStorage.getItem('userOrders') || '[]');
+      localStorage.setItem('userOrders', JSON.stringify([newOrder, ...existing]));
+      setOrderPlaced(newOrder);
     } finally {
       setSubmitting(false);
     }
