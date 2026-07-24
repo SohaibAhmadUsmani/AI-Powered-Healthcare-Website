@@ -42,6 +42,9 @@ app.use("/api/emergency", emergencyRoutes);
 const orderRoutes = require("./routes/orderRoutes");
 app.use("/api/orders", orderRoutes);
 
+const appointmentRoutes = require("./routes/appointment.routes");
+app.use("/api/appointments", appointmentRoutes);
+
 app.use("/api/blog", blogRoutes);
 app.use("/api/contact", contactRoutes);
 

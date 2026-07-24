@@ -18,6 +18,7 @@ import ScrollToTop from "./components/common/ScrollToTop";
 import StorePage from './pages/medicine-store/storePage';
 import CartPage from "./pages/CartPage";
 import CheckoutPage from "./pages/CheckoutPage";
+import UserProfileDrawer from "./components/user/UserProfileDrawer";
 // Lazy load non-homepage routes for bundle size optimization and faster loading
 const LoginPage = lazy(() => import("./pages/auth/LoginPage"));
 const SignupPage = lazy(() => import("./pages/auth/SignupPage"));
@@ -64,6 +65,7 @@ const MainLayout = () => {
   const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'dark');
   const { user, isAuthenticated, logout } = useAuth();
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const [isProfileDrawerOpen, setIsProfileDrawerOpen] = useState(false);
   const location = useLocation();
   const { items } = useCart();
   const cartCount = items.reduce((sum, item) => sum + item.quantity, 0);
@@ -169,12 +171,16 @@ const MainLayout = () => {
 
             {isAuthenticated ? (
               <div className="flex items-center gap-3">
-                <span className="text-xs font-semibold tracking-wide text-slate-700 dark:text-gray-300 px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 flex items-center gap-2 select-none animate-fade-in shadow-sm">
-                  <div className="w-5 h-5 rounded-full bg-lightPrimary/10 dark:bg-darkPrimary/10 text-lightPrimary dark:text-darkPrimary flex items-center justify-center font-bold text-[10px] uppercase font-sans">
+                <button
+                  onClick={() => setIsProfileDrawerOpen(true)}
+                  className="text-xs font-semibold tracking-wide text-slate-700 dark:text-gray-300 px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200/80 dark:border-white/10 hover:border-lightPrimary/40 dark:hover:border-darkPrimary/40 flex items-center gap-2 select-none animate-fade-in shadow-sm cursor-pointer transition-all hover:bg-slate-200/60 dark:hover:bg-white/10 group"
+                  title="View Profile & Activity"
+                >
+                  <div className="w-5 h-5 rounded-full bg-lightPrimary/10 dark:bg-darkPrimary/10 text-lightPrimary dark:text-darkPrimary flex items-center justify-center font-bold text-[10px] uppercase font-sans group-hover:scale-105 transition-transform">
                     {(user?.fullName || "U").charAt(0)}
                   </div>
                   <span className="text-slate-800 dark:text-white font-bold font-sans">{user?.fullName || "User"}</span>
-                </span>
+                </button>
                 <RippleButton 
                   onClick={() => setIsLogoutModalOpen(true)}
                   className="px-5 py-2.5 rounded-xl bg-transparent border border-lightPrimary/40 dark:border-darkPrimary/50 text-lightPrimary dark:text-darkPrimary font-bold text-xs hover:bg-lightPrimary/5 dark:hover:bg-darkPrimary/10 transition-all cursor-pointer"
@@ -293,12 +299,18 @@ const MainLayout = () => {
               <div className="pt-6 border-t border-slate-200/50 dark:border-white/5 flex flex-col gap-3">
                 {isAuthenticated ? (
                   <div className="flex flex-col gap-3 w-full animate-fade-in">
-                    <div className="w-full py-2.5 px-4 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-xs font-semibold tracking-wide text-slate-700 dark:text-gray-300 select-none flex items-center justify-center gap-2 animate-fade-in">
+                    <button
+                      onClick={() => {
+                        setMobileMenuOpen(false);
+                        setIsProfileDrawerOpen(true);
+                      }}
+                      className="w-full py-2.5 px-4 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-xs font-semibold tracking-wide text-slate-700 dark:text-gray-300 select-none flex items-center justify-center gap-2 animate-fade-in cursor-pointer hover:bg-slate-200/60 dark:hover:bg-white/10 transition-all"
+                    >
                       <div className="w-5 h-5 rounded-full bg-lightPrimary/10 dark:bg-darkPrimary/10 text-lightPrimary dark:text-darkPrimary flex items-center justify-center font-bold text-[10px] uppercase font-sans">
                         {(user?.fullName || "U").charAt(0)}
                       </div>
                       <span className="text-slate-800 dark:text-white font-bold font-sans">{user?.fullName || "User"}</span>
-                    </div>
+                    </button>
                     <RippleButton 
                       onClick={() => {
                         setMobileMenuOpen(false);
@@ -488,6 +500,11 @@ const MainLayout = () => {
           </div>
         )}
       </AnimatePresence>
+
+      <UserProfileDrawer 
+        isOpen={isProfileDrawerOpen} 
+        onClose={() => setIsProfileDrawerOpen(false)} 
+      />
     </div>
   );
 };

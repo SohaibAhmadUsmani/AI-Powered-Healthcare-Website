@@ -29,9 +29,17 @@ async function createOrder(req, res) {
       message: "Order placed successfully",
       order: {
         id: order.orderNumber,
+        orderNumber: order.orderNumber,
         _id: order._id,
-        status: order.status,
+        items: order.items,
+        billing: order.billing,
+        paymentMethod: order.paymentMethod,
+        subtotal: order.subtotal,
+        discount: order.discount,
+        tax: order.tax,
+        shipping: order.shipping,
         total: order.total,
+        status: order.status,
         createdAt: order.createdAt,
       },
     });

@@ -55,26 +55,33 @@ const BookingForm = ({ test, onClose }) => {
     setSubmitting(true);
     setErrorMsg('');
 
+    const newBooking = {
+      testId: test.id,
+      testName: test.name,
+      patientName,
+      phone,
+      date,
+      createdAt: new Date().toISOString()
+    };
+
     fetch('http://localhost:5000/api/lab/book', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        testId: test.id,
-        patientName,
-        phone,
-        date,
-      }),
+      body: JSON.stringify(newBooking),
     })
       .then((res) => {
         if (!res.ok) throw new Error('Booking failed');
         return res.json();
       })
       .then(() => {
+        const existing = JSON.parse(localStorage.getItem('userLabTests') || '[]');
+        localStorage.setItem('userLabTests', JSON.stringify([newBooking, ...existing]));
         setConfirmed(true);
         setSubmitting(false);
       })
       .catch(() => {
-        // Fallback for demonstration when backend server is offline
+        const existing = JSON.parse(localStorage.getItem('userLabTests') || '[]');
+        localStorage.setItem('userLabTests', JSON.stringify([newBooking, ...existing]));
         setConfirmed(true);
         setSubmitting(false);
       });

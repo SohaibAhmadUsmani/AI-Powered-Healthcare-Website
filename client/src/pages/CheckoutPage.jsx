@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { CreditCard, Wallet, Truck, CheckCircle2 } from "lucide-react";
 import { useCart } from "../context/CartContext";
+import { useAuth } from "../context/AuthContext";
 import OrderSummaryCard from "../components/OrderSummaryCard";
 
 const PAYMENT_METHODS = [
@@ -21,9 +22,14 @@ const initialBilling = {
 
 export default function CheckoutPage() {
   const navigate = useNavigate();
-  const { items, totals } = useCart();
+  const { items, totals, clearCart } = useCart();
+  const { user } = useAuth();
 
-  const [billing, setBilling] = useState(initialBilling);
+  const [billing, setBilling] = useState(() => ({
+    ...initialBilling,
+    fullName: user?.fullName || user?.name || "",
+    email: user?.email || user?.emailAddress || "",
+  }));
   const [paymentMethod, setPaymentMethod] = useState("card");
   const [errors, setErrors] = useState({});
   const [submitting, setSubmitting] = useState(false);
@@ -62,6 +68,8 @@ export default function CheckoutPage() {
       billing,
       paymentMethod,
       totals,
+      userEmail: user?.email || billing.email,
+      userFullName: user?.fullName || billing.fullName,
     };
 
     try {
@@ -74,10 +82,38 @@ export default function CheckoutPage() {
 
       if (!res.ok) throw new Error("Order could not be placed");
       const data = await res.json();
-      setOrderPlaced(data.order ?? { id: `ORD-${Date.now()}` });
+      const newOrder = {
+        id: data.order?.id || data.order?.orderNumber || `ORD-${Date.now()}`,
+        orderNumber: data.order?.orderNumber || data.order?.id || `ORD-${Date.now()}`,
+        items: items.map(({ id, name, price, quantity }) => ({ productId: id, name, price, quantity })),
+        billing,
+        paymentMethod,
+        totals,
+        totalAmount: totals?.total,
+        status: data.order?.status || "confirmed",
+        createdAt: data.order?.createdAt || new Date().toISOString(),
+        ...data.order,
+      };
+      const existing = JSON.parse(localStorage.getItem('userOrders') || '[]');
+      localStorage.setItem('userOrders', JSON.stringify([newOrder, ...existing]));
+      setOrderPlaced(newOrder);
+      clearCart();
     } catch (err) {
-      // Fallback so the flow is demoable even before the backend is wired up
-      setOrderPlaced({ id: `ORD-${Date.now()}` });
+      const newOrder = {
+        id: `ORD-${Date.now()}`,
+        orderNumber: `ORD-${Date.now()}`,
+        items: items.map(({ id, name, price, quantity }) => ({ productId: id, name, price, quantity })),
+        billing,
+        paymentMethod,
+        totals,
+        totalAmount: totals?.total,
+        status: "confirmed",
+        createdAt: new Date().toISOString(),
+      };
+      const existing = JSON.parse(localStorage.getItem('userOrders') || '[]');
+      localStorage.setItem('userOrders', JSON.stringify([newOrder, ...existing]));
+      setOrderPlaced(newOrder);
+      clearCart();
     } finally {
       setSubmitting(false);
     }
