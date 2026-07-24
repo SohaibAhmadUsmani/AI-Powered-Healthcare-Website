@@ -31,7 +31,7 @@ const UserProfileDrawer = ({ isOpen, onClose }) => {
   const fetchUserData = async () => {
     setLoading(true);
     try {
-      // 1. Fetch Doctor Appointments from server
+      // 1. Fetch Doctor Appointments
       const apptRes = await fetch('http://localhost:5000/api/appointments').catch(() => null);
       let fetchedAppts = [];
       if (apptRes && apptRes.ok) {
@@ -39,11 +39,10 @@ const UserProfileDrawer = ({ isOpen, onClose }) => {
         fetchedAppts = apptData.data || [];
       }
       const localAppts = JSON.parse(localStorage.getItem('userAppointments') || '[]');
-      // Merge unique appointments
-      const combinedAppts = [...localAppts, ...fetchedAppts];
+      const combinedAppts = deduplicateByKey([...localAppts, ...fetchedAppts], (a) => a._id || a.id || (a.patientName + a.appointmentDate + a.timeSlot));
       setAppointments(combinedAppts);
 
-      // 2. Fetch Lab Test Bookings from server
+      // 2. Fetch Lab Test Bookings
       const labRes = await fetch('http://localhost:5000/api/lab/bookings/all').catch(() => null);
       let fetchedLab = [];
       if (labRes && labRes.ok) {
@@ -51,10 +50,10 @@ const UserProfileDrawer = ({ isOpen, onClose }) => {
         fetchedLab = labData.bookings || labData.data || [];
       }
       const localLab = JSON.parse(localStorage.getItem('userLabTests') || '[]');
-      const combinedLab = [...localLab, ...fetchedLab];
+      const combinedLab = deduplicateByKey([...localLab, ...fetchedLab], (l) => l._id || l.id || (l.testName + l.patientName + l.date));
       setLabBookings(combinedLab);
 
-      // 3. Fetch Pharmacy Orders from server
+      // 3. Fetch Pharmacy Orders
       const orderRes = await fetch('http://localhost:5000/api/orders').catch(() => null);
       let fetchedOrders = [];
       if (orderRes && orderRes.ok) {
@@ -62,13 +61,24 @@ const UserProfileDrawer = ({ isOpen, onClose }) => {
         fetchedOrders = orderData.orders || orderData.data || [];
       }
       const localOrders = JSON.parse(localStorage.getItem('userOrders') || '[]');
-      const combinedOrders = [...localOrders, ...fetchedOrders];
+      const combinedOrders = deduplicateByKey([...localOrders, ...fetchedOrders], (o) => o._id || o.orderNumber || o.id);
       setOrders(combinedOrders);
     } catch (err) {
       console.error('Error fetching user activity data:', err);
     } finally {
       setLoading(false);
     }
+  };
+
+  const deduplicateByKey = (list, keyGetter) => {
+    const seen = new Set();
+    return list.filter((item) => {
+      const key = keyGetter(item);
+      if (!key) return true;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
   };
 
   if (!isOpen) return null;
@@ -82,6 +92,8 @@ const UserProfileDrawer = ({ isOpen, onClose }) => {
 
     if (rawUserEmail && emailStr && emailStr === rawUserEmail) return true;
     if (rawUserName && nameStr && (nameStr.includes(rawUserName) || rawUserName.includes(nameStr))) return true;
+    // If item lacks explicit email/name fields, retain for user session
+    if (!emailStr && !nameStr) return true;
     return false;
   };
 
@@ -93,7 +105,12 @@ const UserProfileDrawer = ({ isOpen, onClose }) => {
   const myLabBookings = labBookings.filter((l) => isMatch(l.email, l.patientName));
 
   // 3. Personal Orders Only
-  const myOrders = orders.filter((o) => isMatch(o.billing?.email || o.email, o.billing?.fullName || o.patientName || o.billing?.name));
+  const myOrders = orders.filter((o) => 
+    isMatch(
+      o.billing?.email || o.email, 
+      o.billing?.fullName || o.billing?.name || o.patientName || o.fullName
+    )
+  );
 
   return (
     <AnimatePresence>
@@ -387,7 +404,7 @@ const UserProfileDrawer = ({ isOpen, onClose }) => {
                               </span>
                             </div>
                             <span className="px-2.5 py-0.5 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-600 dark:text-violet-400 text-[10px] font-mono font-bold uppercase">
-                              {ord.orderStatus || ord.status || 'Processing'}
+                              {ord.orderStatus || ord.status || 'Confirmed'}
                             </span>
                           </div>
 

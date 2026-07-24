@@ -74,12 +74,33 @@ export default function CheckoutPage() {
 
       if (!res.ok) throw new Error("Order could not be placed");
       const data = await res.json();
-      const newOrder = data.order ?? { id: `ORD-${Date.now()}`, ...payload, createdAt: new Date().toISOString() };
+      const newOrder = {
+        id: data.order?.id || data.order?.orderNumber || `ORD-${Date.now()}`,
+        orderNumber: data.order?.orderNumber || data.order?.id || `ORD-${Date.now()}`,
+        items: items.map(({ id, name, price, quantity }) => ({ productId: id, name, price, quantity })),
+        billing,
+        paymentMethod,
+        totals,
+        totalAmount: totals?.total,
+        status: data.order?.status || "confirmed",
+        createdAt: data.order?.createdAt || new Date().toISOString(),
+        ...data.order,
+      };
       const existing = JSON.parse(localStorage.getItem('userOrders') || '[]');
       localStorage.setItem('userOrders', JSON.stringify([newOrder, ...existing]));
       setOrderPlaced(newOrder);
     } catch (err) {
-      const newOrder = { id: `ORD-${Date.now()}`, ...payload, createdAt: new Date().toISOString() };
+      const newOrder = {
+        id: `ORD-${Date.now()}`,
+        orderNumber: `ORD-${Date.now()}`,
+        items: items.map(({ id, name, price, quantity }) => ({ productId: id, name, price, quantity })),
+        billing,
+        paymentMethod,
+        totals,
+        totalAmount: totals?.total,
+        status: "confirmed",
+        createdAt: new Date().toISOString(),
+      };
       const existing = JSON.parse(localStorage.getItem('userOrders') || '[]');
       localStorage.setItem('userOrders', JSON.stringify([newOrder, ...existing]));
       setOrderPlaced(newOrder);
