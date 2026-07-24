@@ -61,8 +61,23 @@ const UserProfileDrawer = ({ isOpen, onClose }) => {
         fetchedOrders = orderData.orders || orderData.data || [];
       }
       const localOrders = JSON.parse(localStorage.getItem('userOrders') || '[]');
-      const combinedOrders = deduplicateByKey([...localOrders, ...fetchedOrders], (o) => o._id || o.orderNumber || o.id);
-      setOrders(combinedOrders);
+
+      // Merge local and server orders into a map to preserve full fields (billing, items, totals)
+      const orderMap = new Map();
+      [...localOrders, ...fetchedOrders].forEach((ord) => {
+        const key = ord._id || ord.orderNumber || ord.id;
+        if (!key) return;
+        const existing = orderMap.get(key) || {};
+        orderMap.set(key, {
+          ...existing,
+          ...ord,
+          billing: { ...(existing.billing || {}), ...(ord.billing || {}) },
+          items: (ord.items && ord.items.length > 0) ? ord.items : (existing.items || []),
+          userEmail: ord.userEmail || existing.userEmail || ord.billing?.email || existing.billing?.email,
+          userFullName: ord.userFullName || existing.userFullName || ord.billing?.fullName || existing.billing?.fullName,
+        });
+      });
+      setOrders(Array.from(orderMap.values()));
     } catch (err) {
       console.error('Error fetching user activity data:', err);
     } finally {
@@ -105,12 +120,16 @@ const UserProfileDrawer = ({ isOpen, onClose }) => {
   const myLabBookings = labBookings.filter((l) => isMatch(l.email, l.patientName));
 
   // 3. Personal Orders Only
-  const myOrders = orders.filter((o) => 
-    isMatch(
-      o.billing?.email || o.email, 
-      o.billing?.fullName || o.billing?.name || o.patientName || o.fullName
-    )
-  );
+  const myOrders = orders.filter((o) => {
+    const oEmail = (o.userEmail || o.billing?.email || o.email || '').trim().toLowerCase();
+    const oName = (o.userFullName || o.billing?.fullName || o.billing?.name || o.patientName || o.fullName || '').trim().toLowerCase();
+
+    if (rawUserEmail && oEmail && oEmail === rawUserEmail) return true;
+    if (rawUserName && oName && (oName.includes(rawUserName) || rawUserName.includes(oName))) return true;
+    // If no email/name is attached on record, retain for logged-in user
+    if (!oEmail && !oName) return true;
+    return false;
+  });
 
   return (
     <AnimatePresence>

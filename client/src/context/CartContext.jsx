@@ -38,6 +38,12 @@ export function CartProvider({ children }) {
     setItems((prev) => prev.filter((item) => item.id !== id));
   };
 
+  const clearCart = () => {
+    setItems([]);
+    setPromoCode("");
+    setAppliedDiscount(0);
+  };
+
   const applyPromoCode = (code) => {
     // Mock promo logic — real validation should happen server-side (Order API)
     if (code.trim().toUpperCase() === "HEALTH10") {
@@ -76,6 +82,7 @@ export function CartProvider({ children }) {
     addItem,
     updateQuantity,
     removeItem,
+    clearCart,
     promoCode,
     applyPromoCode,
     appliedDiscount,
